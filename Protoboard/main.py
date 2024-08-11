@@ -1,7 +1,6 @@
 import pygame
 import sys
 
-
 def dibujar_letra(screen, letter, font_size, x, y,color):
     font = pygame.font.Font(None, font_size)
     text_surface = font.render(letter, True,color)
