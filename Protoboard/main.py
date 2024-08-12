@@ -191,7 +191,6 @@ monitor_size = [pygame.display.Info().current_w, pygame.display.Info().current_h
 fullscreen = False
 running = True
 while running:
-    mainClock.tick(60)  # FPS de 60
     screen.fill("white") # directo el color sin variables extra
 
     x_proto = (screen.get_width() - 490) // 2
@@ -234,6 +233,5 @@ while running:
 
     pygame.display.flip()
     mainClock.tick(60)
-
 
 pygame.quit()
