@@ -113,8 +113,71 @@ class Protoboard:
                 conector.dibujar(screen)
                 x_pos = x_pos + 30
 
+class Pila:
+    def __init__(self,pila_x,pila_y):
+        self.pila_x = pila_x
+        self.pila_y = pila_y
+        self.color_cabeza_pila = (240, 134, 21)
+        self.color_cuerpo_pila = (0, 0, 0)
+        self.color_componentes_pila = (170, 170, 170)
+        self.largo = 750
+        self.ancho = 550
 
+    def dibujarPila(self,screen):
+        #Dibujo parte superior pila
+
+        pygame.draw.line(screen, (self.color_cabeza_pila), (self.pila_x, self.pila_y), (self.pila_x + 30, self.pila_y), 3)
+        pygame.draw.line(screen, (self.color_cabeza_pila), (self.pila_x, self.pila_y), (self.pila_x, self.pila_y + 100), 3)
+        pygame.draw.line(screen, (self.color_cabeza_pila), (self.pila_x, self.pila_y + 100), (self.pila_x + 30, self.pila_y + 100), 3)
+        pygame.draw.line(screen, (self.color_cabeza_pila), (self.pila_x + 30, self.pila_y), (self.pila_x + 30, self.pila_y + 100), 3)
+
+        #Ciclo que permite rellenar la pila
+        for i in range(10):
+            pygame.draw.rect(screen, self.color_cabeza_pila, (self.pila_x + i, self.pila_y, 20, 100))
+
+        #Dibujo parte inferior pila
+        pygame.draw.line(screen, (self.color_cuerpo_pila), (self.pila_x + 30, self.pila_y + 100), (self.pila_x + 120, self.pila_y + 100), 3)
+        pygame.draw.line(screen, (self.color_cuerpo_pila), (self.pila_x + 120, self.pila_y + 100), (self.pila_x + 120, self.pila_y), 3)
+        pygame.draw.line(screen, (self.color_cuerpo_pila), (self.pila_x + 120, self.pila_y), (self.pila_x + 30, self.pila_y), 3)
+
+        #Ciclo que permite rellenar la parte interior de la pila
+
+        for i in range(80):
+            pygame.draw.rect(screen, self.color_cuerpo_pila, (self.pila_x + 30 + i, self.pila_y, 12, 100))
+
+        #Dibujo de los componentes de la pila
+
+        #Componente negativo (-)
+        pygame.draw.line(screen, (self.color_componentes_pila), (self.pila_x - 2, self.pila_y + 20), (self.pila_x - 15, self.pila_y + 20), 3)
+        pygame.draw.line(screen, (self.color_componentes_pila), (self.pila_x - 15, self.pila_y + 20), (self.pila_x - 15, self.pila_y + 30), 3)
+        pygame.draw.line(screen, (self.color_componentes_pila), (self.pila_x - 15, self.pila_y + 30), (self.pila_x - 2, self.pila_y + 30), 3)
+        
+        #Componente Positivo (+)
+        pygame.draw.line(screen, (self.color_componentes_pila), (self.pila_x - 2, self.pila_y + 60), (self.pila_x - 15, self.pila_y + 60), 3)
+        pygame.draw.line(screen, (self.color_componentes_pila), (self.pila_x - 15, self.pila_y + 60), (self.pila_x - 15, self.pila_y + 70), 3)
+        pygame.draw.line(screen, (self.color_componentes_pila), (self.pila_x - 2, self.pila_y + 70), (self.pila_x - 15, self.pila_y + 70), 3)
+        
+        #Ciclo para rellenar componente 1
+        for i in range(10):
+            pygame.draw.rect(screen, self.color_componentes_pila, (self.pila_x - 15 + i, self.pila_y + 20, 5, 10))
+
+        #Ciclo para rellenar componente 2
+        for i in range(10):
+            pygame.draw.rect(screen, self.color_componentes_pila, (self.pila_x - 15 + i, self.pila_y + 60, 5, 10))
+        
+        #Inclusión de positivo y negativo
+
+        #Negativo
+        pygame.draw.line(screen, (self.color_cuerpo_pila), (self.pila_x + 10, self.pila_y + 30), (self.pila_x + 10, self.pila_y + 20), 2)
+
+        #Positivo
+        pygame.draw.line(screen, (self.color_cuerpo_pila), (self.pila_x + 10, self.pila_y + 70), (self.pila_x + 10, self.pila_y + 60), 2)
+        pygame.draw.line(screen, (self.color_cuerpo_pila), (self.pila_x + 15, self.pila_y + 65), (self.pila_x + 5, self.pila_y + 65), 2)
+
+
+#Main
 pygame.init()
+
 #medidas de la protoboard
 screen_width = 950
 screen_height = 600
@@ -134,8 +197,17 @@ while running:
     y_proto = (screen.get_height() - 560) // 2
 
     # Crear y dibujar Protoboard
+
     protoboard = Protoboard(x_proto, y_proto)
     protoboard.crear(screen)
+
+    # Crear y dibujar Pila
+
+    x_pila = (screen.get_width() + 750) // 2
+    y_pila = (screen.get_height() - 550) // 2
+
+    pila = Pila(x_pila, y_pila)
+    pila.dibujarPila(screen)
 
     # manejo de eventos
     for event in pygame.event.get():
@@ -161,6 +233,5 @@ while running:
 
     pygame.display.flip()
     mainClock.tick(60)
-
 
 pygame.quit()
