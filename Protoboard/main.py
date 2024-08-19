@@ -181,36 +181,99 @@ class Pila:
 
         #Componente negativo (-)
 
-        pygame.draw.line(screen, (self.color_componentes_pila), (self.pila_x + 20, self.pila_y - 2), (self.pila_x + 20, self.pila_y - 16), 3)
-        pygame.draw.line(screen, (self.color_componentes_pila), (self.pila_x + 20, self.pila_y - 16), (self.pila_x + 30, self.pila_y - 16), 3)
-        pygame.draw.line(screen, (self.color_componentes_pila), (self.pila_x + 30, self.pila_y - 16), (self.pila_x + 30, self.pila_y - 2), 3)
+        pygame.draw.line(screen, (self.color_componentes_pila), (self.pila_x + 30, self.pila_y - 2), (self.pila_x + 30, self.pila_y - 16), 3)
+        pygame.draw.line(screen, (self.color_componentes_pila), (self.pila_x + 30, self.pila_y - 16), (self.pila_x + 40, self.pila_y - 16), 3)
+        pygame.draw.line(screen, (self.color_componentes_pila), (self.pila_x + 40, self.pila_y - 16), (self.pila_x + 40, self.pila_y - 2), 3)
         
         #Componente Positivo (+)
         
         pygame.draw.line(screen, (self.color_componentes_pila), (self.pila_x + 60, self.pila_y  - 2), (self.pila_x + 60, self.pila_y - 16), 3)
-        pygame.draw.line(screen, (self.color_componentes_pila), (self.pila_x + 60, self.pila_y - 16), (self.pila_x + 70, self.pila_y - 16), 3)
+        pygame.draw.line(screen, (self.color_componentes_pila), (self.pila_x + 60, self.pila_y - 16), (self.pila_x + 60, self.pila_y - 16), 3)
         pygame.draw.line(screen, (self.color_componentes_pila), (self.pila_x + 70, self.pila_y - 2), (self.pila_x + 70, self.pila_y - 16), 3)
         
         #Ciclo para rellenar componente 1
-        for i in range(9):
+        for i in range(10):
             pygame.draw.line(screen, (self.color_componentes_pila), (self.pila_x + 60, self.pila_y - 16), (self.pila_x + 60 + i, self.pila_y - 2), 3)
             pygame.draw.line(screen, (self.color_componentes_pila), (self.pila_x + 70, self.pila_y - 2), (self.pila_x + 70 - i, self.pila_y - 16), 3)
             
         #Ciclo para rellenar componente 2
-        for i in range(9):
-            pygame.draw.line(screen, (self.color_componentes_pila), (self.pila_x + 20, self.pila_y - 16), (self.pila_x + 20 + i, self.pila_y - 2), 3)
-            pygame.draw.line(screen, (self.color_componentes_pila), (self.pila_x + 30, self.pila_y - 2), (self.pila_x + 30 - i, self.pila_y - 16), 3)
+        for i in range(10):
+            pygame.draw.line(screen, (self.color_componentes_pila), (self.pila_x + 30, self.pila_y - 16), (self.pila_x + 30 + i, self.pila_y - 2), 3)
+            pygame.draw.line(screen, (self.color_componentes_pila), (self.pila_x + 40, self.pila_y - 2), (self.pila_x + 40 - i, self.pila_y - 16), 3)
 
         #Inclusión de positivo y negativo
 
         #Negativo
 
-        pygame.draw.line(screen, (self.color_cuerpo_pila), (self.pila_x + 30, self.pila_y + 15), (self.pila_x + 20, self.pila_y + 15), 2)
+        pygame.draw.line(screen, (self.color_cuerpo_pila), (self.pila_x + 40, self.pila_y + 15), (self.pila_x + 30, self.pila_y + 15), 2)
 
         #Positivo
 
         pygame.draw.line(screen, (self.color_cuerpo_pila), (self.pila_x + 70, self.pila_y + 15), (self.pila_x + 60, self.pila_y + 15), 2)
         pygame.draw.line(screen, (self.color_cuerpo_pila), (self.pila_x + 65, self.pila_y + 10), (self.pila_x + 65, self.pila_y + 20), 2)
+        
+class Menu:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y + 25
+        self.ancho = 10
+        self.alto = 15
+        self.color_fondo_led = (66, 214, 2)
+        self.color_fondo_cable_positivo = (255, 44, 44)
+        self.color_fondo_cable_negativo = (0, 90, 247)
+        self.color_led = (50, 164, 0)
+        self.color_cable_positivo = (205, 0, 0)
+        self.color_cable_negativo = (33, 0, 183)
+
+        #funcion para el menu de la led
+    def dibujar_menu_led(self, menu):
+
+        pygame.draw.line(screen, (self.color_fondo_led), (self.x + 450, self.y - 100), (self.x + 500, self.y - 100), 3)
+        pygame.draw.line(screen, (self.color_fondo_led), (self.x + 500, self.y - 100), (self.x + 500, self.y - 50), 3)
+        pygame.draw.line(screen, (self.color_fondo_led), (self.x + 500, self.y - 50), (self.x + 450, self.y - 50), 3)
+        pygame.draw.line(screen, (self.color_fondo_led), (self.x + 450, self.y - 50), (self.x + 450, self.y - 100), 3)
+
+        #Ciclo para rellenar
+        for i in range(50):
+            pygame.draw.line(screen, (self.color_fondo_led), (self.x + 450, self.y - 100), (self.x + 450 + i, self.y - 50), 3)
+            pygame.draw.line(screen, (self.color_fondo_led), (self.x + 500, self.y - 50), (self.x + 500 - i, self.y - 100), 3)
+                        
+    def dibujar_menu_cable_positivo(self,menu):
+        pygame.draw.line(screen, (self.color_fondo_cable_positivo), (self.x + 450, self.y - 25), (self.x + 500, self.y - 25), 3)
+        pygame.draw.line(screen, (self.color_fondo_cable_positivo), (self.x + 500, self.y - 25), (self.x + 500, self.y + 25), 3)
+        pygame.draw.line(screen, (self.color_fondo_cable_positivo), (self.x + 500, self.y + 25), (self.x + 450, self.y + 25), 3)
+        pygame.draw.line(screen, (self.color_fondo_cable_positivo), (self.x + 450, self.y + 25), (self.x + 450, self.y - 25), 3)
+
+        #Ciclo para rellenar
+        for i in range(50):
+            pygame.draw.line(screen, (self.color_fondo_cable_positivo), (self.x + 450, self.y + 25), (self.x + 500, self.y + 25 - i), 3)
+            pygame.draw.line(screen, (self.color_fondo_cable_positivo), (self.x + 500, self.y - 25), (self.x + 450, self.y - 25 + i), 3)
+
+    def dibujar_menu_cable_negativo(self,menu):
+        pygame.draw.line(screen, (self.color_fondo_cable_negativo), (self.x + 450, self.y + 50), (self.x + 500, self.y + 50), 3)
+        pygame.draw.line(screen, (self.color_fondo_cable_negativo), (self.x + 500, self.y + 50), (self.x + 500, self.y + 100), 3)
+        pygame.draw.line(screen, (self.color_fondo_cable_negativo), (self.x + 500, self.y + 100), (self.x + 450, self.y + 100), 3)
+        pygame.draw.line(screen, (self.color_fondo_cable_negativo), (self.x + 450, self.y + 100), (self.x + 450, self.y + 50), 3)
+
+        #Ciclo para rellenar
+        for i in range(50):
+            pygame.draw.line(screen, (self.color_fondo_cable_negativo), (self.x + 450, self.y + 100), (self.x + 500, self.y + 100 - i), 3)
+            pygame.draw.line(screen, (self.color_fondo_cable_negativo), (self.x + 500, self.y + 50), (self.x + 450, self.y + 50 + i), 3)      
+
+    def dibujar_led(self,menu):
+        pygame.draw.line(screen, (self.color_led), (self.x + 470, self.y - 75), (self.x + 470, self.y - 55), 3)        
+        pygame.draw.line(screen, (self.color_led), (self.x + 480, self.y - 75), (self.x + 480, self.y - 55), 3)
+        pygame.draw.line(screen, (self.color_led), (self.x + 460, self.y - 75), (self.x + 490, self.y - 75), 3)
+        pygame.draw.line(screen, (self.color_led), (self.x + 460, self.y - 75), (self.x + 460, self.y - 95), 3)
+        pygame.draw.line(screen, (self.color_led), (self.x + 460, self.y - 95), (self.x + 490, self.y - 95), 3)
+        pygame.draw.line(screen, (self.color_led), (self.x + 490, self.y - 95), (self.x + 490, self.y - 75), 3)
+
+    def dibujar_cable_positivo(self,menu):
+        pygame.draw.line(screen, (self.color_cable_positivo), (self.x + 490, self.y), (self.x + 460, self.y), 6)
+        pygame.draw.line(screen, (self.color_cable_positivo), (self.x + 475, self.y + 15), (self.x + 475, self.y - 15), 6)
+
+    def dibujar_cable_negativo(self,menu):
+        pygame.draw.line(screen, (self.color_cable_negativo), (self.x + 490, self.y + 75), (self.x + 460, self.y + 75), 6)
         
 def dibujar_a(screen, x, y,ancho,alto,color):
     pygame.draw.line(screen, color, (x, y + alto), (x + ancho // 2, y), 2)  # Línea diagonal izquierda
@@ -345,6 +408,19 @@ while running:
     pila = Pila(x_pila, y_pila)
     pila.dibujarPila(screen)
 
+    # Crear y dibujar Menu
+
+    x_menu = (screen.get_width() - 200) // 2
+    y_menu = (screen.get_height() - 40) // 2
+
+    menu = Menu(x_menu, y_menu)
+    menu.dibujar_menu_led(screen)
+    menu.dibujar_menu_cable_positivo(screen)
+    menu.dibujar_menu_cable_negativo(screen)
+    menu.dibujar_led(screen)
+    menu.dibujar_cable_positivo(screen)
+    menu.dibujar_cable_negativo(screen)
+    
     # Manejo de eventos
 
     for event in pygame.event.get():
