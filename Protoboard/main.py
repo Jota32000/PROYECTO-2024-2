@@ -309,69 +309,57 @@ def dibujar_e(screen,x,y,alto,ancho,color):
     pygame.draw.line(screen, color, (x, y), ((x + ancho), y), 2)
     pygame.draw.line(screen, color, (x,(y+5)), ((x + ancho), (y + 5)), 2)
     pygame.draw.line(screen, color, (x, (y + alto)), ((x + ancho), (y + alto)), 2)
-
 def dibujar_f(screen,x,y,alto,ancho,color):
     pygame.draw.line(screen, color, (x, y), (x, (y + alto)), 2)
     pygame.draw.line(screen, color, (x, y), ((x + ancho), y), 2)
     pygame.draw.line(screen, color, (x,(y+5)), ((x + ancho), (y + 5)), 2)
-
 def dibujar_g(screen,x,y,alto,ancho,color):
     pygame.draw.line(screen, color, (x, y), (x,( y + alto)), 2)
     pygame.draw.line(screen, color, (x, y), ((x+ancho), y), 2)
     pygame.draw.line(screen, color, (x, (y+alto)), ((x+ancho), (y+alto)), 2)
     pygame.draw.line(screen, color, ((x+ancho), (y+alto)), ((x +ancho), (y+alto-3)), 2)
     pygame.draw.line(screen,color,((x+ancho),(y+5)),(x+3,(y+5)),2)
-
 def dibujar_h(screen,x,y,alto,ancho,color):
     pygame.draw.line(screen, color, (x, y), (x, (y + alto)), 2)
     pygame.draw.line(screen, color, (x,(y+5)), ((x + ancho), (y + 5)), 2)
     pygame.draw.line(screen, color, (x+ancho, y), (x+ancho, (y + alto)), 2)
-
 def dibujar_i(screen,x,y,alto,ancho,color):
     pygame.draw.line(screen, color, ((x+(ancho//2)), y), ((x+(ancho//2)), (y + alto)), 2)
     pygame.draw.line(screen, color, (x, y), ((x + ancho), y), 2)
     pygame.draw.line(screen, color, (x, (y + alto)), ((x + ancho), (y + alto)), 2)
-
 def dibujar_j(screen,x,y,alto,ancho,color):
     pygame.draw.line(screen, color, ((x+(ancho//2)), y), ((x+(ancho//2)), (y + alto)), 2)
     pygame.draw.line(screen, color, (x, y), ((x + ancho), y), 2)
     pygame.draw.line(screen, color, (x, (y + alto)), ((x + ancho//2), (y + alto)), 2)
-
 def dibujar_mas(screen,x,y,alto,color):
     pygame.draw.line(screen,color,(x,y),(x+alto,y),2)
     pygame.draw.line(screen,color,(x+5,y-5),(x+5,y+5),2)
 def dibujar_menos(screen,x,y,color):
     pygame.draw.line(screen, color, (x + 5, y - 5), (x + 5, y + 5), 2)
-
 def dibujar_1(screen,x,y,alto,color):
     pygame.draw.line(screen,color,(x,y),(x+5,y+10),2)
     pygame.draw.line(screen,color,(x,y),(x+alto,y),2)
-
 def dibujar_2(screen,x,y,alto,color):
     pygame.draw.line(screen,color,(x,y),(x,y+alto),2)
     pygame.draw.line(screen,color,(x,y),(x+5,y),2)
     pygame.draw.line(screen, color, (x+5, y), (x + 5, y+alto), 2)
     pygame.draw.line(screen, color, (x+5, y+alto), (x +alto, y+alto), 2)
     pygame.draw.line(screen, color, (x+alto, y+alto), (x+alto,y), 2)
-
 def dibujar_3(screen,x,y,alto,color):
     pygame.draw.line(screen, color, (x, y), (x +alto, y), 2)
     pygame.draw.line(screen, color, (x, y), (x,y+alto), 2)
     pygame.draw.line(screen, color, (x+5, y), (x + 5, y+alto), 2)
     pygame.draw.line(screen, color, (x+alto, y+alto), (x+alto, y), 2)
-
 def dibujar_4(screen,x,y,alto,color):
     pygame.draw.line(screen, color, (x, y), (x + alto, y), 2)
     pygame.draw.line(screen, color, (x + 5, y), (x + 5, y + alto), 2)
     pygame.draw.line(screen, color, (x, y), (x + 5, y+alto), 2)
-
 def dibujar_5(screen,x,y,alto,color):
     pygame.draw.line(screen, color, (x, y), (x, y + alto), 2)
     pygame.draw.line(screen, color, (x, y+alto), (x+5, y + alto), 2)
     pygame.draw.line(screen, color, (x + 5, y), (x + 5, y + alto), 2)
     pygame.draw.line(screen, color, (x + 5, y), (x +alto, y ), 2)
     pygame.draw.line(screen, color, (x + alto, y + alto), (x + alto, y), 2)
-
 def dibujar_0(screen,x,y,alto,color):
     pygame.draw.line(screen, color, (x, y), (x, y + alto), 2)
     pygame.draw.line(screen, color, (x, y + alto), (x + alto, y + alto), 2)
