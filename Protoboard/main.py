@@ -1,16 +1,20 @@
 import pygame
+import math
 from pygame.locals import *
 
 class Conector:
-    def __init__(self, x, y):
+    def __init__(self, x, y, lista_conectores):  # agrege lista conectores
         self.x = x
         self.y = y
         self.largo = 5
         self.color = (84, 84, 84)
+        lista_conectores.append((self.x + 2, self.y + 2))  # agrega las cc a la lista
 
     def dibujar(self, screen):
         for i in range(self.largo):
             pygame.draw.line(screen, self.color, (self.x, self.y + i), (self.x + self.largo, self.y + i))
+
+conectores = []
 
 class Protoboard:
     def __init__(self, x, y):
@@ -116,28 +120,28 @@ class Protoboard:
             for j in range(num_columnas):
                 x_pos = inicio_x + j * separacion_x
                 y_pos = inicio_y + i * 20
-                conector = Conector(x_pos, y_pos)
+                conector = Conector(x_pos, y_pos,conectores)
                 conector.dibujar(screen)
 
         for i in range(2):
             for j in range(num_columnas):
                 x_pos = inicio_x + j * separacion_x
                 y_pos = inicio_y + i * 20
-                conector = Conector(x_pos, y_pos+self.ancho-64)
+                conector = Conector(x_pos, y_pos+self.ancho-64,conectores)
                 conector.dibujar(screen)
 
         for i in range(num_filas):
             y_pos = inicio_y + i * 20
             for j in range(num_columnas):
                 x_pos = inicio_x + j * separacion_x
-                conector = Conector(x_pos, y_pos+70)
+                conector = Conector(x_pos, y_pos+70,conectores)
                 conector.dibujar(screen)
 
         for i in range(num_filas):
             y_pos = inicio_y + i * 20
             for j in range(num_columnas):
                 x_pos = inicio_x + j * separacion_x
-                conector = Conector(x_pos, y_pos+210)
+                conector = Conector(x_pos, y_pos+210,conectores)
                 conector.dibujar(screen)
 
 class Pila:
@@ -149,6 +153,8 @@ class Pila:
         self.color_componentes_pila = (170, 170, 170)
         self.largo = 750
         self.ancho = 550
+        conector_pila1 = Conector(98, 235, conectores)
+        conector_pila2 = Conector(128, 235, conectores)
 
     def dibujarPila(self,screen):
 
@@ -211,6 +217,7 @@ class Pila:
 
         pygame.draw.line(screen, (self.color_cuerpo_pila), (self.pila_x + 70, self.pila_y + 15), (self.pila_x + 60, self.pila_y + 15), 2)
         pygame.draw.line(screen, (self.color_cuerpo_pila), (self.pila_x + 65, self.pila_y + 10), (self.pila_x + 65, self.pila_y + 20), 2)
+        
         
 class Menu:
     def __init__(self, x, y):
@@ -371,6 +378,38 @@ def dibujar_0(screen,x,y,alto,color):
     pygame.draw.line(screen, color, (x + alto, y+alto), (x + alto, y ), 2)
     pygame.draw.line(screen, color, (x, y), (x+alto, y), 2)
 
+class Cableado:
+    def __init__(self):
+        self.dibujando_cable = False
+        self.inicio_cable = None
+        self.cables = []
+
+    def dibujar_cables(self):
+        for cable in self.cables:
+            pygame.draw.line(screen,"black", cable[0], cable[1], 3)
+
+    def comienzo_cable(self, anclaje):
+        self.inicio_cable = anclaje
+        self.dibujando_cable = True
+
+    def finalizar_cable(self, anclaje):
+        if not self.quitar_cable(self.inicio_cable, anclaje):
+            self.cables.append((self.inicio_cable, anclaje))
+        self.dibujando_cable = False
+        self.inicio_cable = None
+
+    def quitar_cable(self, start, end):
+        for cable in self.cables:
+            if (cable[0] == start and cable[1] == end) or (cable[0] == end and cable[1] == start):
+                self.cables.remove(cable)
+                return True
+        return False
+
+
+    def dibujar_cable_actual(self):
+        if self.dibujando_cable and self.inicio_cable:
+            current_pos = pygame.mouse.get_pos()
+            pygame.draw.line(screen, "black", self.inicio_cable, current_pos, 3)
 
 
 
@@ -386,6 +425,7 @@ pygame.display.set_caption("Protoboard")
 mainClock = pygame.time.Clock()
 monitor_size = [pygame.display.Info().current_w, pygame.display.Info().current_h]
 
+cableado = Cableado()
 fullscreen = False
 running = True
 
@@ -397,6 +437,7 @@ while running:
 
     # Crear y dibujar Protoboard
 
+    conectores.clear()
     protoboard = Protoboard(x_proto, y_proto)
     protoboard.crear(screen)
 
@@ -420,6 +461,27 @@ while running:
     menu.dibujar_led(screen)
     menu.dibujar_cable_positivo(screen)
     menu.dibujar_cable_negativo(screen)
+
+
+    def distancia(punto1, punto2):
+        return math.sqrt((punto1[0] - punto2[0]) ** 2 + (punto1[1] - punto2[1]) ** 2)
+
+
+    def punto_mas_cercano(pos_mouse, lista_conectores, distancia_maxima):
+        punto_cercano = None
+        distancia_minima = 10000
+
+        for conector in lista_conectores:
+            dist = distancia(pos_mouse, conector)
+            if dist < distancia_minima and dist <= distancia_maxima:
+                distancia_minima = dist
+                punto_cercano = conector
+        return punto_cercano
+
+
+    distancia_maxima = 10
+
+    cableado.dibujar_cables()
     
     # Manejo de eventos
 
@@ -444,6 +506,19 @@ while running:
                 else:
                     screen = pygame.display.set_mode((screen.get_width(), screen.get_height()), pygame.RESIZABLE)
 
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_pos = event.pos
+            conector_cercano = punto_mas_cercano(mouse_pos, conectores, distancia_maxima)
+
+            if conector_cercano:
+                x1, y1 = conector_cercano
+
+                if not cableado.dibujando_cable:
+                    cableado.comienzo_cable((x1, y1))
+                else:
+                    cableado.finalizar_cable((x1, y1))
+
+    cableado.dibujar_cable_actual()
     pygame.display.flip()
     mainClock.tick(60)
 
