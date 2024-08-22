@@ -187,6 +187,12 @@ class Pila:
 
         #Componente negativo (-)
 
+<<<<<<< Updated upstream
+=======
+        pygame.draw.line(screen, (self.color_componentes_pila), (self.pila_x + 20, self.pila_y - 2), (self.pila_x + 20, self.pila_y - 16), 3)
+        pygame.draw.line(screen, (self.color_componentes_pila), (self.pila_x + 20, self.pila_y - 16), (self.pila_x + 30, self.pila_y - 16), 3)
+        pygame.draw.line(screen, (self.color_componentes_pila), (self.pila_x + 30, self.pila_y - 16), (self.pila_x + 30, self.pila_y - 2), 3)
+>>>>>>> Stashed changes
         pygame.draw.line(screen, (self.color_componentes_pila), (self.pila_x + 30, self.pila_y - 2), (self.pila_x + 30, self.pila_y - 16), 3)
         pygame.draw.line(screen, (self.color_componentes_pila), (self.pila_x + 30, self.pila_y - 16), (self.pila_x + 40, self.pila_y - 16), 3)
         pygame.draw.line(screen, (self.color_componentes_pila), (self.pila_x + 40, self.pila_y - 16), (self.pila_x + 40, self.pila_y - 2), 3)
@@ -218,7 +224,10 @@ class Pila:
         pygame.draw.line(screen, (self.color_cuerpo_pila), (self.pila_x + 70, self.pila_y + 15), (self.pila_x + 60, self.pila_y + 15), 2)
         pygame.draw.line(screen, (self.color_cuerpo_pila), (self.pila_x + 65, self.pila_y + 10), (self.pila_x + 65, self.pila_y + 20), 2)
         
+<<<<<<< Updated upstream
         
+=======
+>>>>>>> Stashed changes
 class Menu:
     def __init__(self, x, y):
         self.x = x
@@ -449,6 +458,7 @@ while running:
     menu.dibujar_led(screen)
     menu.dibujar_cable_positivo(screen)
     menu.dibujar_cable_negativo(screen)
+<<<<<<< Updated upstream
 
 
     def distancia(punto1, punto2):
@@ -470,6 +480,8 @@ while running:
     distancia_maxima = 10
 
     cableado.dibujar_cables()
+=======
+>>>>>>> Stashed changes
     
     # Manejo de eventos
 
