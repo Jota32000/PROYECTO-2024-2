@@ -13,9 +13,7 @@ class Conector:
     def dibujar(self, screen):
         for i in range(self.largo):
             pygame.draw.line(screen, self.color, (self.x, self.y + i), (self.x + self.largo, self.y + i))
-
 conectores = []
-
 class Protoboard:
     def __init__(self, x, y):
         self.x = x
@@ -143,7 +141,6 @@ class Protoboard:
                 x_pos = inicio_x + j * separacion_x
                 conector = Conector(x_pos, y_pos+210,conectores)
                 conector.dibujar(screen)
-
 class Pila:
     def __init__(self,pila_x,pila_y):
         self.pila_x = pila_x
@@ -153,6 +150,11 @@ class Pila:
         self.color_componentes_pila = (170, 170, 170)
         self.largo = 750
         self.ancho = 550
+<<<<<<< HEAD
+=======
+        conector_pila1 = Conector(pila_x+65, pila_y-20, conectores)  #positivo
+        conector_pila2 = Conector(pila_x+35, pila_y-20, conectores) #negativo
+>>>>>>> piherina
 
     def dibujarPila(self,screen):
 
@@ -223,6 +225,7 @@ class Pila:
 class Menu:
     def __init__(self, x, y):
         self.x = x
+<<<<<<< HEAD
         self.y = y + 25
         self.ancho = 10
         self.alto = 15
@@ -232,15 +235,25 @@ class Menu:
         self.color_led = (50, 164, 0)
         self.color_switch = (205, 0, 0)     
         self.color_cable = (33, 0, 183)
+=======
+        self.y = y
+        self.l1 = 200  # Ancho
+        self.l2 = 550  # Alto
+        self.color = (63, 129, 166)
+        self.border_color = (0, 0, 0)
+        self.border_thickness = 2
+        self.border_radius = 10  # Ajusta este valor para redondear más o menos las esquinas
+>>>>>>> piherina
 
-        #funcion para el menu de la led
-    def dibujar_menu_led(self, menu):
+        # Definir los rectángulos que representan los botones ocultos
+        self.boton_led_rect = pygame.Rect(self.x + 50, self.y + 50, 100, 100)  # Posición y tamaño del botón oculto del LED
+        self.boton_switch_rect = pygame.Rect(self.x + 50, self.y + 180, 100, 100)  # Posición y tamaño del botón oculto del switch
 
-        pygame.draw.line(screen, (self.color_fondo_led), (self.x + 450, self.y - 100), (self.x + 500, self.y - 100), 3)
-        pygame.draw.line(screen, (self.color_fondo_led), (self.x + 500, self.y - 100), (self.x + 500, self.y - 50), 3)
-        pygame.draw.line(screen, (self.color_fondo_led), (self.x + 500, self.y - 50), (self.x + 450, self.y - 50), 3)
-        pygame.draw.line(screen, (self.color_fondo_led), (self.x + 450, self.y - 50), (self.x + 450, self.y - 100), 3)
+    def dibujar(self, screen):
+        # Dibujar el fondo del rectángulo con esquinas redondeadas
+        pygame.draw.rect(screen, self.color, (self.x, self.y, self.l1, self.l2), border_radius=self.border_radius)
 
+<<<<<<< HEAD
         #Ciclo para rellenar
         for i in range(50):
             pygame.draw.line(screen, (self.color_fondo_led), (self.x + 450, self.y - 100), (self.x + 450 + i, self.y - 50), 3)
@@ -267,15 +280,32 @@ class Menu:
         for i in range(50):
             pygame.draw.line(screen, (self.color_fondo_cable), (self.x + 450, self.y + 100), (self.x + 500, self.y + 100 - i), 3)
             pygame.draw.line(screen, (self.color_fondo_cable), (self.x + 500, self.y + 50), (self.x + 450, self.y + 50 + i), 3)      
+=======
+        # Dibujar el borde del rectángulo con esquinas redondeadas
+        pygame.draw.rect(screen, self.border_color, (self.x, self.y, self.l1, self.l2), self.border_thickness, border_radius=self.border_radius)
 
-    def dibujar_led(self,menu):
-        pygame.draw.line(screen, (self.color_led), (self.x + 470, self.y - 75), (self.x + 470, self.y - 55), 3)        
-        pygame.draw.line(screen, (self.color_led), (self.x + 480, self.y - 75), (self.x + 480, self.y - 55), 3)
-        pygame.draw.line(screen, (self.color_led), (self.x + 460, self.y - 75), (self.x + 490, self.y - 75), 3)
-        pygame.draw.line(screen, (self.color_led), (self.x + 460, self.y - 75), (self.x + 460, self.y - 95), 3)
-        pygame.draw.line(screen, (self.color_led), (self.x + 460, self.y - 95), (self.x + 490, self.y - 95), 3)
-        pygame.draw.line(screen, (self.color_led), (self.x + 490, self.y - 95), (self.x + 490, self.y - 75), 3)
+        # Dibujar los iconos y componentes
+        self.dibujar_icono(screen, self.x + 50, self.y + 50)
+        self.dib_led(screen, self.x + 75, self.y + 65)
+        self.dibujar_icono(screen, self.x + 50, self.y + 180)
+        self.dib_switch(screen, self.x + 80, self.y + 210)
+        self.dibujar_icono(screen, self.x + 50, self.y + 320)
 
+        # Crear superficie para los botones semi-transparentes (para mostrar las áreas donde se puede hacer clic)
+        boton_surface = pygame.Surface((100, 100), pygame.SRCALPHA)  # SRCALPHA para transparencia
+        boton_led_surface = pygame.Surface((100, 100), pygame.SRCALPHA)  # Botón LED
+        boton_switch_surface = pygame.Surface((100, 100), pygame.SRCALPHA)  # Botón Switch
+
+        # Dibujar los botones en sus respectivas superficies
+        self.dibujar_icono(boton_surface, 0, 0)
+        self.dib_led(boton_led_surface, 25, 15)  # Ajusta la posición dentro del botón
+        self.dib_switch(boton_switch_surface, 25, 15)  # Ajusta la posición dentro del botón
+>>>>>>> piherina
+
+        # Blit de las superficies a la pantalla principal
+        screen.blit(boton_led_surface, (self.x + 50, self.y + 50))  # Botón LED en la pantalla
+
+<<<<<<< HEAD
     def dibujar_switch(self,menu):
         pygame.draw.line(screen, (self.color_switch), (self.x + 490, self.y + 20), (self.x + 460, self.y + 20), 3)
         pygame.draw.line(screen, (self.color_switch), (self.x + 460, self.y + 20), (self.x + 460, self.y + 15), 3) 
@@ -347,75 +377,57 @@ def dibujar_e(screen,x,y,alto,ancho,color):
     pygame.draw.line(screen, color, (x, y), ((x + ancho), y), 2)
     pygame.draw.line(screen, color, (x,(y+5)), ((x + ancho), (y + 5)), 2)
     pygame.draw.line(screen, color, (x, (y + alto)), ((x + ancho), (y + alto)), 2)
+=======
 
-def dibujar_f(screen,x,y,alto,ancho,color):
-    pygame.draw.line(screen, color, (x, y), (x, (y + alto)), 2)
-    pygame.draw.line(screen, color, (x, y), ((x + ancho), y), 2)
-    pygame.draw.line(screen, color, (x,(y+5)), ((x + ancho), (y + 5)), 2)
+    def dibujar_icono(self, screen, x, y):
+        color = (39, 174, 96)
+        lado = 100
+        pygame.draw.rect(screen, color, (x, y, lado, lado), border_radius=10)
+        pygame.draw.rect(screen, self.border_color, (x, y, lado, lado), self.border_thickness, border_radius=10)
+>>>>>>> piherina
 
-def dibujar_g(screen,x,y,alto,ancho,color):
-    pygame.draw.line(screen, color, (x, y), (x,( y + alto)), 2)
-    pygame.draw.line(screen, color, (x, y), ((x+ancho), y), 2)
-    pygame.draw.line(screen, color, (x, (y+alto)), ((x+ancho), (y+alto)), 2)
-    pygame.draw.line(screen, color, ((x+ancho), (y+alto)), ((x +ancho), (y+alto-3)), 2)
-    pygame.draw.line(screen,color,((x+ancho),(y+5)),(x+3,(y+5)),2)
+    def dib_led(self, screen, x, y):
+        width = 50  # Ancho del LED
+        height = 35  # Alto del LED
+        color = (199, 9, 9)
+        terminal = 30  # Longitud de los terminales
+        # Dibujar el cuerpo del LED como un rectángulo con esquinas redondeadas
+        pygame.draw.rect(screen, color, (x, y, width, height), border_radius=10)
+        # Dibujar los terminales del LED (líneas)
+        pygame.draw.line(screen, (0, 0, 0), (x + width // 4, y + height), (x + width // 4, y + height + terminal), 2)
+        pygame.draw.line(screen, (0, 0, 0), (x + 3 * width // 4, y + height), (x + 3 * width // 4, y + height + terminal), 2)
 
-def dibujar_h(screen,x,y,alto,ancho,color):
-    pygame.draw.line(screen, color, (x, y), (x, (y + alto)), 2)
-    pygame.draw.line(screen, color, (x,(y+5)), ((x + ancho), (y + 5)), 2)
-    pygame.draw.line(screen, color, (x+ancho, y), (x+ancho, (y + alto)), 2)
+    def dib_switch(self, screen, x, y):
+        size = 40  # Tamaño del switch (cuadrado)
+        pin_length = 20  # Longitud de los pines
+        body_color = (150, 150, 150)
+        pin_color = (0, 0, 0)
+        circle_radius = 10  # Radio del "círculo" en el medio
+        pygame.draw.rect(screen, body_color, (x, y, size, size))
+        # Dibujar los pines del switch (líneas)
+        pygame.draw.line(screen, pin_color, (x, y + size // 2), (x - pin_length, y + size // 2), 3)
+        pygame.draw.line(screen, pin_color, (x + size, y + size // 2), (x + size + pin_length, y + size // 2), 3)
+        # Dibujar el "círculo" en el centro
+        for angle in range(0, 360, 10):
+            start_x = x + size // 2
+            start_y = y + size // 2
+            end_x = start_x + int(circle_radius * math.cos(math.radians(angle)))
+            end_y = start_y + int(circle_radius * math.sin(math.radians(angle)))
+            pygame.draw.line(screen, (0, 0, 0), (start_x, start_y), (end_x, end_y), 2)
 
-def dibujar_i(screen,x,y,alto,ancho,color):
-    pygame.draw.line(screen, color, ((x+(ancho//2)), y), ((x+(ancho//2)), (y + alto)), 2)
-    pygame.draw.line(screen, color, (x, y), ((x + ancho), y), 2)
-    pygame.draw.line(screen, color, (x, (y + alto)), ((x + ancho), (y + alto)), 2)
+    def manejar_eventos(self, event):
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            pos = pygame.mouse.get_pos()
+            if self.boton_led_rect.collidepoint(pos):
+                self.accion_boton_led()
+            elif self.boton_switch_rect.collidepoint(pos):
+                self.accion_boton_switch()
 
-def dibujar_j(screen,x,y,alto,ancho,color):
-    pygame.draw.line(screen, color, ((x+(ancho//2)), y), ((x+(ancho//2)), (y + alto)), 2)
-    pygame.draw.line(screen, color, (x, y), ((x + ancho), y), 2)
-    pygame.draw.line(screen, color, (x, (y + alto)), ((x + ancho//2), (y + alto)), 2)
+    def accion_boton_led(self):
+        print("Botón LED presionado")
 
-def dibujar_mas(screen,x,y,alto,color):
-    pygame.draw.line(screen,color,(x,y),(x+alto,y),2)
-    pygame.draw.line(screen,color,(x+5,y-5),(x+5,y+5),2)
-def dibujar_menos(screen,x,y,color):
-    pygame.draw.line(screen, color, (x + 5, y - 5), (x + 5, y + 5), 2)
-
-def dibujar_1(screen,x,y,alto,color):
-    pygame.draw.line(screen,color,(x,y),(x+5,y+10),2)
-    pygame.draw.line(screen,color,(x,y),(x+alto,y),2)
-
-def dibujar_2(screen,x,y,alto,color):
-    pygame.draw.line(screen,color,(x,y),(x,y+alto),2)
-    pygame.draw.line(screen,color,(x,y),(x+5,y),2)
-    pygame.draw.line(screen, color, (x+5, y), (x + 5, y+alto), 2)
-    pygame.draw.line(screen, color, (x+5, y+alto), (x +alto, y+alto), 2)
-    pygame.draw.line(screen, color, (x+alto, y+alto), (x+alto,y), 2)
-
-def dibujar_3(screen,x,y,alto,color):
-    pygame.draw.line(screen, color, (x, y), (x +alto, y), 2)
-    pygame.draw.line(screen, color, (x, y), (x,y+alto), 2)
-    pygame.draw.line(screen, color, (x+5, y), (x + 5, y+alto), 2)
-    pygame.draw.line(screen, color, (x+alto, y+alto), (x+alto, y), 2)
-
-def dibujar_4(screen,x,y,alto,color):
-    pygame.draw.line(screen, color, (x, y), (x + alto, y), 2)
-    pygame.draw.line(screen, color, (x + 5, y), (x + 5, y + alto), 2)
-    pygame.draw.line(screen, color, (x, y), (x + 5, y+alto), 2)
-
-def dibujar_5(screen,x,y,alto,color):
-    pygame.draw.line(screen, color, (x, y), (x, y + alto), 2)
-    pygame.draw.line(screen, color, (x, y+alto), (x+5, y + alto), 2)
-    pygame.draw.line(screen, color, (x + 5, y), (x + 5, y + alto), 2)
-    pygame.draw.line(screen, color, (x + 5, y), (x +alto, y ), 2)
-    pygame.draw.line(screen, color, (x + alto, y + alto), (x + alto, y), 2)
-
-def dibujar_0(screen,x,y,alto,color):
-    pygame.draw.line(screen, color, (x, y), (x, y + alto), 2)
-    pygame.draw.line(screen, color, (x, y + alto), (x + alto, y + alto), 2)
-    pygame.draw.line(screen, color, (x + alto, y+alto), (x + alto, y ), 2)
-    pygame.draw.line(screen, color, (x, y), (x+alto, y), 2)
-
+    def accion_boton_switch(self):
+        print("Botón Switch presionado")
 class Cableado:
     def __init__(self):
         self.dibujando_cable = False
@@ -448,16 +460,163 @@ class Cableado:
             current_pos = pygame.mouse.get_pos()
             pygame.draw.line(screen, "black", self.inicio_cable, current_pos, 3)
 
-
+def dibujar_a(screen, x, y,ancho,alto,color):
+    pygame.draw.line(screen, color, (x, y + alto), (x + ancho // 2, y), 2)  # Línea diagonal izquierda
+    pygame.draw.line(screen, color, (x + ancho // 2, y), (x + ancho, y + alto), 2)  # Línea diagonal derecha
+    pygame.draw.line(screen, color, (x + ancho // 4, y + alto // 2), (x + ancho - ancho // 4, y + alto // 2),2)  # Barra horizontal
+def dibujar_b(screen,x,y,alto,color):
+    pygame.draw.line(screen, color, (x, y), (x, y + alto), 2)
+    pygame.draw.line(screen, color, (x, y), ((x + alto // 2), y), 2)
+    pygame.draw.line(screen, color, ((x + alto // 2), y), ((x + alto // 2), (y + ((alto // 2)-3))), 2)
+    pygame.draw.line(screen, color, (x+alto//2, (y + ((alto // 2)-3))), ((x), (y + ((alto // 2)-3))), 2)
+    pygame.draw.line(screen, color, (x, (y + alto)), ((x + alto//2), (y + alto)), 2)
+    pygame.draw.line(screen, color, ((x + alto//2), (y+alto)), ((x + alto//2), (y+(alto//2))), 2)
+    pygame.draw.line(screen,color,((x + alto//2), (y+(alto//2))),(x,y+alto//2),2)
+def dibujar_c(screen,x,y,alto,ancho,color):
+    pygame.draw.line(screen, color, (x, y), (x,( y + alto)), 2)
+    pygame.draw.line(screen, color, (x, y), ((x+ancho), y), 2)
+    pygame.draw.line(screen, color, ((x+ancho), y), ((x +ancho), (y+(alto//3))), 2)
+    pygame.draw.line(screen, color, (x, (y+alto)), ((x+ancho), (y+alto)), 2)
+    pygame.draw.line(screen, color, ((x+ancho), (y+alto)), ((x +ancho), (y+alto-(alto//3))), 2)
+def dibujar_d(screen,x,y,alto,ancho,color):
+    pygame.draw.line(screen, color, (x, y), (x, (y + alto)), 2)
+    pygame.draw.line(screen, color, (x, y), (x+alto//5,y), 2)
+    pygame.draw.line(screen, color, (x+alto//5 , y), (x + ancho, y + alto), 2)
+    pygame.draw.line(screen, color, (x,(y+alto)), (x + ancho, y + alto), 2)
+def dibujar_e(screen,x,y,alto,ancho,color):
+    pygame.draw.line(screen, color, (x, y), (x, (y + alto)), 2)
+    pygame.draw.line(screen, color, (x, y), ((x + ancho), y), 2)
+    pygame.draw.line(screen, color, (x,(y+(alto//2))), ((x + ancho), (y + alto//2)), 2)
+    pygame.draw.line(screen, color, (x, (y + alto)), ((x + ancho), (y + alto)), 2)
+def dibujar_f(screen,x,y,alto,ancho,color):
+    pygame.draw.line(screen, color, (x, y), (x, (y + alto)), 2)
+    pygame.draw.line(screen, color, (x, y), ((x + ancho), y), 2)
+    pygame.draw.line(screen, color, (x,(y+alto//2)), ((x + ancho), (y + alto//2)), 2)
+def dibujar_g(screen,x,y,alto,ancho,color):
+    pygame.draw.line(screen, color, (x, y), (x,( y + alto)), 2)
+    pygame.draw.line(screen, color, (x, y), ((x+ancho), y), 2)
+    pygame.draw.line(screen, color, (x, (y+alto)), ((x+ancho), (y+alto)), 2)
+    pygame.draw.line(screen, color, ((x+ancho), (y+alto)), ((x +ancho), (y+alto-alto//3)), 2)
+    pygame.draw.line(screen,color,((x+ancho),(y+alto//2)),(x+alto//3,(y+alto//2)),2)
+def dibujar_h(screen,x,y,alto,ancho,color):
+    pygame.draw.line(screen, color, (x, y), (x, (y + alto)), 2)
+    pygame.draw.line(screen, color, (x,(y+alto//2)), ((x + ancho), (y + alto//2)), 2)
+    pygame.draw.line(screen, color, (x+ancho, y), (x+ancho, (y + alto)), 2)
+def dibujar_i(screen,x,y,alto,ancho,color):
+    pygame.draw.line(screen, color, ((x+(ancho//2)), y), ((x+(ancho//2)), (y + alto)), 2)
+    pygame.draw.line(screen, color, (x, y), ((x + ancho), y), 2)
+    pygame.draw.line(screen, color, (x, (y + alto)), ((x + ancho), (y + alto)), 2)
+def dibujar_j(screen,x,y,alto,ancho,color):
+    pygame.draw.line(screen, color, ((x+(ancho//2)), y), ((x+(ancho//2)), (y + alto)), 2)
+    pygame.draw.line(screen, color, (x, y), ((x + ancho), y), 2)
+    pygame.draw.line(screen, color, (x, (y + alto)), ((x + ancho//2), (y + alto)), 2)
+def dibujar_l(screen,x,y,alto,color):
+    pygame.draw.line(screen,color,(x,y),(x,y+alto),2)
+    pygame.draw.line(screen,color,(x,y+alto),(x+alto//2,y+alto),2)
+def dibujar_m(screen,x,y,alto,color):
+    pygame.draw.line(screen,color,(x,y),(x,y+alto),2)
+    pygame.draw.line(screen,color,(x,y),(x+alto//2,y+alto//2),2)
+    pygame.draw.line(screen,color,(x+alto//2,y+alto//2),(x+alto,y),2)
+    pygame.draw.line(screen,color,(x+alto,y),(x+alto,y+alto),2)
+def dibujar_n(screen,x,y,alto,color):
+    pygame.draw.line(screen, color, (x, y), (x, y + alto), 2)
+    pygame.draw.line(screen, color, (x, y), (x + alto//2, y + alto), 2)
+    pygame.draw.line(screen, color, (x + alto//2, y + alto), (x + alto//2, y), 2)
+def dibujar_o(screen,x,y,alto,color):
+    pygame.draw.line(screen,color,(x,y),(x+alto//2,y),2)
+    pygame.draw.line(screen,color,(x+alto//2,y),(x+alto//2,y+alto),2)
+    pygame.draw.line(screen,color,(x+alto//2,y+alto),(x,y+alto),2)
+    pygame.draw.line(screen,color,(x,y+alto),(x,y),2)
+def dibujar_p(screen,x,y,alto,color):
+    pygame.draw.line(screen, color, (x, y), (x, y + alto), 2)
+    pygame.draw.line(screen,color,(x,y),((x+alto//2),y),2)
+    pygame.draw.line(screen,color,((x+alto//2),y),((x+alto//2),(y+(alto//2))),2)
+    pygame.draw.line(screen, color, (x, (y+(alto//2))), ((x + alto//2), (y+(alto//2))), 2)
+def dibujar_q(screen,x,y,alto,color):
+    pygame.draw.line(screen,color,(x,y),(x+alto//2,y),2)
+    pygame.draw.line(screen,color,(x+alto//2,y),(x+alto//2,y+alto),2)
+    pygame.draw.line(screen,color,(x+alto//2,y+alto),(x,y+alto),2)
+    pygame.draw.line(screen,color,(x,y+alto),(x,y),2)
+    pygame.draw.line(screen,color,(x+alto//4,y+alto//2),(x+alto-4,y+alto),3)
+def dibujar_r(screen,x,y,alto,color):
+    pygame.draw.line(screen, color, (x, y), (x, y + alto), 2)
+    pygame.draw.line(screen,color,(x,y),((x+alto//2),y),2)
+    pygame.draw.line(screen,color,((x+alto//2),y),((x+alto//2),(y+(alto//2))),2)
+    pygame.draw.line(screen, color, (x, (y+(alto//2))), ((x + alto//2), (y+(alto//2))), 2)
+    pygame.draw.line(screen,color,(x, (y+(alto//2))),(x+alto//2,y+alto),3)
+def dibujar_s(screen,x,y,alto,color):
+    pygame.draw.line(screen,color,(x,y),(x+alto//2,y),2)
+    pygame.draw.line(screen,color,(x+alto//2,y),(x+alto//2,y+alto//4),2)
+    pygame.draw.line(screen,color,(x,y),(x,y+alto//2),2)
+    pygame.draw.line(screen,color,(x,y+alto//2),(x+alto//2,y+alto//2),2)
+    pygame.draw.line(screen,color,(x+alto//2,y+alto//2),(x+alto//2,y+alto),2)
+    pygame.draw.line(screen,color,(x+alto//2,y+alto),(x,y+alto),2)
+def dibujar_t(screen,x,y,alto,ancho,color):
+    pygame.draw.line(screen, color, ((x+(ancho//2)), y), ((x+(ancho//2)), (y + alto)), 2)
+    pygame.draw.line(screen, color, (x, y), ((x + ancho), y), 2)
+def dibujar_u(screen,x,y,alto,color):
+    pygame.draw.line(screen,color,(x+alto//2,y),(x+alto//2,y+alto),2)
+    pygame.draw.line(screen,color,(x+alto//2,y+alto),(x,y+alto),2)
+    pygame.draw.line(screen,color,(x,y+alto),(x,y),2)
+def dibujar_v(screen,x,y,alto,color):
+    pygame.draw.line(screen,color,(x,y),(x+alto/4,y+alto),2)
+    pygame.draw.line(screen,color,(x+alto//4,y+alto),(x+alto//2,y),2)
+def dibujar_x(screen,x,y,alto,color):
+    pygame.draw.line(screen, color, (x, y), (x + alto //2, y + alto), 2)
+    pygame.draw.line(screen,color,(x+alto//2,y),(x,y+alto),2)
+def dibujar_y(screen,x,y,alto,color):
+    pygame.draw.line(screen, color, (x, y), (x + alto //4, y + alto//2), 2)
+    pygame.draw.line(screen,color,(x+alto//2,y),(x,y+alto),2)
+def dibujar_mas(screen,x,y,alto,color):
+    pygame.draw.line(screen,color,(x,y),(x+alto,y),2)
+    pygame.draw.line(screen,color,(x+5,y-5),(x+5,y+5),2)
+def dibujar_menos(screen,x,y,color):
+    pygame.draw.line(screen, color, (x + 5, y - 5), (x + 5, y + 5), 2)
+def dibujar_1(screen,x,y,alto,color):
+    pygame.draw.line(screen,color,(x,y),(x+5,y+10),2)
+    pygame.draw.line(screen,color,(x,y),(x+alto,y),2)
+def dibujar_2(screen,x,y,alto,color):
+    pygame.draw.line(screen,color,(x,y),(x,y+alto),2)
+    pygame.draw.line(screen,color,(x,y),(x+5,y),2)
+    pygame.draw.line(screen, color, (x+5, y), (x + 5, y+alto), 2)
+    pygame.draw.line(screen, color, (x+5, y+alto), (x +alto, y+alto), 2)
+    pygame.draw.line(screen, color, (x+alto, y+alto), (x+alto,y), 2)
+def dibujar_3(screen,x,y,alto,color):
+    pygame.draw.line(screen, color, (x, y), (x +alto, y), 2)
+    pygame.draw.line(screen, color, (x, y), (x,y+alto), 2)
+    pygame.draw.line(screen, color, (x+5, y), (x + 5, y+alto), 2)
+    pygame.draw.line(screen, color, (x+alto, y+alto), (x+alto, y), 2)
+def dibujar_4(screen,x,y,alto,color):
+    pygame.draw.line(screen, color, (x, y), (x + alto, y), 2)
+    pygame.draw.line(screen, color, (x + 5, y), (x + 5, y + alto), 2)
+    pygame.draw.line(screen, color, (x, y), (x + 5, y+alto), 2)
+def dibujar_5(screen,x,y,alto,color):
+    pygame.draw.line(screen, color, (x, y), (x, y + alto), 2)
+    pygame.draw.line(screen, color, (x, y+alto), (x+5, y + alto), 2)
+    pygame.draw.line(screen, color, (x + 5, y), (x + 5, y + alto), 2)
+    pygame.draw.line(screen, color, (x + 5, y), (x +alto, y ), 2)
+    pygame.draw.line(screen, color, (x + alto, y + alto), (x + alto, y), 2)
+def dibujar_0(screen,x,y,alto,color):
+    pygame.draw.line(screen, color, (x, y), (x, y + alto), 2)
+    pygame.draw.line(screen, color, (x, y + alto), (x + alto, y + alto), 2)
+    pygame.draw.line(screen, color, (x + alto, y+alto), (x + alto, y ), 2)
+    pygame.draw.line(screen, color, (x, y), (x+alto, y), 2)
 
 #Main
 pygame.init()
 
-#medidas de la protoboard
-screen_width = 950
-screen_height = 600
+# Obtener el tamaño de la pantalla
+screen_info = pygame.display.Info()
+screen_width = screen_info.current_w
+screen_height = screen_info.current_h
 
-screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)
+# Configurar la pantalla en un tamaño
+window_width = int(screen_width * 0.98)
+window_height = int(screen_height * 0.94)
+
+# Crear la ventana con el tamaño ajustado
+screen = pygame.display.set_mode((window_width, window_height))
+
 pygame.display.set_caption("Protoboard")
 mainClock = pygame.time.Clock()
 monitor_size = [pygame.display.Info().current_w, pygame.display.Info().current_h]
@@ -480,13 +639,14 @@ while running:
 
     # Crear y dibujar Pila
 
-    x_pila = (screen.get_width() - 1150) // 2
+    x_pila = (screen.get_width() - 950) // 2
     y_pila = (screen.get_height() - 150) // 2
 
     pila = Pila(x_pila, y_pila)
     pila.dibujarPila(screen)
 
     # Crear y dibujar Menu
+<<<<<<< HEAD
 
     x_menu = (screen.get_width() - 200) // 2
     y_menu = (screen.get_height() - 40) // 2
@@ -499,6 +659,12 @@ while running:
     menu.dibujar_led(screen)
     menu.dibujar_switch(screen)
     menu.animacion(screen)
+=======
+    menu = Menu(980, 80)
+    menu.dibujar(screen)
+    clock = pygame.time.Clock()
+
+>>>>>>> piherina
 
     def distancia(punto1, punto2):
         return math.sqrt((punto1[0] - punto2[0]) ** 2 + (punto1[1] - punto2[1]) ** 2)
@@ -520,6 +686,7 @@ while running:
     cableado.dibujar_cables()
 
     # Manejo de eventos
+
 
     for event in pygame.event.get():
 
@@ -551,6 +718,11 @@ while running:
                     cableado.comienzo_cable((x1, y1))
                 else:
                     cableado.finalizar_cable((x1, y1))
+
+        if event.type == pygame.QUIT:
+            running = False
+        menu.manejar_eventos(event)
+
 
     cableado.dibujar_cable_actual()
     pygame.display.flip()
