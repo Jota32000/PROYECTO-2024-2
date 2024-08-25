@@ -3,7 +3,7 @@ import math
 from pygame.locals import *
 
 class Conector:
-    def __init__(self, x, y, lista_conectores):  # agrege lista conectores
+    def __init__(self, x, y, lista_conectores):  # agrega lista conectores
         self.x = x
         self.y = y
         self.largo = 5
@@ -150,11 +150,8 @@ class Pila:
         self.color_componentes_pila = (170, 170, 170)
         self.largo = 750
         self.ancho = 550
-<<<<<<< HEAD
-=======
         conector_pila1 = Conector(pila_x+65, pila_y-20, conectores)  #positivo
         conector_pila2 = Conector(pila_x+35, pila_y-20, conectores) #negativo
->>>>>>> piherina
 
     def dibujarPila(self,screen):
 
@@ -224,26 +221,14 @@ class Pila:
 
 class Menu:
     def __init__(self, x, y):
-        self.x = x
-<<<<<<< HEAD
-        self.y = y + 25
-        self.ancho = 10
-        self.alto = 15
-        self.color_fondo_led = (66, 214, 2)
-        self.color_fondo_switch = (255, 44, 44)     
-        self.color_fondo_cable = (0, 90, 247)
-        self.color_led = (50, 164, 0)
-        self.color_switch = (205, 0, 0)     
-        self.color_cable = (33, 0, 183)
-=======
-        self.y = y
+        self.x = x + 150
+        self.y = y + 50
         self.l1 = 200  # Ancho
         self.l2 = 550  # Alto
         self.color = (63, 129, 166)
         self.border_color = (0, 0, 0)
         self.border_thickness = 2
         self.border_radius = 10  # Ajusta este valor para redondear más o menos las esquinas
->>>>>>> piherina
 
         # Definir los rectángulos que representan los botones ocultos
         self.boton_led_rect = pygame.Rect(self.x + 50, self.y + 50, 100, 100)  # Posición y tamaño del botón oculto del LED
@@ -253,34 +238,6 @@ class Menu:
         # Dibujar el fondo del rectángulo con esquinas redondeadas
         pygame.draw.rect(screen, self.color, (self.x, self.y, self.l1, self.l2), border_radius=self.border_radius)
 
-<<<<<<< HEAD
-        #Ciclo para rellenar
-        for i in range(50):
-            pygame.draw.line(screen, (self.color_fondo_led), (self.x + 450, self.y - 100), (self.x + 450 + i, self.y - 50), 3)
-            pygame.draw.line(screen, (self.color_fondo_led), (self.x + 500, self.y - 50), (self.x + 500 - i, self.y - 100), 3)
-
-    def dibujar_menu_switch(self,menu):
-        pygame.draw.line(screen, (self.color_fondo_switch), (self.x + 450, self.y - 25), (self.x + 500, self.y - 25), 3)
-        pygame.draw.line(screen, (self.color_fondo_switch), (self.x + 500, self.y - 25), (self.x + 500, self.y + 25), 3)
-        pygame.draw.line(screen, (self.color_fondo_switch), (self.x + 500, self.y + 25), (self.x + 450, self.y + 25), 3)
-        pygame.draw.line(screen, (self.color_fondo_switch), (self.x + 450, self.y + 25), (self.x + 450, self.y - 25), 3)
-
-        #Ciclo para rellenar
-        for i in range(50):
-            pygame.draw.line(screen, (self.color_fondo_switch), (self.x + 450, self.y + 25), (self.x + 500, self.y + 25 - i), 3)
-            pygame.draw.line(screen, (self.color_fondo_switch), (self.x + 500, self.y - 25), (self.x + 450, self.y - 25 + i), 3)
-
-    def dibujar_menu_cable(self,menu):
-        pygame.draw.line(screen, (self.color_fondo_cable), (self.x + 450, self.y + 50), (self.x + 500, self.y + 50), 3)
-        pygame.draw.line(screen, (self.color_fondo_cable), (self.x + 500, self.y + 50), (self.x + 500, self.y + 100), 3)
-        pygame.draw.line(screen, (self.color_fondo_cable), (self.x + 500, self.y + 100), (self.x + 450, self.y + 100), 3)
-        pygame.draw.line(screen, (self.color_fondo_cable), (self.x + 450, self.y + 100), (self.x + 450, self.y + 50), 3)
-
-        #Ciclo para rellenar
-        for i in range(50):
-            pygame.draw.line(screen, (self.color_fondo_cable), (self.x + 450, self.y + 100), (self.x + 500, self.y + 100 - i), 3)
-            pygame.draw.line(screen, (self.color_fondo_cable), (self.x + 500, self.y + 50), (self.x + 450, self.y + 50 + i), 3)      
-=======
         # Dibujar el borde del rectángulo con esquinas redondeadas
         pygame.draw.rect(screen, self.border_color, (self.x, self.y, self.l1, self.l2), self.border_thickness, border_radius=self.border_radius)
 
@@ -300,91 +257,16 @@ class Menu:
         self.dibujar_icono(boton_surface, 0, 0)
         self.dib_led(boton_led_surface, 25, 15)  # Ajusta la posición dentro del botón
         self.dib_switch(boton_switch_surface, 25, 15)  # Ajusta la posición dentro del botón
->>>>>>> piherina
 
         # Blit de las superficies a la pantalla principal
         screen.blit(boton_led_surface, (self.x + 50, self.y + 50))  # Botón LED en la pantalla
 
-<<<<<<< HEAD
-    def dibujar_switch(self,menu):
-        pygame.draw.line(screen, (self.color_switch), (self.x + 490, self.y + 20), (self.x + 460, self.y + 20), 3)
-        pygame.draw.line(screen, (self.color_switch), (self.x + 460, self.y + 20), (self.x + 460, self.y + 15), 3) 
-        pygame.draw.line(screen, (self.color_switch), (self.x + 460, self.y + 15), (self.x + 455, self.y + 15), 3)
-        pygame.draw.line(screen, (self.color_switch), (self.x + 455, self.y + 15), (self.x + 455, self.y - 15), 3)
-        pygame.draw.line(screen, (self.color_switch), (self.x + 455, self.y - 15), (self.x + 460, self.y - 15), 3)
-        pygame.draw.line(screen, (self.color_switch), (self.x + 460, self.y - 15), (self.x + 460, self.y - 20), 3)
-        pygame.draw.line(screen, (self.color_switch), (self.x + 460, self.y - 20), (self.x + 490, self.y - 20), 3)
-        pygame.draw.line(screen, (self.color_switch), (self.x + 490, self.y - 20), (self.x + 490, self.y - 15), 3)
-        pygame.draw.line(screen, (self.color_switch), (self.x + 490, self.y - 15), (self.x + 495, self.y - 15), 3)
-        pygame.draw.line(screen, (self.color_switch), (self.x + 495, self.y - 15), (self.x + 495, self.y + 15), 3)
-        pygame.draw.line(screen, (self.color_switch), (self.x + 495, self.y + 15), (self.x + 490, self.y + 15), 3)
-        pygame.draw.line(screen, (self.color_switch), (self.x + 490, self.y + 15), (self.x + 490, self.y + 20), 3)
-
-
-    def dibujar_cable(self,menu):
-        pygame.draw.line(screen, (self.color_cable), (self.x + 490, self.y + 75), (self.x + 460, self.y + 75), 6)
-
-    def animacion(self,menu):
-
-        posicion_mouse = pygame.mouse.get_pos()
-        area_x_rect_1, area_y_rect_1 = self.x + 450, self.y - 100 
-        area_x_rect_2, area_y_rect_2 = self.x + 450, self.y - 25
-        area_x_rect_3, area_y_rect_3 = self.x + 450, self.y + 50                                            
-        ancho,alto = 50, 50
-        
-        if (area_x_rect_1 <= posicion_mouse[0] <= area_x_rect_1 + ancho and
-        area_y_rect_1 <= posicion_mouse[1] <= area_y_rect_1 + alto):
-            pygame.draw.line(screen, self.color_led, (self.x + 580 , self.y - 85), (self.x + 550 , self.y - 75), 3)
-            pygame.draw.line(screen, self.color_led, (self.x + 550 , self.y - 75), (self.x + 600 , self.y - 75), 3)
-            pygame.draw.line(screen, self.color_led, (self.x + 580 , self.y - 65), (self.x + 550 , self.y - 75), 3)
-
-        if (area_x_rect_2 <= posicion_mouse[0] <= area_x_rect_2 + ancho and
-        area_y_rect_2 <= posicion_mouse[1] <= area_y_rect_2 + alto):
-            pygame.draw.line(screen, self.color_switch, (self.x + 580 , self.y - 10), (self.x + 550 , self.y ), 3)
-            pygame.draw.line(screen, self.color_switch, (self.x + 550 , self.y), (self.x + 600 , self.y), 3)
-            pygame.draw.line(screen, self.color_switch, (self.x + 580 , self.y + 10), (self.x + 550 , self.y), 3)
-
-        if (area_x_rect_3 <= posicion_mouse[0] <= area_x_rect_3 + ancho and
-        area_y_rect_3 <= posicion_mouse[1] <= area_y_rect_3 + alto):
-            pygame.draw.line(screen, self.color_cable, (self.x + 580, self.y + 85), (self.x + 550, self.y + 75), 3)
-            pygame.draw.line(screen, self.color_cable, (self.x + 550, self.y + 75), (self.x + 600, self.y + 75), 3)
-            pygame.draw.line(screen, self.color_cable, (self.x + 580, self.y + 65), (self.x + 550, self.y + 75), 3)
-
-def dibujar_a(screen, x, y,ancho,alto,color):
-    pygame.draw.line(screen, color, (x, y + alto), (x + ancho // 2, y), 2)  # Línea diagonal izquierda
-    pygame.draw.line(screen, color, (x + ancho // 2, y), (x + ancho, y + alto), 2)  # Línea diagonal derecha
-    pygame.draw.line(screen, color, (x + ancho // 4, y + alto // 2), (x + ancho - ancho // 4, y + alto // 2),2)  # Barra horizontal
-def dibujar_b(screen,x,y,alto,color):
-    pygame.draw.line(screen, color, (x, y), (x, y + alto), 2)
-    pygame.draw.line(screen,color,(x,y),((x+10),y),2)
-    pygame.draw.line(screen,color,((x+10),y),((x+10),(y+4)),2)
-    pygame.draw.line(screen, color, (x, (y+4)), ((x + 10), (y+4)), 2)
-    pygame.draw.line(screen, color, (x, (y + alto)), ((x + 10), (y + alto)), 2)
-    pygame.draw.line(screen, color, ((x + 10), (y+alto)), ((x + 10), (y+6)), 2)
-def dibujar_c(screen,x,y,alto,ancho,color):
-    pygame.draw.line(screen, color, (x, y), (x,( y + alto)), 2)
-    pygame.draw.line(screen, color, (x, y), ((x+ancho), y), 2)
-    pygame.draw.line(screen, color, ((x+ancho), y), ((x +ancho), (y+3)), 2)
-    pygame.draw.line(screen, color, (x, (y+alto)), ((x+ancho), (y+alto)), 2)
-    pygame.draw.line(screen, color, ((x+ancho), (y+alto)), ((x +ancho), (y+alto-3)), 2)
-def dibujar_d(screen,x,y,alto,ancho,color):
-    pygame.draw.line(screen, color, (x, y), (x, (y + alto)), 2)
-    pygame.draw.line(screen, color, (x, y), (x+2,y), 2)
-    pygame.draw.line(screen, color, (x+2 , y), (x + ancho, y + alto), 2)
-    pygame.draw.line(screen, color, (x,(y+alto)), (x + ancho, y + alto), 2)
-def dibujar_e(screen,x,y,alto,ancho,color):
-    pygame.draw.line(screen, color, (x, y), (x, (y + alto)), 2)
-    pygame.draw.line(screen, color, (x, y), ((x + ancho), y), 2)
-    pygame.draw.line(screen, color, (x,(y+5)), ((x + ancho), (y + 5)), 2)
-    pygame.draw.line(screen, color, (x, (y + alto)), ((x + ancho), (y + alto)), 2)
-=======
 
     def dibujar_icono(self, screen, x, y):
         color = (39, 174, 96)
         lado = 100
         pygame.draw.rect(screen, color, (x, y, lado, lado), border_radius=10)
         pygame.draw.rect(screen, self.border_color, (x, y, lado, lado), self.border_thickness, border_radius=10)
->>>>>>> piherina
 
     def dib_led(self, screen, x, y):
         width = 50  # Ancho del LED
@@ -415,38 +297,96 @@ def dibujar_e(screen,x,y,alto,ancho,color):
             end_y = start_y + int(circle_radius * math.sin(math.radians(angle)))
             pygame.draw.line(screen, (0, 0, 0), (start_x, start_y), (end_x, end_y), 2)
 
-    def manejar_eventos(self, event):
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            pos = pygame.mouse.get_pos()
-            if self.boton_led_rect.collidepoint(pos):
-                self.accion_boton_led()
-            elif self.boton_switch_rect.collidepoint(pos):
-                self.accion_boton_switch()
+    def manejar_eventos(self, event,interruptor):
+         ################################################################
+         ##     Esto hay que revisarlo eventualmente en el futuro      ##
+         ################################################################
 
-    def accion_boton_led(self):
-        print("Botón LED presionado")
+         if event.type == pygame.MOUSEBUTTONDOWN:
+            distancia = ((event.pos[0] - 1225)**2 + (event.pos[1] - 225)**2) ** 0.5
+            if distancia <= 55:
+                interruptor = not interruptor
+                print("Botón LED presionado")
+            return interruptor
 
-    def accion_boton_switch(self):
-        print("Botón Switch presionado")
+    def dibujar_flecha(self,interruptor,x,y):
+        line_color =  (39, 174, 96) if interruptor else "white"
+        pygame.draw.line(screen, line_color, (x, y), (x + 100, y), 6)
+        pygame.draw.line(screen, line_color, (x + 25, y + 25), (x, y), 6)
+        pygame.draw.line(screen, line_color, (x + 25, y - 25), (x, y), 6)
+
 class Cableado:
     def __init__(self):
         self.dibujando_cable = False
         self.inicio_cable = None
         self.cables = []
+        self.led_medio = []
+        self.led = []
+        self.switch = []
+        self.switch_medio = []
 
     def dibujar_cables(self):
+        segmento = 360
+        #(cable[0] = x, cable[1] = y) 
         for cable in self.cables:
-            pygame.draw.line(screen,"black", cable[0], cable[1], 3)
+            pygame.draw.line(screen,"black", cable[0], cable[1], 3) 
+        if self.led != 0:
+            for cable in self.led:
+                pygame.draw.line(screen,"black", cable[0], cable[1], 3)
+            for cable in self.led_medio:
+                for i in range(segmento):
+                    theta = (2 * math.pi) * (i / segmento)
+                    x = cable[0] + 3 * math.cos(theta)
+                    y = cable[1] + 3 * math.sin(theta)
+                    pygame.draw.line(screen, "red", cable, (x, y), 3)
+
+        if self.switch!= 0:
+            for cable in self.switch:
+                pygame.draw.line(screen,"black", cable[0], cable[1], 3)
+            for cable in self.switch_medio:
+
+                pygame.draw.line(screen, (95, 95, 95), (cable[0] - 5, cable[1] + 5), (cable[0] + 5 , cable[1] + 5))
+                pygame.draw.line(screen, (95, 95, 95), (cable[0] + 5, cable[1] + 5), (cable[0] + 5 , cable[1] - 5))
+                pygame.draw.line(screen, (95, 95, 95), (cable[0] + 5, cable[1] - 5), (cable[0] - 5 , cable[1] - 5))
+                pygame.draw.line(screen, (95, 95, 95), (cable[0] - 5, cable[1] - 5), (cable[0] - 5 , cable[1] + 5))
+
+                for i in range(10):
+                    pygame.draw.line(screen, (95,95,95), (cable[0] - 5, cable[1] - 5), (cable[0] - 5 + i, cable[1] + 5))
+                    pygame.draw.line(screen, (95,95,95), (cable[0] + 5, cable[1] + 5), (cable[0] + 5 - i, cable[1] - 5))
+                    
+                for i in range(segmento):
+                    theta = (2 * math.pi) * (i / segmento)
+                    x = cable[0] + 3 * math.cos(theta)
+                    y = cable[1] + 3 * math.sin(theta)
+                    pygame.draw.line(screen, "black", cable, (x, y), 2)
+        
 
     def comienzo_cable(self, anclaje):
         self.inicio_cable = anclaje
         self.dibujando_cable = True
 
     def finalizar_cable(self, anclaje):
-        if not self.quitar_cable(self.inicio_cable, anclaje):
+        if not self.quitar_cable(self.inicio_cable, anclaje) and interruptor == False and interruptor2 == False:
             self.cables.append((self.inicio_cable, anclaje))
+            
+        elif not self.quitar_cable(self.inicio_cable, anclaje) and interruptor == True and interruptor2 == False:
+            self.led.append((self.inicio_cable, anclaje))
+            x1 = (self.led[len(self.led) - 1][0][0] + self.led[len(self.led) - 1][1][0]) // 2
+            y1 = (self.led[len(self.led) - 1][0][1] + self.led[len(self.led) - 1][1][1]) // 2
+            anclaje = (x1,y1)
+            self.led_medio.append(anclaje)
+        else:
+            self.switch.append((self.inicio_cable, anclaje))
+            x1 = (self.switch[len(self.switch) - 1][0][0] + self.switch[len(self.switch) - 1][1][0]) // 2
+            y1 = (self.switch[len(self.switch) - 1][0][1] + self.switch[len(self.switch) - 1][1][1]) // 2
+            anclaje = (x1,y1)
+            self.switch_medio.append(anclaje)
+
         self.dibujando_cable = False
         self.inicio_cable = None
+                
+
+        
 
     def quitar_cable(self, start, end):
         for cable in self.cables:
@@ -459,6 +399,31 @@ class Cableado:
         if self.dibujando_cable and self.inicio_cable:
             current_pos = pygame.mouse.get_pos()
             pygame.draw.line(screen, "black", self.inicio_cable, current_pos, 3)
+
+
+
+    def manejo_de_evento(self, event):
+        distancia_maxima = 10
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_pos = event.pos
+            conector_cercano = punto_mas_cercano(mouse_pos, conectores, distancia_maxima)
+            if conector_cercano:
+                x1, y1 = conector_cercano
+
+                if not cableado.dibujando_cable:
+                    cableado.comienzo_cable((x1, y1))
+
+                else:
+                    cableado.finalizar_cable((x1, y1))
+            
+class Led:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+    
+    def dibujar_led(self, screen, anclaje):
+        pygame.draw.circle(screen, "dark green", anclaje, 5)
+    
 
 def dibujar_a(screen, x, y,ancho,alto,color):
     pygame.draw.line(screen, color, (x, y + alto), (x + ancho // 2, y), 2)  # Línea diagonal izquierda
@@ -621,9 +586,18 @@ pygame.display.set_caption("Protoboard")
 mainClock = pygame.time.Clock()
 monitor_size = [pygame.display.Info().current_w, pygame.display.Info().current_h]
 
+#Crear el cableado
 cableado = Cableado()
 fullscreen = False
 running = True
+
+# Variables para controlar la animación
+
+global interruptor
+interruptor = False
+
+global interruptor2
+interruptor2 = False
 
 while running:
     screen.fill("white") # directo el color sin variables extra
@@ -646,29 +620,13 @@ while running:
     pila.dibujarPila(screen)
 
     # Crear y dibujar Menu
-<<<<<<< HEAD
 
-    x_menu = (screen.get_width() - 200) // 2
-    y_menu = (screen.get_height() - 40) // 2
-
-    menu = Menu(x_menu, y_menu)
-    menu.dibujar_menu_led(screen)
-    menu.dibujar_menu_switch(screen)
-    menu.dibujar_menu_cable(screen)
-    menu.dibujar_cable(screen)
-    menu.dibujar_led(screen)
-    menu.dibujar_switch(screen)
-    menu.animacion(screen)
-=======
     menu = Menu(980, 80)
     menu.dibujar(screen)
     clock = pygame.time.Clock()
 
->>>>>>> piherina
-
     def distancia(punto1, punto2):
         return math.sqrt((punto1[0] - punto2[0]) ** 2 + (punto1[1] - punto2[1]) ** 2)
-
 
     def punto_mas_cercano(pos_mouse, lista_conectores, distancia_maxima):
         punto_cercano = None
@@ -681,12 +639,7 @@ while running:
                 punto_cercano = conector
         return punto_cercano
 
-    distancia_maxima = 10
-
     cableado.dibujar_cables()
-
-    # Manejo de eventos
-
 
     for event in pygame.event.get():
 
@@ -706,25 +659,46 @@ while running:
                     screen = pygame.display.set_mode(monitor_size, pygame.FULLSCREEN)
                 else:
                     screen = pygame.display.set_mode((screen.get_width(), screen.get_height()), pygame.RESIZABLE)
-
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            mouse_pos = event.pos
-            conector_cercano = punto_mas_cercano(mouse_pos, conectores, distancia_maxima)
-
-            if conector_cercano:
-                x1, y1 = conector_cercano
-
-                if not cableado.dibujando_cable:
-                    cableado.comienzo_cable((x1, y1))
-                else:
-                    cableado.finalizar_cable((x1, y1))
-
+                    
         if event.type == pygame.QUIT:
             running = False
-        menu.manejar_eventos(event)
+        
+        #Manejo de eventos
+        cableado.manejo_de_evento(event)
+        
+        #Manejo del interruptor
 
+        #######################################################################
+        #Por el momento dejar esto enduro en el main, no logré dejarlo en menu#
+        #######################################################################
 
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            
+            distancia = ((event.pos[0] - 1225)**2 + (event.pos[1] - 225)**2) ** 0.5
+            
+            if distancia <= 55:
+                interruptor = not interruptor
+                print("Botón LED presionado")
+        
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            distancia2 = ((event.pos[0] - 1225)**2 + (event.pos[1] - 370)**2) ** 0.5
+
+            if distancia2 <= 55:
+                interruptor2 = not interruptor2
+                print("Botón Switch presionado")
+    
+    
     cableado.dibujar_cable_actual()
+    if interruptor == True and interruptor2 == False: 
+        menu.dibujar_flecha(interruptor, 1380, 230)
+        
+    elif interruptor2 == True and interruptor == False: 
+        menu.dibujar_flecha(interruptor2, 1380, 360)
+
+    elif interruptor == True and interruptor2 == True:
+        interruptor2 = False
+        interruptor = False
+    
     pygame.display.flip()
     mainClock.tick(60)
 
