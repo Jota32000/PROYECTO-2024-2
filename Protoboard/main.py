@@ -214,7 +214,6 @@ class Pila:
 
         pygame.draw.line(screen, (self.color_cuerpo_pila), (self.pila_x + 70, self.pila_y + 15), (self.pila_x + 60, self.pila_y + 15), 2)
         pygame.draw.line(screen, (self.color_cuerpo_pila), (self.pila_x + 65, self.pila_y + 10), (self.pila_x + 65, self.pila_y + 20), 2)
-
 class Menu:
     def __init__(self, x, y):
         self.x = x
@@ -224,18 +223,49 @@ class Menu:
         self.color = (63, 129, 166)
         self.border_color = (0, 0, 0)
         self.border_thickness = 2
-        self.border_radius = 10  # Ajusta este valor para redondear más o menos las esquinas
+        self.border_radius = 10
+        self.seleccionando_led = False  # Estado para saber si se está seleccionando un LED
+        self.conectores_seleccionados = []  # Lista para almacenar los conectores seleccionados
 
-        # Definir los rectángulos que representan los botones ocultos
-        self.boton_led_rect = pygame.Rect(self.x + 50, self.y + 50, 100, 100)  # Posición y tamaño del botón oculto del LED
-        self.boton_switch_rect = pygame.Rect(self.x + 50, self.y + 180, 100, 100)  # Posición y tamaño del botón oculto del switch
+        # Definir las áreas de colisión para los botones
+        self.boton_led_x = self.x + 50
+        self.boton_led_y = self.y + 50
+        self.boton_led_ancho = 100
+        self.boton_led_alto = 100
 
+        self.boton_switch_x = self.x + 50
+        self.boton_switch_y = self.y + 180
+        self.boton_switch_ancho = 100
+        self.boton_switch_alto = 100
+
+        self.boton_switch_x = self.x + 50
+        self.boton_switch_y = self.y + 320
+        self.boton_switch_ancho = 100
+        self.boton_switch_alto = 100
     def dibujar(self, screen):
-        # Dibujar el fondo del rectángulo con esquinas redondeadas
-        pygame.draw.rect(screen, self.color, (self.x, self.y, self.l1, self.l2), border_radius=self.border_radius)
+        x_borde = self.x + 5
+        y_borde = self.y + 5
+        l1=self.l1-5
+        l2=self.l2-5
+
+        # Dibujar las líneas rectas entre las esquinas
+        pygame.draw.line(screen, self.color, (self.x , self.y), (self.x + self.l1, self.y),20)  # Línea superior
+        pygame.draw.line(screen, self.color, (self.x + self.l1, self.y ), (self.x + self.l1, self.y + self.l2),20)  # Línea derecha
+        pygame.draw.line(screen, self.color, (self.x + self.l1 , self.y + self.l2), (self.x, self.y + self.l2),20)  # Línea inferior
+        pygame.draw.line(screen, self.color, (self.x, self.y + self.l2 ), (self.x, self.y ),20)  # Línea izquierda
+        for i in range(self.l2):
+            pygame.draw.line(screen, self.color, (self.x+4, self.y+4 + i), (self.x + self.l1-4, self.y + i))
 
         # Dibujar el borde del rectángulo con esquinas redondeadas
-        pygame.draw.rect(screen, self.border_color, (self.x, self.y, self.l1, self.l2), self.border_thickness, border_radius=self.border_radius)
+        pygame.draw.arc(screen, self.border_color, (x_borde, y_borde, 2 * self.border_radius, 2 * self.border_radius), 0.5 * math.pi, math.pi, self.border_thickness)  # Esquina superior izquierda
+        pygame.draw.arc(screen, self.border_color, (x_borde + l1 - 2 * self.border_radius,y_borde, 2 * self.border_radius, 2 * self.border_radius), 0,0.5 * math.pi, self.border_thickness)  # Esquina superior derecha
+        pygame.draw.arc(screen, self.border_color, (x_borde, y_borde + l2 - 2 * self.border_radius, 2 * self.border_radius, 2 * self.border_radius), math.pi,1.5 * math.pi, self.border_thickness)  # Esquina inferior izquierda
+        pygame.draw.arc(screen, self.border_color, (x_borde + l1 - 2 * self.border_radius, y_borde + l2 - 2 * self.border_radius, 2 * self.border_radius,2 * self.border_radius), 1.5 * math.pi, 2 * math.pi, self.border_thickness)  # Esquina inferior derecha
+
+        pygame.draw.line(screen, self.border_color, (x_borde + self.border_radius,y_borde), (x_borde + l1 - self.border_radius, y_borde),self.border_thickness)  # Línea superior
+        pygame.draw.line(screen, self.border_color, (x_borde + l1, y_borde + self.border_radius), (x_borde + l1,y_borde + l2 - self.border_radius), self.border_thickness)  # Línea derecha
+        pygame.draw.line(screen, self.border_color, (x_borde + l1 - self.border_radius, y_borde + l2), (x_borde + self.border_radius, y_borde + l2),self.border_thickness)  # Línea inferior
+        pygame.draw.line(screen, self.border_color, (x_borde, y_borde + l2 - self.border_radius), (x_borde,y_borde + self.border_radius),self.border_thickness)  # Línea izquierda
 
         # Dibujar los iconos y componentes
         self.dibujar_icono(screen, self.x + 50, self.y + 50)
@@ -243,69 +273,152 @@ class Menu:
         self.dibujar_icono(screen, self.x + 50, self.y + 180)
         self.dib_switch(screen, self.x + 80, self.y + 210)
         self.dibujar_icono(screen, self.x + 50, self.y + 320)
+        self.dib_basurero(screen,self.x+65,self.y+340)
 
         # Crear superficie para los botones semi-transparentes (para mostrar las áreas donde se puede hacer clic)
         boton_surface = pygame.Surface((100, 100), pygame.SRCALPHA)  # SRCALPHA para transparencia
         boton_led_surface = pygame.Surface((100, 100), pygame.SRCALPHA)  # Botón LED
         boton_switch_surface = pygame.Surface((100, 100), pygame.SRCALPHA)  # Botón Switch
+        boton_basurero_surface = pygame.Surface((100,100),pygame.SRCALPHA) # Boton basurero
 
         # Dibujar los botones en sus respectivas superficies
         self.dibujar_icono(boton_surface, 0, 0)
-        self.dib_led(boton_led_surface, 25, 15)  # Ajusta la posición dentro del botón
-        self.dib_switch(boton_switch_surface, 25, 15)  # Ajusta la posición dentro del botón
+        self.dib_led(boton_led_surface, 25, 15)
+        self.dib_switch(boton_switch_surface, 25, 15)
+        self.dib_basurero(boton_basurero_surface,25,15)
 
         # Blit de las superficies a la pantalla principal
         screen.blit(boton_led_surface, (self.x + 50, self.y + 50))  # Botón LED en la pantalla
-
-
     def dibujar_icono(self, screen, x, y):
         color = (39, 174, 96)
         lado = 100
-        pygame.draw.rect(screen, color, (x, y, lado, lado), border_radius=10)
-        pygame.draw.rect(screen, self.border_color, (x, y, lado, lado), self.border_thickness, border_radius=10)
+        grosor_borde = 5
 
+        # Dibujar cuadrado
+        pygame.draw.line(screen, color, (x, y), (x + lado, y), grosor_borde)  # Línea superior
+        pygame.draw.line(screen, color, (x, y), (x, y + lado), grosor_borde)  # Línea izquierda
+        pygame.draw.line(screen, color, (x + lado, y), (x + lado, y + lado), grosor_borde)  # Línea derecha
+        pygame.draw.line(screen, color, (x, y + lado), (x + lado, y + lado), grosor_borde)  # Línea inferior
+        for i in range(lado):
+            pygame.draw.line(screen, color, (x, y + i), (x + lado, y + i))
+
+        # borde adicional
+        pygame.draw.line(screen, self.border_color, (x, y), (x + lado, y), self.border_thickness)  # Borde superior
+        pygame.draw.line(screen, self.border_color, (x, y), (x, y + lado), self.border_thickness)  # Borde izquierdo
+        pygame.draw.line(screen, self.border_color, (x + lado, y), (x + lado, y + lado), self.border_thickness)  # Borde derecho
+        pygame.draw.line(screen, self.border_color, (x, y + lado), (x + lado, y + lado),self.border_thickness)  # Borde inferior
     def dib_led(self, screen, x, y):
         width = 50  # Ancho del LED
         height = 35  # Alto del LED
         color = (199, 9, 9)
         terminal = 30  # Longitud de los terminales
-        # Dibujar el cuerpo del LED como un rectángulo con esquinas redondeadas
-        pygame.draw.rect(screen, color, (x, y, width, height), border_radius=10)
-        # Dibujar los terminales del LED (líneas)
-        pygame.draw.line(screen, (0, 0, 0), (x + width // 4, y + height), (x + width // 4, y + height + terminal), 2)
-        pygame.draw.line(screen, (0, 0, 0), (x + 3 * width // 4, y + height), (x + 3 * width // 4, y + height + terminal), 2)
+        radius = 10  # Radio de las esquinas redondeadas
+        pin_y=y+3
 
+        # Dibujar las esquinas redondeadas
+        pygame.draw.arc(screen, color, (x , y-radius-4 + height - 2 * radius, 2 * radius, 2 * radius),0.5 * math.pi, math.pi, 5)  # Esquina superior izquierda
+        pygame.draw.arc(screen, color, (x + width - 2 * radius, y, 2 * radius, 2 * radius), 0, 0.5 * math.pi,5)  # Esquina superior derecha
+        pygame.draw.arc(screen, color, (x+ width - 2 * radius, y + height - 2 * radius, 2 * radius, 2 * radius), 1.5 * math.pi, 2 * math.pi,5)  # Esquina inferior derecha
+        pygame.draw.arc(screen, color, (x, y + height - 2 * radius, 2 * radius, 2 * radius), math.pi, 1.5 * math.pi,5)  # Esquina inferior izquierda
+
+        # Dibujar las líneas rectas entre las esquinas
+        pygame.draw.line(screen, color, (x + radius, y), (x + width - radius, y), 5)  # Línea superior
+        pygame.draw.line(screen, color, (x + width, y + radius), (x + width, y + height - radius), 5)  # Línea derecha
+        pygame.draw.line(screen, color, (x + width - radius, y + height), (x + radius, y + height), 5)  # Línea inferior
+        pygame.draw.line(screen, color, (x, y + height - radius), (x, y + radius), 5)  # Línea izquierda
+        for i in range(height-4):
+            pygame.draw.line(screen, color, (x+3, pin_y + i), (x + width-3, pin_y + i))
+        # Dibujar los terminales del LED (líneas)
+        pygame.draw.line(screen, self.border_color, (x + width // 4, y + height), (x + width // 4, y + height + terminal), 2)
+        pygame.draw.line(screen, self.border_color, (x + 3 * width // 4, y + height),(x + 3 * width // 4, y + height + terminal), 2)
     def dib_switch(self, screen, x, y):
-        size = 40  # Tamaño del switch (cuadrado)
+        lado = 40  # Tamaño del switch (cuadrado)
         pin_length = 20  # Longitud de los pines
         body_color = (150, 150, 150)
         pin_color = (0, 0, 0)
         circle_radius = 10  # Radio del "círculo" en el medio
-        pygame.draw.rect(screen, body_color, (x, y, size, size))
-        # Dibujar los pines del switch (líneas)
-        pygame.draw.line(screen, pin_color, (x, y + size // 2), (x - pin_length, y + size // 2), 3)
-        pygame.draw.line(screen, pin_color, (x + size, y + size // 2), (x + size + pin_length, y + size // 2), 3)
+        pygame.draw.line(screen, body_color, (x,y),(x+lado,y),2)
+        pygame.draw.line(screen, body_color, (x+lado, y), (x + lado, y + lado), 2)
+        pygame.draw.line(screen, body_color, (x+lado, y+lado), (x, y + lado), 2)
+        pygame.draw.line(screen, body_color, (x, y+lado), (x , y ), 2)
+        for i in range(lado):
+            pygame.draw.line(screen, body_color, (x, y + i), (x + lado, y + i))
+        # Dibujar los pines del switch
+        pygame.draw.line(screen, pin_color, (x, y + lado // 2), (x - pin_length, y + lado // 2), 3)
+        pygame.draw.line(screen, pin_color, (x + lado, y + lado // 2), (x + lado + pin_length, y + lado // 2), 3)
         # Dibujar el "círculo" en el centro
         for angle in range(0, 360, 10):
-            start_x = x + size // 2
-            start_y = y + size // 2
+            start_x = x + lado // 2
+            start_y = y + lado // 2
             end_x = start_x + int(circle_radius * math.cos(math.radians(angle)))
             end_y = start_y + int(circle_radius * math.sin(math.radians(angle)))
             pygame.draw.line(screen, (0, 0, 0), (start_x, start_y), (end_x, end_y), 2)
+    def dib_basurero(self,screen,x,y):
+        largo=70
+        sum=10
+        base=50
+        color=(190, 190, 190)
+        pygame.draw.line(screen, color, (x, y), (x + largo, y), 10)
+        pygame.draw.line(screen,color,(x+sum,y),(x+sum*2,y+largo),16)
+        pygame.draw.line(screen,color,(x+sum*2,y+largo),(x+base,y+largo),5)
+        pygame.draw.line(screen, color,(x + base, y + largo),(x+largo-sum,y),16)
+        pygame.draw.line(screen,color,(x+sum*2,y-sum),(x+sum*5,y-sum),4)
+        pygame.draw.line(screen, color, (x + sum * 2, y), (x + sum * 2, y - sum), 4)
+        pygame.draw.line(screen, color, (x + sum * 5, y - sum), (x + sum * 5, y ), 4)
+
+        for i in range(largo):
+            pygame.draw.line(screen,color, (x+sum*2,y + i), (x + base, y + i))
+        pygame.draw.line(screen, (161, 152, 152), (x+sum+15, y+sum+5), (x+sum+15, y+base+sum), 3)
+        pygame.draw.line(screen, (161, 152, 152), (x + sum*3.5, y + sum + 5), (x + sum*3.5, y + base + sum), 3)
+        pygame.draw.line(screen, (161, 152, 152), (x + sum*4.5, y + sum + 5), (x + sum*4.5, y + base + sum), 3)
 
     def manejar_eventos(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
             pos = pygame.mouse.get_pos()
-            if self.boton_led_rect.collidepoint(pos):
+            mouse_x, mouse_y = pos
+
+            # Coordenadas y dimensiones del área del botón LED
+            boton_led_x = self.x + 50
+            boton_led_y = self.y + 50
+            boton_led_ancho = 100
+            boton_led_alto = 100
+
+            # Verificar si el clic está dentro del área del botón LED
+            if boton_led_x <= mouse_x <= boton_led_x + boton_led_ancho and boton_led_y <= mouse_y <= boton_led_y + boton_led_alto:
                 self.accion_boton_led()
-            elif self.boton_switch_rect.collidepoint(pos):
+
+            # Coordenadas y dimensiones del área del botón Switch
+            boton_switch_x = self.x + 80
+            boton_switch_y = self.y + 210
+            boton_switch_ancho = 100
+            boton_switch_alto = 100
+
+            # Verificar si el clic está dentro del área del botón Switch
+            if boton_switch_x <= mouse_x <= boton_switch_x + boton_switch_ancho and boton_switch_y <= mouse_y <= boton_switch_y + boton_switch_alto:
                 self.accion_boton_switch()
+
+            # Coordenadas y dimensiones del área del botón Basurero
+            boton_basurero_x = self.x + 64
+            boton_basurero_y = self.y + 340
+            boton_basurero_ancho = 100
+            boton_basurero_alto = 100
+
+            # Verificar si el clic está dentro del área del botón basurero
+            if boton_basurero_x <= mouse_x <= boton_basurero_x + boton_basurero_ancho and boton_basurero_y <= mouse_y <= boton_basurero_y + boton_basurero_alto:
+                self.accion_boton_basurero()
+
 
     def accion_boton_led(self):
         print("Botón LED presionado")
 
+
     def accion_boton_switch(self):
         print("Botón Switch presionado")
+
+    def accion_boton_basurero(self):
+        print("Botón Basurero presionado")
+
+
 class Cableado:
     def __init__(self):
         self.dibujando_cable = False
@@ -337,6 +450,34 @@ class Cableado:
         if self.dibujando_cable and self.inicio_cable:
             current_pos = pygame.mouse.get_pos()
             pygame.draw.line(screen, "black", self.inicio_cable, current_pos, 3)
+
+def led_apagada(color,x,y):
+
+    for angle in range(0, 360, 3):
+        circle_radius = 6
+        start_x = x
+        start_y = y
+        end_x = start_x + int(circle_radius * math.cos(math.radians(angle)))
+        end_y = start_y + int(circle_radius * math.sin(math.radians(angle)))
+        pygame.draw.line(screen, color, (start_x, start_y), (end_x, end_y), 2)
+
+def switch(x,y):
+    lado = 10  # Tamaño del switch (cuadrado)
+    body_color = (150, 150, 150)
+    circle_radius = 3.5  # Radio del "círculo" en el medio
+    pygame.draw.line(screen, body_color, (x, y), (x + lado, y), 2)
+    pygame.draw.line(screen, body_color, (x + lado, y), (x + lado, y + lado), 2)
+    pygame.draw.line(screen, body_color, (x + lado, y + lado), (x, y + lado), 2)
+    pygame.draw.line(screen, body_color, (x, y + lado), (x, y), 2)
+    for i in range(lado):
+        pygame.draw.line(screen, body_color, (x, y + i), (x + lado, y + i))
+    # Dibujar el "círculo" en el centro
+    for angle in range(0, 360, 10):
+        start_x = x + lado // 2
+        start_y = y + lado // 2
+        end_x = start_x + int(circle_radius * math.cos(math.radians(angle)))
+        end_y = start_y + int(circle_radius * math.sin(math.radians(angle)))
+        pygame.draw.line(screen, (0, 0, 0), (start_x, start_y), (end_x, end_y), 2)
 
 def dibujar_a(screen, x, y,ancho,alto,color):
     pygame.draw.line(screen, color, (x, y + alto), (x + ancho // 2, y), 2)  # Línea diagonal izquierda
@@ -524,14 +665,12 @@ while running:
     pila.dibujarPila(screen)
 
     # Crear y dibujar Menu
-    menu = Menu(980, 80)
+    menu = Menu((screen.get_width()+750)//2,(screen.get_height()-580))
     menu.dibujar(screen)
     clock = pygame.time.Clock()
 
-
     def distancia(punto1, punto2):
         return math.sqrt((punto1[0] - punto2[0]) ** 2 + (punto1[1] - punto2[1]) ** 2)
-
 
     def punto_mas_cercano(pos_mouse, lista_conectores, distancia_maxima):
         punto_cercano = None
@@ -548,7 +687,7 @@ while running:
     distancia_maxima = 10
 
     cableado.dibujar_cables()
-    
+
     # Manejo de eventos
 
 
@@ -576,6 +715,9 @@ while running:
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_pos = event.pos
             conector_cercano = punto_mas_cercano(mouse_pos, conectores, distancia_maxima)
+            x, y = event.pos
+            if menu.boton_led_x <= x <= menu.boton_led_x + menu.boton_led_ancho and menu.boton_led_y <= y <= menu.boton_led_y + menu.boton_led_alto:
+                menu.seleccionando_led = True
 
             if conector_cercano:
                 x1, y1 = conector_cercano
@@ -588,7 +730,6 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         menu.manejar_eventos(event)
-
 
     cableado.dibujar_cable_actual()
     pygame.display.flip()
