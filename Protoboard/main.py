@@ -14,10 +14,7 @@ class Conector:
         for i in range(self.largo): 
             pygame.draw.line(screen, self.color, (self.x, self.y + i), (self.x + self.largo, self.y + i)) 
 conectores = [] 
-<<<<<<< HEAD
 
-=======
->>>>>>> 1da3aa47ab5c326ae5ffe40c8444e10aae394190
 class Protoboard: 
     def __init__(self, x, y): 
         self.x = x 
@@ -145,7 +142,6 @@ class Protoboard:
                 x_pos = inicio_x + j * separacion_x 
                 conector = Conector(x_pos, y_pos+210,conectores) 
                 conector.dibujar(screen) 
-<<<<<<< HEAD
 leds = []
 led_medio = []
 switches = []
@@ -154,14 +150,28 @@ class Led:
     def __init__(self):
         pass
     def dibujar_led(self,tupla):
-        pygame.draw.circle(screen, "red", tupla, 5)
-        
+
+        centro_x, centro_y = tupla[0], tupla[1]  
+        r = 5  
+        for y in range(-r, r):
+            x = int(math.sqrt(r**2 - y**2))
+            pygame.draw.line(screen, "red", (centro_x - x, centro_y + y), (centro_x + x, centro_y + y))
+                
+    def eliminar_circulo_led(self):
+        for i in led_medio:
+            led_medio.remove(i)
+            #print(led_medio)
+            return True
+        return False
     def eliminar_led(self, start, end):
-        #print("start: ",start, " end: ",end)
+        led = Led()
         for i in leds:
-            if i[0] == start[0] and i[1] == start[1] and i[1] == end[0] and i[0] == end[1]:
+            if i[0] == start and i[1] == end or i[0] == end and i[1] == start:
                 leds.remove(i)
-        #print(leds)
+                led.eliminar_circulo_led()
+                return True
+        return False
+        
 
 class Switch:
     def __init__(self):
@@ -172,18 +182,31 @@ class Switch:
     def dibujar_switch(self, tupla):
         x = tupla[0]
         y = tupla[1]
-        color = (0, 255, 0) if self.estado else (255, 0, 0)
-        pygame.draw.rect(screen, color, pygame.Rect(x, y, 10, 10))
-    
-    def eliminar_switch(self, x, y):
-        for switch in switches:
-            if switch.x == x and switch.y == y:
-                switches.remove(switch)
-                return True
-            return False
+        color = (0, 255, 0) if self.estado else "dark gray"
+        pygame.draw.line(screen, ("dark gray"), (x, y - 10), (x , y + 10), 18)
 
-=======
->>>>>>> 1da3aa47ab5c326ae5ffe40c8444e10aae394190
+        centro_x, centro_y = tupla[0], tupla[1]  
+        r = 5  
+        for y in range(-r, r):
+            x = int(math.sqrt(r**2 - y**2))
+            pygame.draw.line(screen, "black", (centro_x - x, centro_y + y), (centro_x + x, centro_y + y))
+    
+    def eliminar_objeto_switch(self):
+        for i in switch_medio:
+            switch_medio.remove(i)
+            #print(switch_medio)
+            return True
+        return False
+    
+    def eliminar_switch(self, start, end):
+        switch = Switch()
+        for i in switches:
+            if i[0] == start and i[1] == end or i[0] == end and i[1] == start:
+                switches.remove(i)
+                switch.eliminar_objeto_switch()
+                return True       
+        return False
+
 class Pila: 
     def __init__(self,pila_x,pila_y): 
         self.pila_x = pila_x 
@@ -472,7 +495,6 @@ class Cableado:
         switch = Switch()
         #(cable[0] = x, cable[1] = y) 
         for cable in self.cables:
-<<<<<<< HEAD
             pygame.draw.line(screen,"black", cable[0], cable[1], 3)
         if (leds != 0):
             for ledContador in leds:
@@ -491,94 +513,60 @@ class Cableado:
                 for switchContador in switch_medio:
                     switch.dibujar_switch(switchContador)
                 
-=======
-            pygame.draw.line(screen,"black", cable[0], cable[1], 3) 
-        if self.led != 0:
-            for cable in self.led:
-                pygame.draw.line(screen,"black", cable[0], cable[1], 3)
-            for cable in self.led_medio:
-                for i in range(segmento):
-                    theta = (2 * math.pi) * (i / segmento)
-                    x = cable[0] + 3 * math.cos(theta)
-                    y = cable[1] + 3 * math.sin(theta)
-                    pygame.draw.line(screen, "red", cable, (x, y), 3)
-                    
-        if self.switch != 0:
-            for cable in self.switch:
-                pygame.draw.line(screen,"black", cable[0], cable[1], 3)
-            for cable in self.switch_medio:
-
-                pygame.draw.line(screen, (95, 95, 95), (cable[0] - 5, cable[1] + 5), (cable[0] + 5 , cable[1] + 5))
-                pygame.draw.line(screen, (95, 95, 95), (cable[0] + 5, cable[1] + 5), (cable[0] + 5 , cable[1] - 5))
-                pygame.draw.line(screen, (95, 95, 95), (cable[0] + 5, cable[1] - 5), (cable[0] - 5 , cable[1] - 5))
-                pygame.draw.line(screen, (95, 95, 95), (cable[0] - 5, cable[1] - 5), (cable[0] - 5 , cable[1] + 5))
-
-                for i in range(10):
-                    pygame.draw.line(screen, (95,95,95), (cable[0] - 5, cable[1] - 5), (cable[0] - 5 + i, cable[1] + 5))
-                    pygame.draw.line(screen, (95,95,95), (cable[0] + 5, cable[1] + 5), (cable[0] + 5 - i, cable[1] - 5))
-                    
-                for i in range(segmento):
-                    theta = (2 * math.pi) * (i / segmento)
-                    x = cable[0] + 3 * math.cos(theta)
-                    y = cable[1] + 3 * math.sin(theta)
-                    pygame.draw.line(screen, "black", cable, (x, y), 2)
-        
->>>>>>> 1da3aa47ab5c326ae5ffe40c8444e10aae394190
 
     def comienzo_cable(self, anclaje):
         self.inicio_cable = anclaje
         self.dibujando_cable = True
 
     def finalizar_cable(self, anclaje):
-<<<<<<< HEAD
         led = Led()
         switch = Switch()
         if not self.quitar_cable(self.inicio_cable, anclaje) and interruptor == False and interruptor2 == False and interruptor3 == False:
+            
             self.cables.append((self.inicio_cable, anclaje))
             
-        elif not self.quitar_cable(self.inicio_cable, anclaje) and interruptor == True and interruptor2 == False and interruptor3 == False:
+        elif not led.eliminar_led(self.inicio_cable, anclaje) and interruptor and interruptor2 == False and interruptor3 == False:
+            
             leds.append((self.inicio_cable, anclaje))
-            #print("Coordenadas presentes en el led: ",leds)
-            #calculo de punto medio para los leds
-            x = (leds[len(leds)-1][0][0] + leds[len(leds)-1][1][0]) // 2
-            #print(x)
-            y = (leds[len(leds)-1][0][1] + leds[len(leds) - 1][1][1]) // 2
-            #print(y)
-            tupla = (x,y)
-            led_medio.append(tupla)
-            #print("led medio: ",tupla)
-        
-        elif not self.quitar_cable(self.inicio_cable, anclaje) and interruptor == False and interruptor2 == True and interruptor3 == False:
-            switches.append((self.inicio_cable, anclaje))
-            #print("Coordenadas presentes en el switch: ",switch)
-            #calculo de punto medio para los switches
-            x = (switches[len(switches)-1][0][0] + switches[len(switches)-1][1][0]) // 2
-            #print(x)
-            y = (switches[len(switches)-1][0][1] + switches[len(switches) - 1][1][1]) // 2
-            #print(y)
-            tupla = (x,y)
-            switch_medio.append(tupla)
-            #print("switch medio: ",tupla)
-        
-=======
 
-        if not self.quitar_cable(self.inicio_cable, anclaje) and interruptor == False and interruptor2 == False:
-            self.cables.append((self.inicio_cable, anclaje))
+            x = (leds[len(leds)-1][0][0] - leds[len(leds)-1][1][0])
+            y = (leds[len(leds)-1][0][1] - leds[len(leds) - 1][1][1])
             
-        elif not self.quitar_cable(self.inicio_cable, anclaje) and interruptor == True and interruptor2 == False:
-            self.led.append((self.inicio_cable, anclaje))
-            x1 = (self.led[len(self.led) - 1][0][0] + self.led[len(self.led) - 1][1][0]) // 2
-            y1 = (self.led[len(self.led) - 1][0][1] + self.led[len(self.led) - 1][1][1]) // 2
-            anclaje = (x1,y1)
-            self.led_medio.append(anclaje)
+            if x <= 40 and x >= -40 and y <= 40 and y >= -40:
+                #print("Coordenadas presentes en el led: ",leds)
+                #calculo de punto medio para los leds
+                x = (leds[len(leds)-1][0][0] + leds[len(leds)-1][1][0]) // 2
+                #print(x)
+                
+                y = (leds[len(leds)-1][0][1] + leds[len(leds) - 1][1][1]) // 2
+                #print(y)
+                tupla = (x,y)
+                led_medio.insert(0,tupla)
+                #print("led medio: ",tupla)
+            else:
+                leds.pop()
+                #print("leds: ",leds)
+                    
+        elif not switch.eliminar_switch(self.inicio_cable, anclaje) and interruptor == False and interruptor2 and interruptor3 == False:
             
-        elif not self.quitar_cable(self.inicio_cable, anclaje) and interruptor == False and interruptor2 == True:
-            self.switch.append((self.inicio_cable, anclaje))
-            x1 = (self.switch[len(self.switch) - 1][0][0] + self.switch[len(self.switch) - 1][1][0]) // 2
-            y1 = (self.switch[len(self.switch) - 1][0][1] + self.switch[len(self.switch) - 1][1][1]) // 2
-            anclaje = (x1,y1)
-            self.switch_medio.append(anclaje)
->>>>>>> 1da3aa47ab5c326ae5ffe40c8444e10aae394190
+            switches.append((self.inicio_cable, anclaje))
+
+            x = (switches[len(switches)-1][0][0] - switches[len(switches)-1][1][0])
+            y = (switches[len(switches)-1][0][1] - switches[len(switches) - 1][1][1])
+
+            if x <= 40 and x >= -40 and y <= 40 and y >= -40:
+                #print("Coordenadas presentes en el switch: ",switch)
+                #calculo de punto medio para los switches
+                x = (switches[len(switches)-1][0][0] + switches[len(switches)-1][1][0]) // 2
+                #print(x)
+                y = (switches[len(switches)-1][0][1] + switches[len(switches) - 1][1][1]) // 2
+                #print(y)
+                tupla = (x,y)
+                switch_medio.insert(0,tupla)
+                #print("switch medio: ",tupla)
+            else:
+                switches.pop()
+                #print("switches: ",switches)
 
         self.dibujando_cable = False
         self.inicio_cable = None
@@ -588,11 +576,7 @@ class Cableado:
         for cable in self.cables:
             if (cable[0] == start and cable[1] == end) or (cable[0] == end and cable[1] == start):
                 self.cables.remove(cable)
-<<<<<<< HEAD
                 return True   
-=======
-            return True            
->>>>>>> 1da3aa47ab5c326ae5ffe40c8444e10aae394190
         return False
 
     def dibujar_cable_actual(self):
@@ -600,10 +584,6 @@ class Cableado:
             current_pos = pygame.mouse.get_pos()
             pygame.draw.line(screen, "black", self.inicio_cable, current_pos, 3)
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 1da3aa47ab5c326ae5ffe40c8444e10aae394190
     def manejo_de_evento(self, event):
         distancia_maxima = 10
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -914,22 +894,11 @@ while running:
                 print("Botón Basurero presionado")
     
     cableado.dibujar_cable_actual()
-<<<<<<< HEAD
     if interruptor and interruptor2 == False and interruptor3 == False: 
         menu.dibujar_flecha(interruptor, 1500, 380)
         
     elif interruptor2 and interruptor == False and interruptor3 == False: 
         menu.dibujar_flecha(interruptor2, 1500, 520)
-=======
-    if interruptor == True and interruptor2 == False and interruptor3 == False: 
-        menu.dibujar_flecha(interruptor, 1500, 380)
-        
-    elif interruptor2 == True and interruptor == False and interruptor3 == False: 
-        menu.dibujar_flecha(interruptor2, 1500, 520)
-
-    elif interruptor3 == True and interruptor == False and interruptor2 == False:
-        menu.dibujar_flecha(interruptor3, 1500, 660)
->>>>>>> 1da3aa47ab5c326ae5ffe40c8444e10aae394190
 
     elif interruptor3 and interruptor == False and interruptor2 == False:
         menu.dibujar_flecha(interruptor3, 1500, 660)
@@ -938,7 +907,6 @@ while running:
         interruptor2 = False
         interruptor = False
     
-<<<<<<< HEAD
     elif interruptor and interruptor3:
         interruptor3 = False
         interruptor = False
@@ -948,17 +916,6 @@ while running:
         interruptor3 = False
 
     elif interruptor and interruptor2  and interruptor3:
-=======
-    elif interruptor == True and interruptor3 == True:
-        interruptor3 = False
-        interruptor = False
-        
-    elif interruptor2 == True and interruptor3 == True:
-        interruptor2 = False
-        interruptor3 = False
-
-    elif interruptor == True and interruptor2 == True and interruptor3:
->>>>>>> 1da3aa47ab5c326ae5ffe40c8444e10aae394190
         interruptor = False
         interruptor2 = False
         interruptor3 = False
