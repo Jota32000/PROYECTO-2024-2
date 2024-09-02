@@ -1,5 +1,3 @@
-from cgi import print_environ_usage
-
 import pygame
 import math
 from pygame.locals import *
@@ -421,7 +419,7 @@ class Menu:
             if boton_led_x <= mouse_x <= boton_led_x + boton_led_ancho and boton_led_y <= mouse_y <= boton_led_y + boton_led_alto:
                 self.accion_boton_led()
 
-                    # Coordenadas y dimensiones del área del botón Switch
+            # Coordenadas y dimensiones del área del botón Switch
             boton_switch_x = self.x + 80
             boton_switch_y = self.y + 210
             boton_switch_ancho = 100
@@ -447,6 +445,7 @@ class Menu:
             boton_led = True
         else:
             boton_led = False
+        print("led_b",boton_led)
     def accion_boton_switch(self):
         print("Botón Switch presionado")
         global boton_switch
@@ -454,9 +453,9 @@ class Menu:
             boton_switch = True
         else:
             boton_switch = False
+        print(boton_switch)
     def accion_boton_basurero(self):
         print("Botón Basurero presionado")
-
 
 class Cableado:
     def __init__(self):
@@ -573,15 +572,11 @@ class Switch:
         self.y1=y1
         self.y2=y2
     def switch_proto(self,screen):
-        pygame.draw.line(screen, (0, 0, 0, 0), (self.x1, self.y1), (self.x, self.y), 2)
-        pygame.draw.line(screen, (0, 0, 0, 0), (self.x2, self.y2), (self.x, self.y), 2)
         lado = 10  # Tamaño del switch (cuadrado)
         body_color = (150, 150, 150)
         circle_radius = 3.5  # Radio del "círculo" en el medio
-        pygame.draw.line(screen, body_color, (self.x, y), (self.x + lado, self.y), 2)
-        pygame.draw.line(screen, body_color, (self.x + lado, self.y), (self.x + lado, self.y + lado), 2)
-        pygame.draw.line(screen, body_color, (self.x + lado, self.y + lado), (self.x, self.y + lado), 2)
-        pygame.draw.line(screen, body_color, (self.x, self.y + lado), (self.x, self.y), 2)
+        pygame.draw.line(screen, (0, 0, 0, 0), (self.x1, self.y1), (self.x, self.y), 2)
+        pygame.draw.line(screen, (0, 0, 0, 0), (self.x2, self.y2), (self.x, self.y), 2)
         for i in range(lado):
             pygame.draw.line(screen, body_color, (self.x, self.y + i), (self.x + lado,self.y + i))
         # Dibujar el "círculo" en el centro
@@ -761,7 +756,7 @@ y1 = 0
 y2 = 0
 guardar_led=[]
 guardar_switch=[]
-
+ultimo_conector= None
 while running:
     screen.fill("white") # directo el color sin variables extra
 
@@ -785,20 +780,14 @@ while running:
     menu = Menu((screen.get_width()+750)//2,(screen.get_height()-580))
     menu.dibujar(screen)
     clock = pygame.time.Clock()
-
-
     def buscar_conector_por_nombre(nombre, lista_conectores):
         for conector in lista_conectores:
             if conector.nombre == nombre:
                 return conector
         return None
 
-
-
     def distancia(punto1, punto2):
         return math.sqrt((punto1[0] - punto2[0]) ** 2 + (punto1[1] - punto2[1]) ** 2)
-
-
     def punto_mas_cercano(pos_mouse, lista_conectores, distancia_maxima):
         punto_cercano = None
         distancia_minima = 10000
@@ -815,13 +804,9 @@ while running:
     cableado.dibujar_cables()
     for i in guardar_led:
         i.led_apagada(screen)
+
     for i in guardar_switch:
         i.switch_proto(screen)
-
-
-
-
-
     # Manejo de eventos
 
     for event in pygame.event.get():
@@ -849,11 +834,15 @@ while running:
             conector_cercano = punto_mas_cercano(mouse_pos, conectores, distancia_maxima)
             x, y = event.pos
 
-            if boton_led == True:
-                if x1 ==0:
-                    x1,y1=conector_cercano.x, conector_cercano.y
+            if boton_led ==True:
+                if not conector_cercano:
+                    print( )
+                elif x1 ==0:
+                    x1=conector_cercano.x
+                    y1=conector_cercano.y
                 else:
-                    x2, y2 = conector_cercano.x, conector_cercano.y
+                    x2 =conector_cercano.x
+                    y2=conector_cercano.y
                     if (((x1+40)>=x2) or ((x1-40)<=x2) or (x1==x2) )and (((y1+40)<=y2) or ((y1-40)>=y2) or (y1==y2)):
                         x_mitad, y_mitad = ((x1 + x2) / 2, (y1 + y2) / 2)
                         led_a = Led((160, 0, 0), x_mitad, y_mitad, x1, x2, y1, y2)
@@ -864,11 +853,15 @@ while running:
                         boton_led = False
                         guardar_led.append(led_a)
 
-            if boton_switch==True:
-                if x1==0:
-                    x1,y1=conector_cercano.x, conector_cercano.y
+            elif boton_switch==True:
+                if not conector_cercano:
+                    print( )
+                elif x1==0:
+                    x1 = conector_cercano.x
+                    y1 = conector_cercano.y
                 else:
-                    x2,y2=conector_cercano.x, conector_cercano.y
+                    x2 = conector_cercano.x
+                    y2 = conector_cercano.y
                     if (((x1+40)>=x2) or ((x1-40)<=x2) or (x1==x2) )and (((y1+40)<=y2) or ((y1-40)>=y2) or (y1==y2)):
                         x_mitad, y_mitad = ((x1 + x2) / 2, (y1 + y2) / 2)
                         switch_a = Switch(x_mitad, y_mitad, x1, x2, y1, y2)
@@ -877,16 +870,17 @@ while running:
                         print(y1, y2)
                         x1, x2, y1, y2 = 0, 0, 0, 0
                         boton_switch = False
-                        guardar_led.append(switch_a)
+                        guardar_switch.append(switch_a)
 
-
-            elif conector_cercano:
+            elif conector_cercano and boton_led== False and boton_switch==False:
                 for conector in conectores:
                     if conector_cercano == conector:
                         if not cableado.dibujando_cable:
                             cableado.comienzo_cable(conector)
                         else:
                             cableado.finalizar_cable(conector)
+                            ultimo_conector=conector_cercano
+
 
         if event.type == pygame.QUIT:
             running = False
@@ -901,10 +895,7 @@ while running:
 
     cableado.dibujar_cable_actual()
     pygame.display.flip()
-    mainClock.tick(60)
-
-
-
+    mainClock.tick(30)
 
 pygame.quit()
 
