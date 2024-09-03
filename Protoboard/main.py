@@ -253,8 +253,8 @@ class Menu:
     def __init__(self, x, y):
         self.x = x
         self.y = y
-        self.l1 = 200  # Ancho
-        self.l2 = 550  # Alto
+        self.l1 = 190  # Ancho
+        self.l2 = 480  # Alto
         self.color = (63, 129, 166)
         self.border_color = (0, 0, 0)
         self.border_thickness = 2
@@ -456,7 +456,6 @@ class Menu:
         print(boton_switch)
     def accion_boton_basurero(self):
         print("Botón Basurero presionado")
-
 class Cableado:
     def __init__(self):
         self.dibujando_cable = False
@@ -541,8 +540,6 @@ class Cableado:
                 break #no hay mas conectores
 
         return False
-
-
 class Led:
     def __init__(self,color,x,y,x1,x2,y1,y2):
         self.color=color
@@ -562,7 +559,6 @@ class Led:
             end_x = start_x + int(circle_radius * math.cos(math.radians(angle)))
             end_y = start_y + int(circle_radius * math.sin(math.radians(angle)))
             pygame.draw.line(screen,self.color, (start_x, start_y), (end_x, end_y), 2)
-
 class Switch:
     def __init__(self,x,y,x1,x2,y1,y2):
         self.x=x
@@ -737,8 +733,8 @@ screen_width = screen_info.current_w
 screen_height = screen_info.current_h
 
 # Configurar la pantalla en un tamaño
-window_width = int(screen_width * 0.98)
-window_height = int(screen_height * 0.94)
+window_width = int(screen_width * 0.9)
+window_height = int(screen_height * 0.85)
 
 # Crear la ventana con el tamaño ajustado
 screen = pygame.display.set_mode((window_width, window_height))
@@ -760,7 +756,7 @@ ultimo_conector= None
 while running:
     screen.fill("white") # directo el color sin variables extra
 
-    x_proto = (screen.get_width() - 650) // 2
+    x_proto = (screen.get_width() - 840) // 2
     y_proto = (screen.get_height() - 400) // 2
 
     # Crear y dibujar Protoboard
@@ -770,14 +766,16 @@ while running:
 
     # Crear y dibujar Pila
 
-    x_pila = (screen.get_width() - 950) // 2
+    x_pila = (screen.get_width() - 1100) // 2
     y_pila = (screen.get_height() - 150) // 2
 
     pila = Pila(x_pila, y_pila)
     pila.dibujarPila(screen)
 
     # Crear y dibujar Menu
-    menu = Menu((screen.get_width()+750)//2,(screen.get_height()-580))
+    x_menu=x_proto+700
+    y_menu=y_proto-20
+    menu = Menu(x_menu,y_menu)
     menu.dibujar(screen)
     clock = pygame.time.Clock()
     def buscar_conector_por_nombre(nombre, lista_conectores):
