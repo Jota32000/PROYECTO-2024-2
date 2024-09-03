@@ -411,6 +411,7 @@ class Menu:
             if boton_basurero_x <= mouse_x <= boton_basurero_x + boton_basurero_ancho and boton_basurero_y <= mouse_y <= boton_basurero_y + boton_basurero_alto: 
                 self.accion_boton_basurero() 
     def dibujar_flecha(self,interruptor,x,y):
+
         line_color =  (39, 174, 96) if interruptor else "white"
         pygame.draw.line(screen, line_color, (x, y), (x + 100, y), 6)
         pygame.draw.line(screen, line_color, (x + 25, y + 25), (x, y), 6)
@@ -871,26 +872,26 @@ interruptor3 = False
 while running:
     screen.fill("white") # directo el color sin variables extra
 
-    x_proto = (screen.get_width() - 650) // 2
+    x_proto = (screen.get_width() - 840) // 2
     y_proto = (screen.get_height() - 400) // 2
 
     # Crear y dibujar Protoboard
 
-    conectores.clear()
     protoboard = Protoboard(x_proto, y_proto)
     protoboard.crear(screen)
 
     # Crear y dibujar Pila
 
-    x_pila = (screen.get_width() - 950) // 2
+    x_pila = (screen.get_width() - 1100) // 2
     y_pila = (screen.get_height() - 150) // 2
 
     pila = Pila(x_pila, y_pila)
     pila.dibujarPila(screen)
 
     # Crear y dibujar Menu
-
-    menu = Menu((screen.get_width() + 750) // 2,(screen.get_height() - 580))
+    x_menu=x_proto+700
+    y_menu=y_proto-20
+    menu = Menu(x_menu,y_menu)
     menu.dibujar(screen)
     clock = pygame.time.Clock()
 
@@ -939,20 +940,18 @@ while running:
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             
-            distancia = ((event.pos[0] - 1380 )**2 + (event.pos[1] - 380)**2) ** 0.5
+            distancia = ((event.pos[0] - 1320 )**2 + (event.pos[1] - 380)**2) ** 0.5
             
             if distancia <= 55:
                 interruptor = not interruptor
                 print("Botón LED presionado")
         
-        if event.type == pygame.MOUSEBUTTONDOWN:
             distancia2 = ((event.pos[0] - 1380)**2 + (event.pos[1] - 520)**2) ** 0.5
 
             if distancia2 <= 55:
                 interruptor2 = not interruptor2
                 print("Botón Switch presionado")
 
-        if event.type == pygame.MOUSEBUTTONDOWN:
             distancia3 = ((event.pos[0] - 1380)**2 + (event.pos[1] - 660)**2) ** 0.5
     
             if distancia3 <= 55:
