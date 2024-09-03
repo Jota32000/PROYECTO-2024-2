@@ -479,6 +479,7 @@ class Cableado:
         self.inicio_cable = conector_origen
         self.dibujando_cable = True
 
+
     def finalizar_cable(self, conector_siguiente):
         if not self.quitar_cable(self.inicio_cable, conector_siguiente):
             self.cables.append((self.inicio_cable, conector_siguiente))
@@ -486,11 +487,12 @@ class Cableado:
         self.dibujando_cable = False
         self.inicio_cable = None
 
+
     def quitar_cable(self, start, end):
         for cable in self.cables:
             if (cable[0] == start and cable[1] == end) or (cable[0] == end and cable[1] == start):
                 self.cables.remove(cable)
-                return True
+            return True            
         return False
 
     def dibujar_cable_actual(self):
@@ -732,7 +734,7 @@ def dibujar_0(screen,x,y,alto,color):
     pygame.draw.line(screen, color, (x, y + alto), (x + alto, y + alto), 2)
     pygame.draw.line(screen, color, (x + alto, y+alto), (x + alto, y ), 2)
     pygame.draw.line(screen, color, (x, y), (x+alto, y), 2)
-
+ 
 #Main
 pygame.init()
 
@@ -752,6 +754,7 @@ pygame.display.set_caption("Protoboard")
 mainClock = pygame.time.Clock()
 monitor_size = [pygame.display.Info().current_w, pygame.display.Info().current_h]
 
+#Crear el cableado
 cableado = Cableado()
 fullscreen = False
 running = True
@@ -763,6 +766,7 @@ guardar_led=[]
 guardar_switch=[]
 ultimo_conector= None
 
+# Variables para controlar la animación
 global interruptor
 interruptor = False
 
@@ -820,6 +824,7 @@ while running:
         return punto_cercano
 
     distancia_maxima = 10
+
     cableado.dibujar_cables()
     for i in guardar_led:
         i.led_apagada(screen)
@@ -827,7 +832,6 @@ while running:
     for i in guardar_switch:
         i.switch_proto(screen)
     # Manejo de eventos
-
     for event in pygame.event.get():
 
         if event.type == QUIT:
@@ -837,7 +841,6 @@ while running:
                 screen = pygame.display.set_mode((event.w, event.h), pygame.RESIZABLE)
 
         if event.type == KEYDOWN:
-
             if event.key == K_ESCAPE:
                 running = False
             if event.key == K_f:
