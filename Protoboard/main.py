@@ -439,7 +439,7 @@ class Menu:
             if boton_basurero_x <= mouse_x <= boton_basurero_x + boton_basurero_ancho and boton_basurero_y <= mouse_y <= boton_basurero_y + boton_basurero_alto:
                 self.accion_boton_basurero()
     def accion_boton_led(self):
-        print("Botón LED presionado")
+        #print("Botón LED presionado")
         global boton_led
         if boton_led == False:
             boton_led = True
@@ -447,7 +447,7 @@ class Menu:
             boton_led = False
         print("led_b",boton_led)
     def accion_boton_switch(self):
-        print("Botón Switch presionado")
+        #print("Botón Switch presionado")
         global boton_switch
         if boton_switch == False:
             boton_switch = True
@@ -455,7 +455,16 @@ class Menu:
             boton_switch = False
         print(boton_switch)
     def accion_boton_basurero(self):
-        print("Botón Basurero presionado")
+        #print("Botón Basurero presionado")
+        pass
+
+    def dibujar_flecha(self,interruptor,x,y):
+
+        line_color =  (39, 174, 96) if interruptor else "red"
+        pygame.draw.line(screen, line_color, (x, y), (x + 100, y), 6)
+        pygame.draw.line(screen, line_color, (x + 25, y + 25), (x, y), 6)
+        pygame.draw.line(screen, line_color, (x + 25, y - 25), (x, y), 6)
+
 class Cableado:
     def __init__(self):
         self.dibujando_cable = False
@@ -753,6 +762,16 @@ y2 = 0
 guardar_led=[]
 guardar_switch=[]
 ultimo_conector= None
+
+global interruptor
+interruptor = False
+
+global interruptor2
+interruptor2 = False
+
+global interruptor3
+interruptor3 = False
+
 while running:
     screen.fill("white") # directo el color sin variables extra
 
@@ -773,11 +792,13 @@ while running:
     pila.dibujarPila(screen)
 
     # Crear y dibujar Menu
-    x_menu=x_proto+700
-    y_menu=y_proto-20
+    x_menu = x_proto + 700
+    y_menu = y_proto - 20
+
     menu = Menu(x_menu,y_menu)
     menu.dibujar(screen)
     clock = pygame.time.Clock()
+
     def buscar_conector_por_nombre(nombre, lista_conectores):
         for conector in lista_conectores:
             if conector.nombre == nombre:
@@ -878,8 +899,7 @@ while running:
                         else:
                             cableado.finalizar_cable(conector)
                             ultimo_conector=conector_cercano
-
-
+        
         if event.type == pygame.QUIT:
             running = False
         menu.manejar_eventos(event)
@@ -892,6 +912,34 @@ while running:
             print("||| HAY CORRIENTE |||")
 
     cableado.dibujar_cable_actual()
+
+        #esto define el dibujo de las flechas acorde a la resolucion (interruptor x,y)
+    if boton_led: 
+        menu.dibujar_flecha(interruptor, x_menu + 220, y_menu + 90) #valor referencial para las flechas
+        
+    elif boton_switch: 
+        menu.dibujar_flecha(interruptor2, x_menu + 220, y_menu + 240)
+
+    elif interruptor3:
+        menu.dibujar_flecha(interruptor3, 1500, 660)
+
+    elif interruptor  and interruptor2:
+        interruptor2 = False
+        interruptor = False
+    
+    elif interruptor and interruptor3:
+        interruptor3 = False
+        interruptor = False
+        
+    elif interruptor2 and interruptor3:
+        interruptor2 = False
+        interruptor3 = False
+
+    elif interruptor and interruptor2  and interruptor3:
+        interruptor = False
+        interruptor2 = False
+        interruptor3 = False
+
     pygame.display.flip()
     mainClock.tick(30)
 
