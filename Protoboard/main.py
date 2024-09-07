@@ -68,7 +68,7 @@ class Protoboard:
         mitad_largo = self.ancho // 2
         pygame.draw.line(screen, (207, 207, 207), (self.x, self.y + mitad_largo),(self.x + self.largo, self.y + mitad_largo), 30)
 
-        # Llamar al método para dibujar conectores
+        # Llamar al metodo para dibujar conectores
         self.dibujar_conectores(screen)
 
     def dibujar_conectores(self, screen):
@@ -492,7 +492,7 @@ class Cableado:
         for cable in self.cables:
             if (cable[0] == start and cable[1] == end) or (cable[0] == end and cable[1] == start):
                 self.cables.remove(cable)
-            return True            
+                return True
         return False
 
     def dibujar_cable_actual(self):
@@ -894,14 +894,19 @@ while running:
                         boton_switch = False
                         guardar_switch.append(switch_a)
 
-            elif conector_cercano and boton_led== False and boton_switch==False:
+
+            elif conector_cercano and boton_led == False and boton_switch == False:
+
                 for conector in conectores:
+
                     if conector_cercano == conector:
+
                         if not cableado.dibujando_cable:
+
                             cableado.comienzo_cable(conector)
                         else:
                             cableado.finalizar_cable(conector)
-                            ultimo_conector=conector_cercano
+                            ultimo_conector = conector_cercano
         
         if event.type == pygame.QUIT:
             running = False
@@ -947,4 +952,3 @@ while running:
     mainClock.tick(30)
 
 pygame.quit()
-
