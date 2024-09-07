@@ -864,7 +864,7 @@ while running:
                 else:
                     x2 =conector_cercano.x
                     y2=conector_cercano.y
-                    if (((x1+40)>=x2) or ((x1-40)<=x2) or (x1==x2) )and (((y1+40)<=y2) or ((y1-40)>=y2) or (y1==y2)):
+                    if (((x1 + 40) >= x2) or ((x1 - 40) <= x2) or ((x1 + 20) <= x2) or ((x1 - 20) <= x2)) and (((y1 + 40) <= y2) or ((y1 - 40) >= y2) or ((y1 + 20) <= y2) or ((y1 - 20) <= y2)) and (x1 - x2) <= 40 and (x2 - x1) <= 40 and (y2 - y1) <= 40 and (y1 - y2) <= 40:
                         x_mitad, y_mitad = ((x1 + x2) / 2, (y1 + y2) / 2)
                         led_a = Led((160, 0, 0), x_mitad, y_mitad, x1, x2, y1, y2)
                         led_a.led_apagada(screen)
@@ -881,7 +881,7 @@ while running:
                 else:
                     x2 = conector_cercano.x
                     y2 = conector_cercano.y
-                    if (((x1+40)>=x2) or ((x1-40)<=x2) or (x1==x2) )and (((y1+40)<=y2) or ((y1-40)>=y2) or (y1==y2)):
+                    if (((x1 + 40) >= x2) or ((x1 - 40) <= x2) or ((x1 + 20) <= x2) or ((x1 - 20) <= x2)) and (((y1 + 40) <= y2) or ((y1 - 40) >= y2) or ((y1 + 20) <= y2) or ((y1 - 20) <= y2)) and (x1 - x2) <= 40 and (x2 - x1) <= 40 and (y2 - y1) <= 40 and (y1 - y2) <= 40:
                         x_mitad, y_mitad = (((x1 + x2) / 2)-10, ((y1 + y2) / 2)-10)
                         switch_a = Switch(x_mitad, y_mitad, x1, x2, y1, y2)
                         switch_a.switch_proto(screen)
