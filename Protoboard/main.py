@@ -464,7 +464,6 @@ class Menu:
         pygame.draw.line(screen, line_color, (x, y), (x + 100, y), 6)
         pygame.draw.line(screen, line_color, (x + 25, y + 25), (x, y), 6)
         pygame.draw.line(screen, line_color, (x + 25, y - 25), (x, y), 6)
-
 class Cableado:
     def __init__(self):
         self.dibujando_cable = False
@@ -579,11 +578,11 @@ class Switch:
         self.y1=y1
         self.y2=y2
     def switch_proto(self,screen):
-        lado = 10  # Tamaño del switch (cuadrado)
+        lado = 20  # Tamaño del switch (cuadrado)
         body_color = (150, 150, 150)
-        circle_radius = 3.5  # Radio del "círculo" en el medio
-        pygame.draw.line(screen, (0, 0, 0, 0), (self.x1, self.y1), (self.x, self.y), 2)
-        pygame.draw.line(screen, (0, 0, 0, 0), (self.x2, self.y2), (self.x, self.y), 2)
+        circle_radius = 5  # Radio del "círculo" en el medio
+        pygame.draw.line(screen, (0, 0, 0, 0), (self.x1, self.y1), (self.x+lado//2, self.y+lado//2), 2)#patita 1
+        pygame.draw.line(screen, (0, 0, 0, 0), (self.x2, self.y2), (self.x+lado//2, self.y+lado//2), 2)#patita 2
         for i in range(lado):
             pygame.draw.line(screen, body_color, (self.x, self.y + i), (self.x + lado,self.y + i))
         # Dibujar el "círculo" en el centro
@@ -869,8 +868,6 @@ while running:
                         x_mitad, y_mitad = ((x1 + x2) / 2, (y1 + y2) / 2)
                         led_a = Led((160, 0, 0), x_mitad, y_mitad, x1, x2, y1, y2)
                         led_a.led_apagada(screen)
-                        print(x1, x2)
-                        print(y1, y2)
                         x1, x2, y1, y2 = 0, 0, 0, 0
                         boton_led = False
                         guardar_led.append(led_a)
@@ -885,11 +882,9 @@ while running:
                     x2 = conector_cercano.x
                     y2 = conector_cercano.y
                     if (((x1+40)>=x2) or ((x1-40)<=x2) or (x1==x2) )and (((y1+40)<=y2) or ((y1-40)>=y2) or (y1==y2)):
-                        x_mitad, y_mitad = ((x1 + x2) / 2, (y1 + y2) / 2)
+                        x_mitad, y_mitad = (((x1 + x2) / 2)-10, ((y1 + y2) / 2)-10)
                         switch_a = Switch(x_mitad, y_mitad, x1, x2, y1, y2)
                         switch_a.switch_proto(screen)
-                        print(x1, x2)
-                        print(y1, y2)
                         x1, x2, y1, y2 = 0, 0, 0, 0
                         boton_switch = False
                         guardar_switch.append(switch_a)
