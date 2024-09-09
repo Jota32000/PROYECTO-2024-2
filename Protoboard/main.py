@@ -1,36 +1,57 @@
 import pygame 
 import math 
-from pygame.locals import * 
+from pygame.locals import *
+
+####################################
+global CONECTORES_SIZE
+CONECTORES_SIZE = 1 # para no tener mas elementos de los necesarios
+####################################
+
  
-class Conector: 
-    def __init__(self, nombre, x, y): 
-        self.nombre = nombre 
-        self.x = x 
-        self.y = y 
-        self.largo = 5 
-        self.color = (84, 84, 84) 
-        self.conexiones = [] 
- 
-    def dibujar(self, screen): 
-        for i in range(self.largo): 
-            pygame.draw.line(screen, self.color, (self.x, self.y + i), (self.x + self.largo, self.y + i)) 
- 
-    def __str__(self): 
-        return f"Conector(nombre: {self.nombre}, x: {self.x}, y: {self.y})"
-        
-    def agregar_conexion(self, conector_destino): 
-        if conector_destino not in self.conexiones: 
-            self.conexiones.append(conector_destino) 
-            #print("origen: ", self.nombre, " dest: ", conector_destino) 
-            if self.conexiones: 
-                #print("----- Lista conexiones ------") 
-                #print("largo: ",len(self.conexiones),"\n") 
-                self.imprimir_conexiones() 
- 
-    def imprimir_conexiones(self): 
-        print(f">>> Conexiones de {self.nombre}:") 
-        for conector in self.conexiones: 
-            print(conector) 
+class Conector:
+    def __init__(self, nombre, x, y):
+        self.nombre = nombre
+        self.x = x
+        self.y = y
+        self.largo = 5
+        self.color = (84, 84, 84)
+        self.conexiones = []
+        self.fase = None
+        self.neutro = None
+        self.padre = self
+
+
+
+    def dibujar(self, screen):
+        for i in range(self.largo):
+            #dibuja los puntos protoboard
+            partes = self.nombre.split("_")
+            pygame.draw.line(screen, self.color, (self.x, self.y + i), (self.x + self.largo, self.y + i))
+    def eliminar_padre(self):
+        self.padre = self
+
+    def __str__(self):
+        return f"{self.nombre}\nx={self.x} y={self.y})\n"
+
+    def agregar_conexion(self, conector_destino):
+        if conector_destino not in self.conexiones:
+            self.conexiones.append(conector_destino)
+            """print("##########################################################")
+            print("origen: ", self.nombre, "\ndestino: ", conector_destino)
+            if self.conexiones:
+                print("----------- Lista conexiones -----------")
+                print("largo: ", len(self.conexiones))
+                self.imprimir_conexiones()"""
+
+    def clean_conexion(self, otro_conector):
+        if otro_conector in self.conexiones:
+            self.conexiones.remove(otro_conector)
+
+
+    """def imprimir_conexiones(self):
+        print(f">>> Conexiones de {self.nombre}:")
+        for conector in self.conexiones:
+            print(conector)"""
  
 conectores = [] 
  
@@ -71,8 +92,10 @@ class Protoboard:
         mitad_largo = self.ancho // 2 
         pygame.draw.line(screen, (207, 207, 207), (self.x, self.y + mitad_largo),(self.x + self.largo, self.y + mitad_largo), 30) 
  
-        # Llamar al método para dibujar conectores 
-        self.dibujar_conectores(screen) 
+        # Llamar al metodo para dibujar conectores
+
+        self.dibujar_conectores(screen)
+
  
     def dibujar_conectores(self, screen): 
         # Espaciado entre conectores 
@@ -139,23 +162,26 @@ class Protoboard:
         dibujar_j(screen, inicio_x +self.largo-55, inicio_y + 65, 10, 10, (84, 84, 84)) 
         dibujar_mas(screen, inicio_x + self.largo - 55, inicio_y + 20, 10, (222, 17, 17)) 
         dibujar_menos(screen, inicio_x + self.largo - 55, inicio_y + 2, (17, 17, 222)) 
- 
+
+        #fors
         for i in range(2): 
             for j in range(num_columnas): 
                 x_pos = inicio_x + j * separacion_x 
                 y_pos = inicio_y + i * 20 
                 nombre_c1 = f"conector1_{i}_{j}" 
-                conector = Conector(nombre_c1, x_pos, y_pos) 
-                conectores.append(conector) 
-                conector.dibujar(screen) 
+                conector = Conector(nombre_c1, x_pos, y_pos)
+                if CONECTORES_SIZE:
+                    conectores.append(conector)
+                conector.dibujar(screen)
  
         for i in range(2): 
             for j in range(num_columnas): 
                 x_pos = inicio_x + j * separacion_x 
                 y_pos = inicio_y + i * 20 
                 nombre_c2 = f"conector2_{i}_{j}" 
-                conector = Conector(nombre_c2, x_pos, y_pos + self.ancho - 64) 
-                conectores.append(conector) 
+                conector = Conector(nombre_c2, x_pos, y_pos + self.ancho - 64)
+                if CONECTORES_SIZE:
+                    conectores.append(conector)
                 conector.dibujar(screen) 
  
         for i in range(num_filas): 
@@ -163,8 +189,9 @@ class Protoboard:
             for j in range(num_columnas): 
                 x_pos = inicio_x + j * separacion_x 
                 nombre_c3 = f"conector3_{i}_{j}" 
-                conector = Conector(nombre_c3, x_pos, y_pos + 70) 
-                conectores.append(conector) 
+                conector = Conector(nombre_c3, x_pos, y_pos + 70)
+                if CONECTORES_SIZE:
+                    conectores.append(conector)
                 conector.dibujar(screen) 
  
         for i in range(num_filas): 
@@ -172,8 +199,9 @@ class Protoboard:
             for j in range(num_columnas): 
                 x_pos = inicio_x + j * separacion_x 
                 nombre_c4 = f"conector4_{i}_{j}" 
-                conector = Conector(nombre_c4, x_pos, y_pos + 210) 
-                conectores.append(conector) 
+                conector = Conector(nombre_c4, x_pos, y_pos + 210)
+                if CONECTORES_SIZE:
+                    conectores.append(conector)
                 conector.dibujar(screen) 
                 
 class Pila: 
@@ -185,12 +213,15 @@ class Pila:
         self.color_componentes_pila = (170, 170, 170) 
         self.largo = 750 
         self.ancho = 550 
- 
-        conector_pila1 = Conector("pila+", self.pila_x + 65, self.pila_y - 15) #positivo 
-        conectores.append(conector_pila1) 
- 
-        conector_pila2 = Conector("pila-", self.pila_x + 35, self.pila_y - 15) #negativo 
-        conectores.append(conector_pila2) 
+
+        if CONECTORES_SIZE:
+            conector_pila1 = Conector("pila+", self.pila_x + 65, self.pila_y - 15) #positivo
+            conectores.append(conector_pila1)
+
+            conector_pila2 = Conector("pila-", self.pila_x + 35, self.pila_y - 15) #negativo
+            conectores.append(conector_pila2)
+            conector_pila1.fase = True
+            conector_pila2.neutro = True
  
     def dibujarPila(self,screen): 
  
@@ -473,82 +504,322 @@ class Menu:
         pygame.draw.line(screen, line_color, (x + 25, y + 25), (x, y), 6) 
         pygame.draw.line(screen, line_color, (x + 25, y - 25), (x, y), 6) 
  
-class Cableado: 
-    def __init__(self): 
-        self.dibujando_cable = False 
-        self.inicio_cable = None 
- 
-    def dibujar_cables(self): 
-        for cable in cables: 
-            pygame.draw.line(screen, "black", (cable[0].x, cable[0].y), (cable[1].x, cable[1].y), 3) 
- 
-    def comienzo_cable(self, conector_origen): 
-        self.inicio_cable = conector_origen 
-        self.dibujando_cable = True 
- 
- 
-    def finalizar_cable(self, conector_siguiente): 
-        #if not self.quitar_cable(self.inicio_cable, conector_siguiente): 
-        cables.append((self.inicio_cable, conector_siguiente)) 
-        self.inicio_cable.agregar_conexion(conector_siguiente) 
-        self.dibujando_cable = False 
+class Cableado:
+    def __init__(self):
+        self.dibujando_cable = False
         self.inicio_cable = None
-  
-    def dibujar_cable_actual(self): 
-        if self.dibujando_cable and self.inicio_cable: 
-            current_pos = pygame.mouse.get_pos() 
-            pygame.draw.line(screen, "black", (self.inicio_cable.x, self.inicio_cable.y), current_pos, 3) 
- 
-    def obtener_indices_conector(self,nombre): 
- 
-        if nombre in ["pila-", "pila+"]: 
-            return -1, -1 
- 
-        partes = nombre.split("_") 
-        if len(partes) == 3: 
-            i = int(partes[1]) 
-            j = int(partes[2]) 
-            return i, j 
-        else: 
-            return None 
- 
-    def validar_corriente(self, conectores, conector_inicio, conector_final): 
-        actual = conector_inicio 
-        visitados = set() 
-        polo_positivo = False 
-        polo_negativo = False 
- 
- 
-        #buscar conectores positivos y negativos 
-        name_positivos = {f"conector1_1_{i}" for i in range(30)} | {f"conector2_1_{i}" for i in range(30)} 
-        name_negativos = {f"conector1_0_{i}" for i in range(30)} | {f"conector2_0_{i}" for i in range(30)} 
- 
-        while actual: 
-            # verificar si el conector actual es positivo o negativo 
-            if actual.nombre in name_positivos: 
-                polo_positivo = True 
-            if actual.nombre in name_negativos: 
-                polo_negativo = True 
- 
-            if conector_final in actual.conexiones: 
-                if polo_positivo and polo_negativo: 
-                    return True 
-                return False 
- 
-            visitados.add(actual) 
- 
-            #encuentra el siguiente conector no visitado 
-            siguiente_conector = None 
-            for conexion in actual.conexiones: 
-                if conexion not in visitados: 
-                    siguiente_conector = conexion 
-                    break 
- 
-            if siguiente_conector: 
-                actual = siguiente_conector 
-            else: 
-                break #no hay mas conectores 
-        return False 
+        self.cables = []
+
+    def dibujar_cables(self):
+        for cable in self.cables:
+            if cable[0].fase or cable[1].neutro:#listo creo
+                pygame.draw.line(screen, "violet", (cable[0].x, cable[0].y), (cable[1].x, cable[1].y), 3)
+            else:
+                pygame.draw.line(screen, "black", (cable[0].x, cable[0].y), (cable[1].x, cable[1].y), 3)
+
+    def encontrar(self, conector):
+        actual = conector
+          while actual != actual.padre:
+            actual = actual.padre
+        nodo_actual = conector # actual es el padre
+        while nodo_actual != nodo_actual.padre:
+            siguiente = nodo_actual.padre #swap de toda la vida pero con nodos
+            nodo_actual.padre = actual
+            nodo_actual = siguiente
+
+        return actual
+
+    def union(self, conector1, conector2):
+        nodo1 = self.encontrar(conector1)
+        nodo2 = self.encontrar(conector2)
+
+
+        if nodo1 != nodo2:
+            if len(nodo1.conexiones) >= len(nodo2.conexiones):
+                    nodo2.padre = nodo1
+            else:
+                nodo1.padre = nodo2
+        ####################################################
+
+        #dudo de la legalidad de esto... consultar mas tarde
+        #print(nodo1.nombre, nodo1.padre.nombre, nodo2.nombre,nodo2.padre.nombre)
+
+
+    def nuevo_padre(self, conector):
+        print("///////// nuevo padre ///////////////////")
+
+        conector.eliminar_padre()
+        for conectado in conector.conexiones:
+            self.union(conector, conectado)
+
+
+    def comienzo_cable(self, conector_origen):
+        self.inicio_cable = conector_origen
+        self.dibujando_cable = True
+
+
+    def energy_fila(self, conector):
+
+        nombre = conector.nombre
+        partes = nombre.split("_")
+
+        if len(partes) == 3:
+            name = partes[0]
+            i = int(partes[1])
+            j = 0
+
+
+
+        for cable in conectores:
+            if cable.nombre == f"{name}_{i}_{j}":
+
+                if conector.fase:
+                    cable.fase = True
+                elif conector.neutro:
+                    cable.neutro = True
+                cable.padre=conector.padre
+                #print("siu2", cable.nombre, cable.padre.nombre)
+                j+=1
+
+    def energy_col(self, conector):
+        nombre = conector.nombre
+        partes = nombre.split("_")
+
+        if len(partes) == 3:
+            name = partes[0]
+            i = 0
+            j = int(partes[2])
+
+        for cable in conectores:
+            if cable.nombre == f"{name}_{i}_{j}":
+                if conector.fase:
+                    cable.fase = True
+                elif conector.neutro:
+                    cable.neutro = True
+                cable.padre = conector.padre
+                print("========= cc ===========")
+                print("colum",cable.nombre, cable.padre.nombre)
+                print("========= cc =========== fin")
+                i += 1
+
+    def verificar_y_quitar_corriente(self, conector):
+        print("conector: ", conector.nombre)
+        self.conexiones=[]
+        nombre = conector.nombre
+
+        partes = nombre.split("_")
+        name = partes[0]
+        if "conector1" in conector.nombre  or "conector2" in conector.nombre:
+
+            i = int(partes[1])
+            j = 0
+            bandera=True
+            fase = False
+
+            for cable in conectores:
+                if cable.nombre == f"{name}_{i}_{j}":
+                    if cable.conexiones:
+                        for conexion in cable.conexiones:
+                            print(f">> {conexion.nombre}")
+                            if conexion.nombre == "pila+":
+                                bandera = False
+                                fase = True
+                                print("toca")
+                            elif conexion.nombre == "pila-":
+                                bandera = False
+                                break
+                    j+=1
+
+            j=0
+            #si no hay pila
+            if not bandera:
+                for cable in conectores:
+                    if cable.nombre == f"{name}_{i}_{j}":
+
+                        if fase:
+                            cable.fase = True
+                            print(f">>{cable.nombre} padre {cable.padre.nombre}:")
+                            cable.padre = conector.padre
+                        else:
+                            cable.neutro = True
+                            cable.padre = conector.padre
+                        j += 1
+
+            else:
+                for cable in conectores:
+                    if cable.nombre == f"{name}_{i}_{j}":
+                        cable.fase = False
+                        cable.neutro = False
+                        j += 1
+
+
+        else:
+
+            #la misma wea pero cols
+            i = 0
+            j = int(partes[2])
+
+        bandera = True
+        fase = False
+        for cable in conectores:
+            if cable.nombre == f"{name}_{i}_{j}":
+                if cable.conexiones:
+                    print(f"Conexiones de {cable.nombre}:")
+                    for conexion in cable.conexiones:
+                        print(f">> {conexion.nombre}")
+                        if conexion.nombre == "pila+":
+                            bandera = False
+                            fase = True
+                        elif conexion.nombre == "pila-":
+                            bandera = False
+                            break
+                i += 1
+        i = 0
+        # si no hay pila
+        if not bandera:
+            for cable in conectores:
+                if cable.nombre == f"{name}_{i}_{j}":
+
+                    if fase:
+                        cable.fase = True
+                        print(f">>{cable.nombre} padre {cable.padre.nombre}:")
+                        cable.padre = conector.padre
+                    else:
+                        cable.neutro = True
+                        cable.padre = conector.padre
+                    i += 1
+
+        else:
+            for cable in conectores:
+                if cable.nombre == f"{name}_{i}_{j}":
+                    cable.fase = False
+                    cable.neutro = False
+                    i += 1
+
+    def finalizar_cable(self, conector_siguiente):
+        if self.inicio_cable.nombre == conector_siguiente.nombre:
+            print("----------------------------")
+            print("selecciono un punto")
+            print("eso no es valido")
+            print("----------------------------")
+            self.dibujando_cable = False
+            self.inicio_cable = None
+            return
+        if((self.inicio_cable.fase and conector_siguiente.neutro) or (self.inicio_cable.neutro and conector_siguiente.fase)):
+            print("----------------------------------")
+            print("corto de pixar")
+            print("no puede conectar neutro y fase")
+            print("----------------------------------")
+            self.dibujando_cable = False
+            self.inicio_cable = None
+            return
+
+        if not self.quitar_cable(self.inicio_cable, conector_siguiente):
+            self.cables.append((self.inicio_cable, conector_siguiente))
+
+            self.inicio_cable.agregar_conexion(conector_siguiente)
+            conector_siguiente.agregar_conexion(self.inicio_cable)
+            self.union(self.inicio_cable, conector_siguiente)
+            print("||| ",self.inicio_cable.nombre,self.inicio_cable.padre.nombre, conector_siguiente.nombre,conector_siguiente.padre.nombre)
+
+
+            if self.inicio_cable.fase:
+                conector_siguiente.fase = True
+                if ("conector1" in conector_siguiente.nombre or "conector2" in conector_siguiente.nombre) and conector_siguiente.nombre != "pila+" and conector_siguiente.nombre != "pila-":
+                    self.energy_fila(conector_siguiente)
+
+                else:
+                    if (conector_siguiente.nombre != "pila+") and (conector_siguiente.nombre != "pila-"):
+                        self.energy_col(conector_siguiente)
+
+            if conector_siguiente.fase:
+
+                self.inicio_cable.fase = True
+                if ("conector1" in self.inicio_cable.nombre or "conector2" in self.inicio_cable.nombre) and self.inicio_cable.nombre != "pila+" and self.inicio_cable.nombre != "pila-":
+                    self.energy_fila(self.inicio_cable)
+
+                else:
+                    if self.inicio_cable.nombre != "pila+" and self.inicio_cable.nombre != "pila-":
+                        self.energy_col(self.inicio_cable)
+
+
+
+            if self.inicio_cable.neutro:
+                conector_siguiente.neutro = True
+
+                if ("conector1" in conector_siguiente.nombre or "conector2" in conector_siguiente.nombre) and conector_siguiente.nombre != "pila+" and conector_siguiente.nombre != "pila-":
+                    self.energy_fila(conector_siguiente)
+
+                else:
+                    if conector_siguiente.nombre != "pila+" and conector_siguiente.nombre != "pila-":
+                        self.energy_col(conector_siguiente)
+
+
+
+            if conector_siguiente.neutro:
+
+                self.inicio_cable.neutro = True
+                if ("conector1" in self.inicio_cable.nombre or "conector2" in self.inicio_cable.nombre) and self.inicio_cable.nombre != "pila+" and self.inicio_cable.nombre != "pila-":
+                    self.energy_fila(self.inicio_cable)
+
+                else:
+                    if self.inicio_cable.nombre != "pila+" and self.inicio_cable.nombre != "pila-":
+                        self.energy_col(self.inicio_cable)
+
+
+
+        self.dibujando_cable = False
+        self.inicio_cable = None
+
+    def quitar_cable(self, start, end):
+
+        for cable in self.cables:
+
+            if (cable[0] == start and cable[1] == end) or (cable[0] == end and cable[1] == start):
+
+                # quita la fase y neutro de los nodos
+
+                # mata las conexiones entre los conectores
+                self.nuevo_padre(start)
+                self.nuevo_padre(end)
+                start.clean_conexion(end)
+                end.clean_conexion(start)
+
+
+                ########################################
+
+
+                if (start.nombre != "pila+" and start.nombre != "pila-") and (end.nombre != "pila+" and end.nombre != "pila-"):
+
+                    print("conexiones de ", start.nombre,start.conexiones, " y ", end.nombre, end.conexiones)
+                    print(end.nombre)
+                    self.verificar_y_quitar_corriente(end)
+                    self.verificar_y_quitar_corriente(start)
+                    print(start.fase,start.neutro, end.fase, end.neutro)
+                else:
+
+                    for c in conectores:
+                        if "pila" not in c.nombre:
+                            c.fase = False
+                            c.neutro = False
+
+                self.cables.remove(cable)
+                return True
+            if cable[0] == start or cable[1] == start or cable[0] == end or cable[1] == end:
+                return True
+        return False
+
+    def dibujar_cable_actual(self):
+        if self.dibujando_cable and self.inicio_cable:
+            current_pos = pygame.mouse.get_pos()
+
+
+            if self.inicio_cable.fase or self.inicio_cable.neutro: #listo
+                pygame.draw.line(screen, "violet", (self.inicio_cable.x, self.inicio_cable.y), current_pos, 3)
+            else:
+                pygame.draw.line(screen, "black", (self.inicio_cable.x, self.inicio_cable.y), current_pos, 3)
+
+
     
 class Led: 
     def __init__(self,color,x,y,x1,x2,y1,y2): 
@@ -570,36 +841,11 @@ class Led:
             end_y = start_y + int(circle_radius * math.sin(math.radians(angle))) 
             pygame.draw.line(screen,self.color, (start_x, start_y), (end_x, end_y), 2)
         
-class Switch: 
-    def __init__(self,x,y,x1,x2,y1,y2): 
-        self.x = x 
-        self.y = y 
-        self.x1 = x1 
-        self.x2 = x2 
-        self.y1 = y1 
-        self.y2 = y2 
-    def switch_proto(self,screen): 
-        lado = 10  # Tamaño del switch (cuadrado) 
-        body_color = (150, 150, 150) 
-        circle_radius = 3.5  # Radio del "círculo" en el medio 
-        pygame.draw.line(screen, (0, 0, 0, 0), (self.x1, self.y1), (self.x, self.y), 2) 
-        pygame.draw.line(screen, (0, 0, 0, 0), (self.x2, self.y2), (self.x, self.y), 2) 
-        for i in range(lado): 
-            pygame.draw.line(screen, body_color, (self.x, self.y + i), (self.x + lado,self.y + i)) 
-        # Dibujar el "círculo" en el centro 
-        for angle in range(0, 360, 10): 
-            start_x = self.x + lado // 2 
-            start_y = self.y + lado // 2 
-            end_x = start_x + int(circle_radius * math.cos(math.radians(angle))) 
-            end_y = start_y + int(circle_radius * math.sin(math.radians(angle))) 
-            pygame.draw.line(screen, (0, 0, 0), (start_x, start_y), (end_x, end_y), 2) 
-
 class Basurero:
     def __init__(self):
         #No presenta atributos
         pass
-
-    def eliminar_led(self,x,y):
+     def eliminar_led(self,x,y):
         rango_click = 10
         #Buscador de led en la lista de los leds
         for led in guardar_led:
@@ -625,148 +871,172 @@ class Basurero:
             
             elif cable[1].x - rango_click <= x <= cable[1].x + rango_click and cable[1].y - rango_click <= y <= cable[1].y + rango_click:
                 cables.remove(cable)
-
-def dibujar_a(screen, x, y,ancho,alto,color): 
-    pygame.draw.line(screen, color, (x, y + alto), (x + ancho // 2, y), 2)  # Línea diagonal izquierda 
-    pygame.draw.line(screen, color, (x + ancho // 2, y), (x + ancho, y + alto), 2)  # Línea diagonal derecha 
-    pygame.draw.line(screen, color, (x + ancho // 4, y + alto // 2), (x + ancho - ancho // 4, y + alto // 2),2)  # Barra horizontal 
-def dibujar_b(screen,x,y,alto,color): 
-    pygame.draw.line(screen, color, (x, y), (x, y + alto), 2) 
-    pygame.draw.line(screen, color, (x, y), ((x + alto // 2), y), 2) 
-    pygame.draw.line(screen, color, ((x + alto // 2), y), ((x + alto // 2), (y + ((alto // 2)-3))), 2) 
-    pygame.draw.line(screen, color, (x+alto//2, (y + ((alto // 2)-3))), ((x), (y + ((alto // 2)-3))), 2) 
-    pygame.draw.line(screen, color, (x, (y + alto)), ((x + alto//2), (y + alto)), 2) 
-    pygame.draw.line(screen, color, ((x + alto//2), (y+alto)), ((x + alto//2), (y+(alto//2))), 2) 
-    pygame.draw.line(screen,color,((x + alto//2), (y+(alto//2))),(x,y+alto//2),2) 
-def dibujar_c(screen,x,y,alto,ancho,color): 
-    pygame.draw.line(screen, color, (x, y), (x,( y + alto)), 2) 
-    pygame.draw.line(screen, color, (x, y), ((x+ancho), y), 2) 
-    pygame.draw.line(screen, color, ((x+ancho), y), ((x +ancho), (y+(alto//3))), 2) 
-    pygame.draw.line(screen, color, (x, (y+alto)), ((x+ancho), (y+alto)), 2) 
-    pygame.draw.line(screen, color, ((x+ancho), (y+alto)), ((x +ancho), (y+alto-(alto//3))), 2) 
-def dibujar_d(screen,x,y,alto,ancho,color): 
-    pygame.draw.line(screen, color, (x, y), (x, (y + alto)), 2) 
-    pygame.draw.line(screen, color, (x, y), (x+alto//5,y), 2) 
-    pygame.draw.line(screen, color, (x+alto//5 , y), (x + ancho, y + alto), 2) 
-    pygame.draw.line(screen, color, (x,(y+alto)), (x + ancho, y + alto), 2) 
-def dibujar_e(screen,x,y,alto,ancho,color): 
-    pygame.draw.line(screen, color, (x, y), (x, (y + alto)), 2) 
-    pygame.draw.line(screen, color, (x, y), ((x + ancho), y), 2) 
-    pygame.draw.line(screen, color, (x,(y+(alto//2))), ((x + ancho), (y + alto//2)), 2) 
-    pygame.draw.line(screen, color, (x, (y + alto)), ((x + ancho), (y + alto)), 2) 
-def dibujar_f(screen,x,y,alto,ancho,color): 
-    pygame.draw.line(screen, color, (x, y), (x, (y + alto)), 2) 
-    pygame.draw.line(screen, color, (x, y), ((x + ancho), y), 2) 
-    pygame.draw.line(screen, color, (x,(y+alto//2)), ((x + ancho), (y + alto//2)), 2) 
-def dibujar_g(screen,x,y,alto,ancho,color): 
-    pygame.draw.line(screen, color, (x, y), (x,( y + alto)), 2) 
-    pygame.draw.line(screen, color, (x, y), ((x+ancho), y), 2) 
-    pygame.draw.line(screen, color, (x, (y+alto)), ((x+ancho), (y+alto)), 2) 
-    pygame.draw.line(screen, color, ((x+ancho), (y+alto)), ((x +ancho), (y+alto-alto//3)), 2) 
-    pygame.draw.line(screen,color,((x+ancho),(y+alto//2)),(x+alto//3,(y+alto//2)),2) 
-def dibujar_h(screen,x,y,alto,ancho,color): 
-    pygame.draw.line(screen, color, (x, y), (x, (y + alto)), 2) 
-    pygame.draw.line(screen, color, (x,(y+alto//2)), ((x + ancho), (y + alto//2)), 2) 
-    pygame.draw.line(screen, color, (x+ancho, y), (x+ancho, (y + alto)), 2) 
-def dibujar_i(screen,x,y,alto,ancho,color): 
-    pygame.draw.line(screen, color, ((x+(ancho//2)), y), ((x+(ancho//2)), (y + alto)), 2) 
-    pygame.draw.line(screen, color, (x, y), ((x + ancho), y), 2) 
-    pygame.draw.line(screen, color, (x, (y + alto)), ((x + ancho), (y + alto)), 2) 
-def dibujar_j(screen,x,y,alto,ancho,color): 
-    pygame.draw.line(screen, color, ((x+(ancho//2)), y), ((x+(ancho//2)), (y + alto)), 2) 
-    pygame.draw.line(screen, color, (x, y), ((x + ancho), y), 2) 
-    pygame.draw.line(screen, color, (x, (y + alto)), ((x + ancho//2), (y + alto)), 2) 
-def dibujar_l(screen,x,y,alto,color): 
-    pygame.draw.line(screen,color,(x,y),(x,y+alto),2) 
-    pygame.draw.line(screen,color,(x,y+alto),(x+alto//2,y+alto),2) 
-def dibujar_m(screen,x,y,alto,color): 
-    pygame.draw.line(screen,color,(x,y),(x,y+alto),2) 
-    pygame.draw.line(screen,color,(x,y),(x+alto//2,y+alto//2),2) 
-    pygame.draw.line(screen,color,(x+alto//2,y+alto//2),(x+alto,y),2) 
-    pygame.draw.line(screen,color,(x+alto,y),(x+alto,y+alto),2) 
-def dibujar_n(screen,x,y,alto,color): 
-    pygame.draw.line(screen, color, (x, y), (x, y + alto), 2) 
-    pygame.draw.line(screen, color, (x, y), (x + alto//2, y + alto), 2) 
-    pygame.draw.line(screen, color, (x + alto//2, y + alto), (x + alto//2, y), 2) 
-def dibujar_o(screen,x,y,alto,color): 
-    pygame.draw.line(screen,color,(x,y),(x+alto//2,y),2) 
-    pygame.draw.line(screen,color,(x+alto//2,y),(x+alto//2,y+alto),2) 
-    pygame.draw.line(screen,color,(x+alto//2,y+alto),(x,y+alto),2) 
-    pygame.draw.line(screen,color,(x,y+alto),(x,y),2) 
-def dibujar_p(screen,x,y,alto,color): 
-    pygame.draw.line(screen, color, (x, y), (x, y + alto), 2) 
-    pygame.draw.line(screen,color,(x,y),((x+alto//2),y),2) 
-    pygame.draw.line(screen,color,((x+alto//2),y),((x+alto//2),(y+(alto//2))),2) 
-    pygame.draw.line(screen, color, (x, (y+(alto//2))), ((x + alto//2), (y+(alto//2))), 2) 
-def dibujar_q(screen,x,y,alto,color): 
-    pygame.draw.line(screen,color,(x,y),(x+alto//2,y),2) 
-    pygame.draw.line(screen,color,(x+alto//2,y),(x+alto//2,y+alto),2) 
-    pygame.draw.line(screen,color,(x+alto//2,y+alto),(x,y+alto),2) 
-    pygame.draw.line(screen,color,(x,y+alto),(x,y),2) 
-    pygame.draw.line(screen,color,(x+alto//4,y+alto//2),(x+alto-4,y+alto),3) 
-def dibujar_r(screen,x,y,alto,color): 
-    pygame.draw.line(screen, color, (x, y), (x, y + alto), 2) 
-    pygame.draw.line(screen,color,(x,y),((x+alto//2),y),2) 
-    pygame.draw.line(screen,color,((x+alto//2),y),((x+alto//2),(y+(alto//2))),2) 
-    pygame.draw.line(screen, color, (x, (y+(alto//2))), ((x + alto//2), (y+(alto//2))), 2) 
-    pygame.draw.line(screen,color,(x, (y+(alto//2))),(x+alto//2,y+alto),3) 
-def dibujar_s(screen,x,y,alto,color): 
-    pygame.draw.line(screen,color,(x,y),(x+alto//2,y),2) 
-    pygame.draw.line(screen,color,(x+alto//2,y),(x+alto//2,y+alto//4),2) 
-    pygame.draw.line(screen,color,(x,y),(x,y+alto//2),2) 
-    pygame.draw.line(screen,color,(x,y+alto//2),(x+alto//2,y+alto//2),2) 
-    pygame.draw.line(screen,color,(x+alto//2,y+alto//2),(x+alto//2,y+alto),2) 
-    pygame.draw.line(screen,color,(x+alto//2,y+alto),(x,y+alto),2) 
-def dibujar_t(screen,x,y,alto,ancho,color): 
-    pygame.draw.line(screen, color, ((x+(ancho//2)), y), ((x+(ancho//2)), (y + alto)), 2) 
-    pygame.draw.line(screen, color, (x, y), ((x + ancho), y), 2) 
-def dibujar_u(screen,x,y,alto,color): 
-    pygame.draw.line(screen,color,(x+alto//2,y),(x+alto//2,y+alto),2) 
-    pygame.draw.line(screen,color,(x+alto//2,y+alto),(x,y+alto),2) 
-    pygame.draw.line(screen,color,(x,y+alto),(x,y),2) 
-def dibujar_v(screen,x,y,alto,color): 
-    pygame.draw.line(screen,color,(x,y),(x+alto/4,y+alto),2) 
-    pygame.draw.line(screen,color,(x+alto//4,y+alto),(x+alto//2,y),2) 
-def dibujar_x(screen,x,y,alto,color): 
-    pygame.draw.line(screen, color, (x, y), (x + alto //2, y + alto), 2) 
-    pygame.draw.line(screen,color,(x+alto//2,y),(x,y+alto),2) 
-def dibujar_y(screen,x,y,alto,color): 
-    pygame.draw.line(screen, color, (x, y), (x + alto //4, y + alto//2), 2) 
-    pygame.draw.line(screen,color,(x+alto//2,y),(x,y+alto),2) 
-def dibujar_mas(screen,x,y,alto,color): 
-    pygame.draw.line(screen,color,(x,y),(x+alto,y),2) 
-    pygame.draw.line(screen,color,(x+5,y-5),(x+5,y+5),2) 
-def dibujar_menos(screen,x,y,color): 
-    pygame.draw.line(screen, color, (x + 5, y - 5), (x + 5, y + 5), 2) 
-def dibujar_1(screen,x,y,alto,color): 
-    pygame.draw.line(screen,color,(x,y),(x+5,y+10),2) 
-    pygame.draw.line(screen,color,(x,y),(x+alto,y),2) 
-def dibujar_2(screen,x,y,alto,color): 
-    pygame.draw.line(screen,color,(x,y),(x,y+alto),2) 
-    pygame.draw.line(screen,color,(x,y),(x+5,y),2) 
-    pygame.draw.line(screen, color, (x+5, y), (x + 5, y+alto), 2) 
-    pygame.draw.line(screen, color, (x+5, y+alto), (x +alto, y+alto), 2) 
-    pygame.draw.line(screen, color, (x+alto, y+alto), (x+alto,y), 2) 
-def dibujar_3(screen,x,y,alto,color): 
-    pygame.draw.line(screen, color, (x, y), (x +alto, y), 2) 
-    pygame.draw.line(screen, color, (x, y), (x,y+alto), 2) 
-    pygame.draw.line(screen, color, (x+5, y), (x + 5, y+alto), 2) 
-    pygame.draw.line(screen, color, (x+alto, y+alto), (x+alto, y), 2) 
-def dibujar_4(screen,x,y,alto,color): 
-    pygame.draw.line(screen, color, (x, y), (x + alto, y), 2) 
-    pygame.draw.line(screen, color, (x + 5, y), (x + 5, y + alto), 2) 
-    pygame.draw.line(screen, color, (x, y), (x + 5, y+alto), 2) 
-def dibujar_5(screen,x,y,alto,color): 
-    pygame.draw.line(screen, color, (x, y), (x, y + alto), 2) 
-    pygame.draw.line(screen, color, (x, y+alto), (x+5, y + alto), 2) 
-    pygame.draw.line(screen, color, (x + 5, y), (x + 5, y + alto), 2) 
-    pygame.draw.line(screen, color, (x + 5, y), (x +alto, y ), 2) 
-    pygame.draw.line(screen, color, (x + alto, y + alto), (x + alto, y), 2) 
-def dibujar_0(screen,x,y,alto,color): 
-    pygame.draw.line(screen, color, (x, y), (x, y + alto), 2) 
-    pygame.draw.line(screen, color, (x, y + alto), (x + alto, y + alto), 2) 
-    pygame.draw.line(screen, color, (x + alto, y+alto), (x + alto, y ), 2) 
-    pygame.draw.line(screen, color, (x, y), (x+alto, y), 2) 
+class Switch:
+    def __init__(self,x,y,x1,x2,y1,y2):
+        self.x=x
+        self.y=y
+        self.x1=x1
+        self.x2=x2
+        self.y1=y1
+        self.y2=y2
+    def switch_proto(self,screen):
+        lado = 20  # Tamaño del switch (cuadrado)
+        body_color = (150, 150, 150)
+        circle_radius = 5  # Radio del "círculo" en el medio
+        pygame.draw.line(screen, (0, 0, 0, 0), (self.x1, self.y1), (self.x+lado//2, self.y+lado//2), 2)#patita 1
+        pygame.draw.line(screen, (0, 0, 0, 0), (self.x2, self.y2), (self.x+lado//2, self.y+lado//2), 2)#patita 2
+        for i in range(lado):
+            pygame.draw.line(screen, body_color, (self.x, self.y + i), (self.x + lado,self.y + i))
+        # Dibujar el "círculo" en el centro
+        for angle in range(0, 360, 10):
+            start_x = self.x + lado // 2
+            start_y = self.y + lado // 2
+            end_x = start_x + int(circle_radius * math.cos(math.radians(angle)))
+            end_y = start_y + int(circle_radius * math.sin(math.radians(angle)))
+            pygame.draw.line(screen, (0, 0, 0), (start_x, start_y), (end_x, end_y), 2)
+            
+def dibujar_a(screen, x, y,ancho,alto,color):
+    pygame.draw.line(screen, color, (x, y + alto), (x + ancho // 2, y), 2)  # Línea diagonal izquierda
+    pygame.draw.line(screen, color, (x + ancho // 2, y), (x + ancho, y + alto), 2)  # Línea diagonal derecha
+    pygame.draw.line(screen, color, (x + ancho // 4, y + alto // 2), (x + ancho - ancho // 4, y + alto // 2),2)  # Barra horizontal
+def dibujar_b(screen,x,y,alto,color):
+    pygame.draw.line(screen, color, (x, y), (x, y + alto), 2)
+    pygame.draw.line(screen, color, (x, y), ((x + alto // 2), y), 2)
+    pygame.draw.line(screen, color, ((x + alto // 2), y), ((x + alto // 2), (y + ((alto // 2)-3))), 2)
+    pygame.draw.line(screen, color, (x+alto//2, (y + ((alto // 2)-3))), ((x), (y + ((alto // 2)-3))), 2)
+    pygame.draw.line(screen, color, (x, (y + alto)), ((x + alto//2), (y + alto)), 2)
+    pygame.draw.line(screen, color, ((x + alto//2), (y+alto)), ((x + alto//2), (y+(alto//2))), 2)
+    pygame.draw.line(screen,color,((x + alto//2), (y+(alto//2))),(x,y+alto//2),2)
+def dibujar_c(screen,x,y,alto,ancho,color):
+    pygame.draw.line(screen, color, (x, y), (x,( y + alto)), 2)
+    pygame.draw.line(screen, color, (x, y), ((x+ancho), y), 2)
+    pygame.draw.line(screen, color, ((x+ancho), y), ((x +ancho), (y+(alto//3))), 2)
+    pygame.draw.line(screen, color, (x, (y+alto)), ((x+ancho), (y+alto)), 2)
+    pygame.draw.line(screen, color, ((x+ancho), (y+alto)), ((x +ancho), (y+alto-(alto//3))), 2)
+def dibujar_d(screen,x,y,alto,ancho,color):
+    pygame.draw.line(screen, color, (x, y), (x, (y + alto)), 2)
+    pygame.draw.line(screen, color, (x, y), (x+alto//5,y), 2)
+    pygame.draw.line(screen, color, (x+alto//5 , y), (x + ancho, y + alto), 2)
+    pygame.draw.line(screen, color, (x,(y+alto)), (x + ancho, y + alto), 2)
+def dibujar_e(screen,x,y,alto,ancho,color):
+    pygame.draw.line(screen, color, (x, y), (x, (y + alto)), 2)
+    pygame.draw.line(screen, color, (x, y), ((x + ancho), y), 2)
+    pygame.draw.line(screen, color, (x,(y+(alto//2))), ((x + ancho), (y + alto//2)), 2)
+    pygame.draw.line(screen, color, (x, (y + alto)), ((x + ancho), (y + alto)), 2)
+def dibujar_f(screen,x,y,alto,ancho,color):
+    pygame.draw.line(screen, color, (x, y), (x, (y + alto)), 2)
+    pygame.draw.line(screen, color, (x, y), ((x + ancho), y), 2)
+    pygame.draw.line(screen, color, (x,(y+alto//2)), ((x + ancho), (y + alto//2)), 2)
+def dibujar_g(screen,x,y,alto,ancho,color):
+    pygame.draw.line(screen, color, (x, y), (x,( y + alto)), 2)
+    pygame.draw.line(screen, color, (x, y), ((x+ancho), y), 2)
+    pygame.draw.line(screen, color, (x, (y+alto)), ((x+ancho), (y+alto)), 2)
+    pygame.draw.line(screen, color, ((x+ancho), (y+alto)), ((x +ancho), (y+alto-alto//3)), 2)
+    pygame.draw.line(screen,color,((x+ancho),(y+alto//2)),(x+alto//3,(y+alto//2)),2)
+def dibujar_h(screen,x,y,alto,ancho,color):
+    pygame.draw.line(screen, color, (x, y), (x, (y + alto)), 2)
+    pygame.draw.line(screen, color, (x,(y+alto//2)), ((x + ancho), (y + alto//2)), 2)
+    pygame.draw.line(screen, color, (x+ancho, y), (x+ancho, (y + alto)), 2)
+def dibujar_i(screen,x,y,alto,ancho,color):
+    pygame.draw.line(screen, color, ((x+(ancho//2)), y), ((x+(ancho//2)), (y + alto)), 2)
+    pygame.draw.line(screen, color, (x, y), ((x + ancho), y), 2)
+    pygame.draw.line(screen, color, (x, (y + alto)), ((x + ancho), (y + alto)), 2)
+def dibujar_j(screen,x,y,alto,ancho,color):
+    pygame.draw.line(screen, color, ((x+(ancho//2)), y), ((x+(ancho//2)), (y + alto)), 2)
+    pygame.draw.line(screen, color, (x, y), ((x + ancho), y), 2)
+    pygame.draw.line(screen, color, (x, (y + alto)), ((x + ancho//2), (y + alto)), 2)
+def dibujar_l(screen,x,y,alto,color):
+    pygame.draw.line(screen,color,(x,y),(x,y+alto),2)
+    pygame.draw.line(screen,color,(x,y+alto),(x+alto//2,y+alto),2)
+def dibujar_m(screen,x,y,alto,color):
+    pygame.draw.line(screen,color,(x,y),(x,y+alto),2)
+    pygame.draw.line(screen,color,(x,y),(x+alto//2,y+alto//2),2)
+    pygame.draw.line(screen,color,(x+alto//2,y+alto//2),(x+alto,y),2)
+    pygame.draw.line(screen,color,(x+alto,y),(x+alto,y+alto),2)
+def dibujar_n(screen,x,y,alto,color):
+    pygame.draw.line(screen, color, (x, y), (x, y + alto), 2)
+    pygame.draw.line(screen, color, (x, y), (x + alto//2, y + alto), 2)
+    pygame.draw.line(screen, color, (x + alto//2, y + alto), (x + alto//2, y), 2)
+def dibujar_o(screen,x,y,alto,color):
+    pygame.draw.line(screen,color,(x,y),(x+alto//2,y),2)
+    pygame.draw.line(screen,color,(x+alto//2,y),(x+alto//2,y+alto),2)
+    pygame.draw.line(screen,color,(x+alto//2,y+alto),(x,y+alto),2)
+    pygame.draw.line(screen,color,(x,y+alto),(x,y),2)
+def dibujar_p(screen,x,y,alto,color):
+    pygame.draw.line(screen, color, (x, y), (x, y + alto), 2)
+    pygame.draw.line(screen,color,(x,y),((x+alto//2),y),2)
+    pygame.draw.line(screen,color,((x+alto//2),y),((x+alto//2),(y+(alto//2))),2)
+    pygame.draw.line(screen, color, (x, (y+(alto//2))), ((x + alto//2), (y+(alto//2))), 2)
+def dibujar_q(screen,x,y,alto,color):
+    pygame.draw.line(screen,color,(x,y),(x+alto//2,y),2)
+    pygame.draw.line(screen,color,(x+alto//2,y),(x+alto//2,y+alto),2)
+    pygame.draw.line(screen,color,(x+alto//2,y+alto),(x,y+alto),2)
+    pygame.draw.line(screen,color,(x,y+alto),(x,y),2)
+    pygame.draw.line(screen,color,(x+alto//4,y+alto//2),(x+alto-4,y+alto),3)
+def dibujar_r(screen,x,y,alto,color):
+    pygame.draw.line(screen, color, (x, y), (x, y + alto), 2)
+    pygame.draw.line(screen,color,(x,y),((x+alto//2),y),2)
+    pygame.draw.line(screen,color,((x+alto//2),y),((x+alto//2),(y+(alto//2))),2)
+    pygame.draw.line(screen, color, (x, (y+(alto//2))), ((x + alto//2), (y+(alto//2))), 2)
+    pygame.draw.line(screen,color,(x, (y+(alto//2))),(x+alto//2,y+alto),3)
+def dibujar_s(screen,x,y,alto,color):
+    pygame.draw.line(screen,color,(x,y),(x+alto//2,y),2)
+    pygame.draw.line(screen,color,(x+alto//2,y),(x+alto//2,y+alto//4),2)
+    pygame.draw.line(screen,color,(x,y),(x,y+alto//2),2)
+    pygame.draw.line(screen,color,(x,y+alto//2),(x+alto//2,y+alto//2),2)
+    pygame.draw.line(screen,color,(x+alto//2,y+alto//2),(x+alto//2,y+alto),2)
+    pygame.draw.line(screen,color,(x+alto//2,y+alto),(x,y+alto),2)
+def dibujar_t(screen,x,y,alto,ancho,color):
+    pygame.draw.line(screen, color, ((x+(ancho//2)), y), ((x+(ancho//2)), (y + alto)), 2)
+    pygame.draw.line(screen, color, (x, y), ((x + ancho), y), 2)
+def dibujar_u(screen,x,y,alto,color):
+    pygame.draw.line(screen,color,(x+alto//2,y),(x+alto//2,y+alto),2)
+    pygame.draw.line(screen,color,(x+alto//2,y+alto),(x,y+alto),2)
+    pygame.draw.line(screen,color,(x,y+alto),(x,y),2)
+def dibujar_v(screen,x,y,alto,color):
+    pygame.draw.line(screen,color,(x,y),(x+alto/4,y+alto),2)
+    pygame.draw.line(screen,color,(x+alto//4,y+alto),(x+alto//2,y),2)
+def dibujar_x(screen,x,y,alto,color):
+    pygame.draw.line(screen, color, (x, y), (x + alto //2, y + alto), 2)
+    pygame.draw.line(screen,color,(x+alto//2,y),(x,y+alto),2)
+def dibujar_y(screen,x,y,alto,color):
+    pygame.draw.line(screen, color, (x, y), (x + alto //4, y + alto//2), 2)
+    pygame.draw.line(screen,color,(x+alto//2,y),(x,y+alto),2)
+def dibujar_mas(screen,x,y,alto,color):
+    pygame.draw.line(screen,color,(x,y),(x+alto,y),2)
+    pygame.draw.line(screen,color,(x+5,y-5),(x+5,y+5),2)
+def dibujar_menos(screen,x,y,color):
+    pygame.draw.line(screen, color, (x + 5, y - 5), (x + 5, y + 5), 2)
+def dibujar_1(screen,x,y,alto,color):
+    pygame.draw.line(screen,color,(x,y),(x+5,y+10),2)
+    pygame.draw.line(screen,color,(x,y),(x+alto,y),2)
+def dibujar_2(screen,x,y,alto,color):
+    pygame.draw.line(screen,color,(x,y),(x,y+alto),2)
+    pygame.draw.line(screen,color,(x,y),(x+5,y),2)
+    pygame.draw.line(screen, color, (x+5, y), (x + 5, y+alto), 2)
+    pygame.draw.line(screen, color, (x+5, y+alto), (x +alto, y+alto), 2)
+    pygame.draw.line(screen, color, (x+alto, y+alto), (x+alto,y), 2)
+def dibujar_3(screen,x,y,alto,color):
+    pygame.draw.line(screen, color, (x, y), (x +alto, y), 2)
+    pygame.draw.line(screen, color, (x, y), (x,y+alto), 2)
+    pygame.draw.line(screen, color, (x+5, y), (x + 5, y+alto), 2)
+    pygame.draw.line(screen, color, (x+alto, y+alto), (x+alto, y), 2)
+def dibujar_4(screen,x,y,alto,color):
+    pygame.draw.line(screen, color, (x, y), (x + alto, y), 2)
+    pygame.draw.line(screen, color, (x + 5, y), (x + 5, y + alto), 2)
+    pygame.draw.line(screen, color, (x, y), (x + 5, y+alto), 2)
+def dibujar_5(screen,x,y,alto,color):
+    pygame.draw.line(screen, color, (x, y), (x, y + alto), 2)
+    pygame.draw.line(screen, color, (x, y+alto), (x+5, y + alto), 2)
+    pygame.draw.line(screen, color, (x + 5, y), (x + 5, y + alto), 2)
+    pygame.draw.line(screen, color, (x + 5, y), (x +alto, y ), 2)
+    pygame.draw.line(screen, color, (x + alto, y + alto), (x + alto, y), 2)
+def dibujar_0(screen,x,y,alto,color):
+    pygame.draw.line(screen, color, (x, y), (x, y + alto), 2)
+    pygame.draw.line(screen, color, (x, y + alto), (x + alto, y + alto), 2)
+    pygame.draw.line(screen, color, (x + alto, y+alto), (x + alto, y ), 2)
+    pygame.draw.line(screen, color, (x, y), (x+alto, y), 2)
+ 
   
 #Main 
 pygame.init() 
@@ -911,9 +1181,6 @@ while running:
                         #print(y1, y2)  
                         x1, x2, y1, y2 = 0, 0, 0, 0 
                         guardar_led.append(led_a)
-                    else:
-                        print("Lo siento, no se puede colocar la led :(")
-                    boton_led = False 
  
             elif boton_switch: 
                 if not conector_cercano: 
@@ -936,16 +1203,37 @@ while running:
                     else:
                         print("Lo siento, no se puede colocar el switch :(")
                     boton_switch = False 
- 
-            elif conector_cercano and boton_led == False and boton_switch == False: 
-                for conector in conectores: 
-                    if conector_cercano == conector: 
-                        if not cableado.dibujando_cable: 
-                            cableado.comienzo_cable(conector) 
-                        else: 
-                            cableado.finalizar_cable(conector) 
-                            ultimo_conector = conector_cercano
                                  
+            elif boton_switch==True:
+                if not conector_cercano:
+                    print( )
+                elif x1==0:
+                    x1 = conector_cercano.x
+                    y1 = conector_cercano.y
+                else:
+                    x2 = conector_cercano.x
+                    y2 = conector_cercano.y
+                    if (((x1 + 40) >= x2) or ((x1 - 40) <= x2) or ((x1 + 20) <= x2) or ((x1 - 20) <= x2)) and (((y1 + 40) <= y2) or ((y1 - 40) >= y2) or ((y1 + 20) <= y2) or ((y1 - 20) <= y2)) and (x1 - x2) <= 40 and (x2 - x1) <= 40 and (y2 - y1) <= 40 and (y1 - y2) <= 40:
+                        x_mitad, y_mitad = (((x1 + x2) / 2)-10, ((y1 + y2) / 2)-10)
+                        switch_a = Switch(x_mitad, y_mitad, x1, x2, y1, y2)
+                        switch_a.switch_proto(screen)
+                        x1, x2, y1, y2 = 0, 0, 0, 0
+                        boton_switch = False
+                        guardar_switch.append(switch_a)
+
+
+            elif conector_cercano and boton_led == False and boton_switch == False:
+
+                for conector in conectores:
+
+                    if conector_cercano == conector:
+
+                        if not cableado.dibujando_cable:
+
+                            cableado.comienzo_cable(conector)
+                        else:
+                            cableado.finalizar_cable(conector)
+                            ultimo_conector = conector_cercano
 
         
         #Manejo de evento del menú
@@ -959,7 +1247,10 @@ while running:
         #if rrr: 
         #    print("||| HAY CORRIENTE |||") 
                  
-    cableado.dibujar_cable_actual() 
+    cableado.dibujar_cable_actual()
+
+
+
  
     #Esto define el dibujo de las flechas acorde a la resolucion (interruptor x,y) 
     if boton_led:  
@@ -986,9 +1277,24 @@ while running:
     elif boton_led and boton_switch and boton_basurero: 
         boton_led = False 
         boton_switch = False 
-        boton_basurero = False 
- 
-    pygame.display.flip() 
+        boton_basurero = False
+
+
+        ##################### Muestra donde hay o no energy ######################
+    def dibujar_conectores(screen, conectores):
+        for conector in conectores:
+            if conector.fase:
+                pygame.draw.line(screen, "red", (conector.x, conector.y), (conector.x + conector.largo, conector.y),
+                                 6)
+            elif conector.neutro:
+                pygame.draw.line(screen, "blue", (conector.x, conector.y),
+                                 (conector.x + conector.largo, conector.y), 6)
+
+        ############################################################################
+    dibujar_conectores(screen, conectores)
+
+    pygame.display.flip()
+    CONECTORES_SIZE = 0 # evita exceso conectores
     mainClock.tick(60) 
  
 pygame.quit()
