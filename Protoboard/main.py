@@ -519,7 +519,7 @@ class Cableado:
 
     def encontrar(self, conector):
         actual = conector
-          while actual != actual.padre:
+        while actual != actual.padre:
             actual = actual.padre
         nodo_actual = conector # actual es el padre
         while nodo_actual != nodo_actual.padre:
@@ -840,37 +840,6 @@ class Led:
             end_x = start_x + int(circle_radius * math.cos(math.radians(angle))) 
             end_y = start_y + int(circle_radius * math.sin(math.radians(angle))) 
             pygame.draw.line(screen,self.color, (start_x, start_y), (end_x, end_y), 2)
-        
-class Basurero:
-    def __init__(self):
-        #No presenta atributos
-        pass
-     def eliminar_led(self,x,y):
-        rango_click = 10
-        #Buscador de led en la lista de los leds
-        for led in guardar_led:
-            #si se clickea en el rango correspondiente, se borra de la lista led
-            if led.x - rango_click <= x <= led.x + rango_click and led.y - rango_click <= y <= led.y + rango_click:
-                guardar_led.remove(led)
-
-    def eliminar_switch(self,x,y):
-        rango_click = 10
-        #Buscador de led en la lista de los switchs
-        for switch in guardar_switch:
-            #si se clickea en el rango correspondiente, se borra de la lista switch
-            if switch.x - rango_click <= x <= switch.x + rango_click and switch.y - rango_click <= y <= switch.y + rango_click:
-                guardar_switch.remove(switch)
-
-    def eliminar_cable(self,x,y):
-        rango_click = 10
-        #Buscador de cable en la lista de los cables
-        for cable in cables:
-            #si se clickea en el rango correspondiente, se borra de la lista cable
-            if cable[0].x - rango_click <= x <= cable[0].x + rango_click and cable[0].y - rango_click <= y <= cable[0].y + rango_click:
-                cables.remove(cable)
-            
-            elif cable[1].x - rango_click <= x <= cable[1].x + rango_click and cable[1].y - rango_click <= y <= cable[1].y + rango_click:
-                cables.remove(cable)
 class Switch:
     def __init__(self,x,y,x1,x2,y1,y2):
         self.x=x
@@ -894,7 +863,35 @@ class Switch:
             end_x = start_x + int(circle_radius * math.cos(math.radians(angle)))
             end_y = start_y + int(circle_radius * math.sin(math.radians(angle)))
             pygame.draw.line(screen, (0, 0, 0), (start_x, start_y), (end_x, end_y), 2)
-            
+class Basurero:
+    def __init__(self):
+        #No presenta atributos
+        pass
+    def eliminar_led(self,x,y):
+        rango_click = 10
+        #Buscador de led en la lista de los leds
+        for led in guardar_led:
+            #si se clickea en el rango correspondiente, se borra de la lista led
+            if led.x - rango_click <= x <= led.x + rango_click and led.y - rango_click <= y <= led.y + rango_click:
+                guardar_led.remove(led)
+    def eliminar_switch(self,x,y):
+        rango_click = 10
+        #Buscador de led en la lista de los switchs
+        for switch in guardar_switch:
+            #si se clickea en el rango correspondiente, se borra de la lista switch
+            if switch.x - rango_click <= x <= switch.x + rango_click and switch.y - rango_click <= y <= switch.y + rango_click:
+                guardar_switch.remove(switch)
+
+    def eliminar_cable(self,x,y):
+        rango_click = 10
+        #Buscador de cable en la lista de los cables
+        for cable in cables:
+            #si se clickea en el rango correspondiente, se borra de la lista cable
+            if cable[0].x - rango_click <= x <= cable[0].x + rango_click and cable[0].y - rango_click <= y <= cable[0].y + rango_click:
+                cables.remove(cable)
+
+            elif cable[1].x - rango_click <= x <= cable[1].x + rango_click and cable[1].y - rango_click <= y <= cable[1].y + rango_click:
+                cables.remove(cable)
 def dibujar_a(screen, x, y,ancho,alto,color):
     pygame.draw.line(screen, color, (x, y + alto), (x + ancho // 2, y), 2)  # Línea diagonal izquierda
     pygame.draw.line(screen, color, (x + ancho // 2, y), (x + ancho, y + alto), 2)  # Línea diagonal derecha
@@ -1161,66 +1158,45 @@ while running:
         elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and boton_basurero == False:  
             mouse_pos = event.pos 
             conector_cercano = punto_mas_cercano(mouse_pos, conectores, distancia_maxima) 
-            x, y = event.pos 
-            if boton_led: 
-                if not conector_cercano: 
-                    #print( )
-                    pass 
-                elif x1 ==0: 
-                    x1=conector_cercano.x 
-                    y1=conector_cercano.y 
-                else: 
-                    x2 =conector_cercano.x 
-                    y2 = conector_cercano.y 
-                    
-                    if (((x1 + 40) >= x2) or ((x1 - 40) <= x2) or (x1 == x2)) and (((y1 + 40) <= y2) or ((y1 - 40) >= y2) or (y1 == y2)) and (x1 - x2) <= 40 and (x2 - x1) <= 40 and (y2 - y1) <= 40 and (y1 - y2) <= 40: 
-                        x_mitad, y_mitad = ((x1 + x2) // 2, (y1 + y2) // 2) 
-                        led_a = Led((160, 0, 0), x_mitad, y_mitad, x1, x2, y1, y2) 
-                        led_a.led_apagada(screen)
-                        #print(x1, x2) 
-                        #print(y1, y2)  
-                        x1, x2, y1, y2 = 0, 0, 0, 0 
-                        guardar_led.append(led_a)
- 
-            elif boton_switch: 
-                if not conector_cercano: 
-                    #print( )
-                    pass 
-                elif x1 == 0: 
-                    x1 = conector_cercano.x 
-                    y1 = conector_cercano.y 
-                else: 
-                    x2 = conector_cercano.x 
-                    y2 = conector_cercano.y 
-                    if (((x1 + 40) >= x2) or ((x1 - 40) <= x2) or (x1 == x2) ) and (((y1 + 40) <= y2) or ((y1 - 40) >= y2) or (y1 == y2)) and (x1 - x2) <= 40 and (x2 - x1) <= 40 and (y2 - y1) <= 40 and (y1 - y2) <= 40: 
-                        x_mitad, y_mitad = ((x1 + x2) // 2, (y1 + y2) // 2) 
-                        switch_a = Switch(x_mitad, y_mitad, x1, x2, y1, y2) 
-                        switch_a.switch_proto(screen) 
-                        #print(x1, x2) 
-                        #print(y1, y2) 
-                        x1, x2, y1, y2 = 0, 0, 0, 0 
-                        guardar_switch.append(switch_a) 
-                    else:
-                        print("Lo siento, no se puede colocar el switch :(")
-                    boton_switch = False 
-                                 
-            elif boton_switch==True:
-                if not conector_cercano:
-                    print( )
-                elif x1==0:
-                    x1 = conector_cercano.x
-                    y1 = conector_cercano.y
-                else:
-                    x2 = conector_cercano.x
-                    y2 = conector_cercano.y
-                    if (((x1 + 40) >= x2) or ((x1 - 40) <= x2) or ((x1 + 20) <= x2) or ((x1 - 20) <= x2)) and (((y1 + 40) <= y2) or ((y1 - 40) >= y2) or ((y1 + 20) <= y2) or ((y1 - 20) <= y2)) and (x1 - x2) <= 40 and (x2 - x1) <= 40 and (y2 - y1) <= 40 and (y1 - y2) <= 40:
-                        x_mitad, y_mitad = (((x1 + x2) / 2)-10, ((y1 + y2) / 2)-10)
-                        switch_a = Switch(x_mitad, y_mitad, x1, x2, y1, y2)
-                        switch_a.switch_proto(screen)
-                        x1, x2, y1, y2 = 0, 0, 0, 0
-                        boton_switch = False
-                        guardar_switch.append(switch_a)
+            x, y = event.pos
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = event.pos
+                conector_cercano = punto_mas_cercano(mouse_pos, conectores, distancia_maxima)
+                x, y = event.pos
 
+                if boton_led == True:
+                    if not conector_cercano:
+                        print()
+                    elif x1 == 0:
+                        x1 = conector_cercano.x
+                        y1 = conector_cercano.y
+                    else:
+                        x2 = conector_cercano.x
+                        y2 = conector_cercano.y
+                        if (((x1 + 40) >= x2) or ((x1 - 40) <= x2) or ((x1 + 20) <= x2) or ((x1 - 20) <= x2)) and (((y1 + 40) <= y2) or ((y1 - 40) >= y2) or ((y1 + 20) <= y2) or ((y1 - 20) <= y2)) and ( x1 - x2) <= 40 and (x2 - x1) <= 40 and (y2 - y1) <= 40 and (y1 - y2) <= 40:
+                            x_mitad, y_mitad = ((x1 + x2) / 2, (y1 + y2) / 2)
+                            led_a = Led((160, 0, 0), x_mitad, y_mitad, x1, x2, y1, y2)
+                            led_a.led_apagada(screen)
+                            x1, x2, y1, y2 = 0, 0, 0, 0
+                            boton_led = False
+                            guardar_led.append(led_a)
+
+                elif boton_switch == True:
+                    if not conector_cercano:
+                        print()
+                    elif x1 == 0:
+                        x1 = conector_cercano.x
+                        y1 = conector_cercano.y
+                    else:
+                        x2 = conector_cercano.x
+                        y2 = conector_cercano.y
+                        if (((x1 + 40) >= x2) or ((x1 - 40) <= x2) or ((x1 + 20) <= x2) or ((x1 - 20) <= x2)) and (((y1 + 40) <= y2) or ((y1 - 40) >= y2) or ((y1 + 20) <= y2) or ((y1 - 20) <= y2)) and (x1 - x2) <= 40 and (x2 - x1) <= 40 and (y2 - y1) <= 40 and (y1 - y2) <= 40:
+                            x_mitad, y_mitad = (((x1 + x2) / 2) - 10, ((y1 + y2) / 2) - 10)
+                            switch_a = Switch(x_mitad, y_mitad, x1, x2, y1, y2)
+                            switch_a.switch_proto(screen)
+                            x1, x2, y1, y2 = 0, 0, 0, 0
+                            boton_switch = False
+                            guardar_switch.append(switch_a)
 
             elif conector_cercano and boton_led == False and boton_switch == False:
 
@@ -1229,7 +1205,6 @@ while running:
                     if conector_cercano == conector:
 
                         if not cableado.dibujando_cable:
-
                             cableado.comienzo_cable(conector)
                         else:
                             cableado.finalizar_cable(conector)
@@ -1248,10 +1223,6 @@ while running:
         #    print("||| HAY CORRIENTE |||") 
                  
     cableado.dibujar_cable_actual()
-
-
-
- 
     #Esto define el dibujo de las flechas acorde a la resolucion (interruptor x,y) 
     if boton_led:  
         menu.dibujar_flecha(boton_led, x_menu + 220, y_menu + 100) #valor referencial para las flechas 
