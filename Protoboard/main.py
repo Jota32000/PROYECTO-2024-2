@@ -1169,7 +1169,7 @@ while running:
                         for i in range (len(edicion_coordenadas)):
                             if cable[0].x == edicion_coordenadas[i] and cable[0].y == edicion_coordenadas[i+1]: #si las coordenadas del cable coinciden con las de la lista
                                 cable[0].x = edicion_coordenadas[i-2]   #se modifica el valor de x
-                                cable[0].y = edicion_coordenadas[i-2]   #se modifica el valor de y
+                                cable[0].y = edicion_coordenadas[i-1]   #se modifica el valor de y
                             i+=1
                         edicion_coordenadas.clear() #limpieza de lista
                         boton_edicion = False
