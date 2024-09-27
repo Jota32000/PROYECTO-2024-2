@@ -21,30 +21,16 @@ class Conector:
             # dibuja los puntos protoboard
             pygame.draw.line(screen, self.color, (self.x, self.y + i), (self.x + self.largo, self.y + i))
 
-    """def __str__(self):
-        return f"{self.nombre}\nx={self.x} y={self.y}"""
-
     def agregar_conexion(self, nodo):
         self.conexiones.append(nodo) # conexion bidireccional A->B | B->A
         nodo.conexiones.append(self)
         cableado.actualizarbosque(self, nodo)
-        """print("##########################################################")
-        print("origen: ", self.nombre, "\ndestino: ", nodo.nombre)
-        if self.conexiones:
-            print("----------- Lista conexiones -----------")
-            print("largo: ", len(self.conexiones))
-            self.imprimir_conexiones()"""
 
     def eliminar_conexion(self,nodo, nodo_objetivo):
         if nodo_objetivo in self.conexiones: # ve que no se haya eliminado ya la conexion con ese nodo
             nodo.conexiones.remove(nodo_objetivo)
             nodo_objetivo.conexiones.remove(nodo)
             cableado.buscar_conexiones(nodo, nodo_objetivo)
-
-    """def imprimir_conexiones(self):
-        print(f">>> Conexiones de {self.nombre}:")
-        for conector in self.conexiones:
-            print(conector)"""
 conectores = []
 boton_cable = False #Estado del boton del cable (activado = true o desactivado = false)
 boton_led = False #Estado del boton de la led (activado = true o desactivado = false)
@@ -609,15 +595,14 @@ class Cableado:
 
             if conector_inicio.fase or conector_inicio.neutro or conector_fin.fase or conector_fin.neutro:
                 if conector_inicio.fase and conector_fin.fase:
-                    color = (234, 79, 235) # morado
+                    color = (234, 79, 235)
                 elif conector_inicio.neutro and conector_fin.neutro:
-                    color = (61, 205, 234) # azul cielo dark
+                    color = (61, 205, 234)
                 else:
                     color = "black"
             else:
                 color = "black"
             pygame.draw.line(screen, color, (cable[0].x, cable[0].y), (cable[1].x, cable[1].y), 3)
-
     def comienzo_cable(self, conector_origen):
         self.inicio_cable = conector_origen
         self.dibujando_cable = True
@@ -796,6 +781,39 @@ class Led:
         self.y1 = y1
         self.y2 = y2
     def led_apagada(self,screen):
+        patita1 = punto_mas_cercano((self.x1, self.y1), conectores, distancia_maxima)
+        patita2 = punto_mas_cercano((self.x2, self.y2), conectores, distancia_maxima)
+        conector1 = None
+        conector2 = None
+        for i in conectores:
+            if i.x == patita1.x and i.y == patita1.y:
+                conector1 = i
+            elif i.x == patita2.x and i.y == patita2.y:
+                conector2 = i
+        if conector1 == None or conector2== None:
+            print("existe problemas en los conectores")
+        corriente_conector1 = False
+        if conector1.fase or conector1.neutro:
+            corriente_conector1 = True
+        # Verificar si conector2 tiene corriente
+        corriente_conector2 = False
+        if conector2.fase or conector2.neutro:
+            corriente_conector2 = True
+
+        if conector2.fase and conector1.fase:
+            corriente_conector1 = True
+            corriente_conector2 = False
+
+        if conector2.neutro and conector1.neutro:
+            corriente_conector1 = True
+            corriente_conector2 = False
+
+        # Cambiar color del LED según si ambos conectores tienen corriente
+        if corriente_conector1 and corriente_conector2:
+            self.color = (250, 0, 0)  # Color rojo para encendido
+        else:
+            self.color = (110, 0, 0)  # Color rojo oscuro para apagado
+
         pygame.draw.line(screen, (0, 0, 0, 0), (self.x1, self.y1), (self.x, self.y), 2)
         pygame.draw.line(screen, (0, 0, 0, 0), (self.x2, self.y2), (self.x, self.y), 2)
         for angle in range(0, 360, 3):
@@ -806,28 +824,41 @@ class Led:
             end_y = start_y + int(circle_radius * math.sin(math.radians(angle)))
             pygame.draw.line(screen,self.color, (start_x, start_y), (end_x, end_y), 2)
 class Switch:
-    def __init__(self,x,y,x1,x2,y1,y2):
-        self.x=x
-        self.y=y
-        self.x1=x1
-        self.x2=x2
-        self.y1=y1
-        self.y2=y2
-    def switch_proto(self,screen):
+    def __init__(self, x, y, x1, x2, y1, y2):
+        self.x = x
+        self.y = y
+        self.x1 = x1
+        self.x2 = x2
+        self.y1 = y1
+        self.y2 = y2
+        self.estado=False
+    def switch_proto(self, screen):
         lado = 20  # Tamaño del switch (cuadrado)
         body_color = (150, 150, 150)
         circle_radius = 5  # Radio del "círculo" en el medio
-        pygame.draw.line(screen, (0, 0, 0, 0), (self.x1, self.y1), (self.x+lado//2, self.y+lado//2), 2)#patita 1
-        pygame.draw.line(screen, (0, 0, 0, 0), (self.x2, self.y2), (self.x+lado//2, self.y+lado//2), 2)#patita 2
+        # Dibujar patitas
+        pygame.draw.line(screen, (0, 0, 0), (self.x1, self.y1), (self.x + lado // 2, self.y + lado // 2), 2)  # patita 1
+        pygame.draw.line(screen, (0, 0, 0), (self.x2, self.y2), (self.x + lado // 2, self.y + lado // 2), 2)  # patita 2
+
+        # Dibujar cuerpo del switch (con líneas)
         for i in range(lado):
-            pygame.draw.line(screen, body_color, (self.x, self.y + i), (self.x + lado,self.y + i))
-        # Dibujar el "círculo" en el centro
+            pygame.draw.line(screen, body_color, (self.x, self.y + i), (self.x + lado, self.y + i))
+
+        # Dibujar el "círculo" en el centro usando líneas
         for angle in range(0, 360, 10):
             start_x = self.x + lado // 2
             start_y = self.y + lado // 2
             end_x = start_x + int(circle_radius * math.cos(math.radians(angle)))
             end_y = start_y + int(circle_radius * math.sin(math.radians(angle)))
             pygame.draw.line(screen, (0, 0, 0), (start_x, start_y), (end_x, end_y), 2)
+
+        # Dibujar botón (usando líneas para crear un borde)
+        pygame.draw.line(screen, (0, 0, 0), (self.x, self.y), (self.x + lado, self.y), 2)  # Línea superior
+        pygame.draw.line(screen, (0, 0, 0), (self.x + lado, self.y), (self.x + lado, self.y + lado), 2)  # Línea derecha
+        pygame.draw.line(screen, (0, 0, 0), (self.x + lado, self.y + lado), (self.x, self.y + lado),
+                         2)  # Línea inferior
+        pygame.draw.line(screen, (0, 0, 0), (self.x, self.y + lado), (self.x, self.y), 2)  # Línea izquierda
+
 class Basurero:
     def __init__(self):
         #No presenta atributos
@@ -940,6 +971,12 @@ def dibujar_0(screen,x,y,alto,color):
     pygame.draw.line(screen, color, (x, y + alto), (x + alto, y + alto), 2)
     pygame.draw.line(screen, color, (x + alto, y+alto), (x + alto, y ), 2)
     pygame.draw.line(screen, color, (x, y), (x+alto, y), 2)
+def switch_presionado(switch, mouse_pos):
+    lado = 20  # Tamaño del switch (cuadrado)
+    x, y = mouse_pos
+    if switch.x <= x <= switch.x + lado and switch.y <= y <= switch.y + lado:
+        return True
+    return False
 #Main
 pygame.init()
 
@@ -1056,6 +1093,30 @@ while running:
         #manejo de eventos normal para cables, led y switch
 
         elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and boton_basurero == False:
+            mouse_pos = pygame.mouse.get_pos()  # Obtén la posición del mouse
+            for switch in guardar_switch:
+                if switch_presionado(switch, mouse_pos):  # Verifica si un switch fue presionado
+                    print(f"Switch presionado en coordenadas: ({switch.x}, {switch.y})")
+                    patita1 = punto_mas_cercano((switch.x1,switch.y1), conectores, distancia_maxima)
+                    patita2 = punto_mas_cercano((switch.x2,switch.y2), conectores, distancia_maxima)
+                    conector_p1=None
+                    conector_p2 = None
+                    for i in conectores:
+                        if i.x == patita1.x and i.y == patita1.y:
+                            conector_p1 = i
+                        elif i.x == patita2.x and i.y == patita2.y:
+                            conector_p2 = i
+                    if conector_p1==None or conector_p2== None:
+                        print("existe problemas en los conectores")
+                    if switch.estado== True:
+                        conector_p1.eliminar_conexion(conector_p1,conector_p2)
+                        switch.estado= False
+                        print("Switch apagado")
+                    if switch.estado==False:
+                        conector_p1.agregar_conexion(conector_p2)
+                        switch.estado= True
+                        print("Switch encendido")
+
             mouse_pos = event.pos
             conector_cercano = punto_mas_cercano(mouse_pos, conectores, distancia_maxima)
             x, y = event.pos
@@ -1082,33 +1143,8 @@ while running:
                         led_coordenadas.append(tupla1)
                         led_coordenadas.append(tupla2)
                         x_mitad, y_mitad = ((x1 + x2) / 2, (y1 + y2) / 2)
-                        c_encendida = (250, 0, 0)  # Color rojo para encendido
                         c_apagada = (110, 0, 0)  # Color rojo oscuro para apagado
-                            
-                        # Verificar si conector1 tiene corriente
-                        corriente_conector1 = False
-                        if conector1.fase or conector1.neutro:
-                            corriente_conector1 = True
-
-                        # Verificar si conector2 tiene corriente
-                        corriente_conector2 = False
-                        if conector2.fase or conector2.neutro:
-                            corriente_conector2 = True
-
-                        if conector2.fase and conector1.fase:
-                            corriente_conector1 = True
-                            corriente_conector2 = False
-
-                        if conector2.neutro and conector1.neutro:
-                            corriente_conector1 = True
-                            corriente_conector2 = False
-
-                        # Cambiar color del LED según si ambos conectores tienen corriente
-                        if corriente_conector1 and corriente_conector2:
-                            led_a = Led(c_encendida, x_mitad, y_mitad, x1, x2, y1, y2)
-                        else:
-                            led_a = Led(c_apagada, x_mitad, y_mitad, x1, x2, y1, y2)
-
+                        led_a = Led(c_apagada, x_mitad, y_mitad, x1, x2, y1, y2)
                         # Dibujar el LED
                         led_a.led_apagada(screen)
 
@@ -1120,7 +1156,6 @@ while running:
             elif boton_switch:
                 if not conector_cercano:
                     pass
-                    #print()
                 elif x1 == 0:
                     x1 = conector_cercano.x
                     y1 = conector_cercano.y
@@ -1354,6 +1389,7 @@ while running:
                             boton_edicion = False 
                             break
                     i+=2
+
                 
         #Manejo de evento del menú
         menu.manejar_eventos(event)
@@ -1380,6 +1416,12 @@ while running:
         menu.dibujar_recuadro_escogido(screen,100,x_menu + 520,y_menu + 15)     
         menu.dib_basurero(screen, x_menu + 535, y_menu + 30)
 
+    elif boton_led and boton_switch and boton_basurero:
+        boton_led = False
+        boton_switch = False
+        boton_basurero = False
+
+
         ##################### Muestra donde hay o no energy ######################
 
     for c in conectores: # busca las pilas y las envia a cambiar o no estado fase / neutro
@@ -1398,23 +1440,8 @@ while running:
                     pygame.draw.line(screen, "blue", (conector.x, conector.y), (conector.x + conector.largo, conector.y),
                                      6)
 
-
-        ############################################################################
     dibujar_conectores(screen, conectores)
     pygame.display.flip()
     CONECTORES_SIZE = 0  # evita exceso conectores
     mainClock.tick(60)
 pygame.quit()
-"""print("\n|------------- INFO -------------|\n")
-aux=0
-for c in conectores:
-    if c.nombre != c.padre.nombre:
-        print(f"{aux}) N {c.nombre} P {c.padre.nombre}")
-        aux+=1
-
-print("\n|------------- TEND -------------|\n")"""
-"""print("Conexiones restantes:")
-for nodo in conectores:
-    conexiones = [n.nombre for n in nodo.conexiones]
-    if conexiones:
-        print(f"Nodo {nodo.nombre} está conectado con: {conexiones}")"""
