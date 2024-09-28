@@ -1211,23 +1211,23 @@ while running:
                                 cables.insert(i,(nuevo,cable[1]))       #Inserta directamente un nuevo cable simulando edición
 
                         if start and end:
-                            start.eliminar_conexion(start, end)
-                            if start.nombre.startswith(("conector1_", "conector2_")):
+                            end.eliminar_conexion(start, end)
+                            if end.nombre.startswith(("conector1_", "conector2_")):
                                  for nodo in conectores:
-                                    if nodo.y == start.y:
-                                        nodo.eliminar_conexion(nodo, end)
+                                    if nodo.y == end.y:
+                                        nodo.eliminar_conexion(nodo, start)
                             # -------------------- elimina columnas ------------------------
                             else:
                                 #print("--------------------------------")
                                 cont=0
                                 for nodo in conectores:
-                                    if nodo.x == start.x:
-                                        if start.nombre.startswith("conector3_"):
+                                    if nodo.x == end.x:
+                                        if end.nombre.startswith("conector3_"):
                                             #print(nodo.nombre,"\t",cont)
                                             cont+=1
-                                            nodo.eliminar_conexion(nodo, end)
-                                        elif start.nombre.startswith("conector4_"):
-                                            nodo.eliminar_conexion(nodo, end) 
+                                            nodo.eliminar_conexion(nodo, start)
+                                        elif end.nombre.startswith("conector4_"):
+                                            nodo.eliminar_conexion(nodo, start) 
                             # ------------------------ Agregar corriente en destino ------------------------
                             if start.nombre in ["pila+", "pila-"]:          # Coordenadas de inicio / coordenadas de destino ( tipo conector)
                                 for nodo in conectores:
