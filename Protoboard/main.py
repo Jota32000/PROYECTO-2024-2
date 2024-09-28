@@ -653,11 +653,10 @@ class Cableado:
             return
 
             #------------------ Fin Validaciones de cables -------------------
-        if not self.quitar_cable(self.inicio_cable, conector_siguiente):
+        if not self.quitar_cable(self.inicio_cable, conector_siguiente):    # Coordenadas de inicio / coordenadas de destino
             cables.append((self.inicio_cable, conector_siguiente))
             conectores_cables.append(conector_siguiente)
             # -----------------------------------------------------------------
-
             if self.inicio_cable.nombre in ["pila+", "pila-"]:
                 for nodo in conectores:
                     if nodo.y == conector_siguiente.y:  # ver si estan en la misma fila
@@ -673,7 +672,6 @@ class Cableado:
                             if nodo.nombre.startswith("conector4_"):
                                 if nodo.nombre.startswith("conector4_") and nodo.nombre != self.inicio_cable.nombre:
                                     self.inicio_cable.agregar_conexion(nodo)
-
         self.dibujando_cable = False
         self.inicio_cable = None
     def quitar_cable(self, start, end):
@@ -862,7 +860,6 @@ class Switch:
         pygame.draw.line(screen, (0, 0, 0), (self.x + lado, self.y + lado), (self.x, self.y + lado),
                          2)  # Línea inferior
         pygame.draw.line(screen, (0, 0, 0), (self.x, self.y + lado), (self.x, self.y), 2)  # Línea izquierda
-
 class Basurero:
     def __init__(self):
         #No presenta atributos
@@ -1196,32 +1193,73 @@ while running:
                 if conector_cercano == None:
                     pass
                 else:
-                    edicion_coordenadas.append(conector_cercano) 
-        
+                    edicion_coordenadas.append(conector_cercano)
+                    #print("Origen: ",cables[0][0].x,cables[0][0].y)
+                    #print("Destino: ",cables[0][1].x,cables[0][1].y)
+                    #print("Edición: ",edicion_coordenadas[len(edicion_coordenadas) - 1].x,edicion_coordenadas[len(edicion_coordenadas) - 1].y)
+
                 for cable in cables:
                     if cable[0].x - rango_click <= x <= cable[0].x + rango_click and cable[0].y - rango_click <= y <= cable[0].y + rango_click:
                         print("entró en el origen del cable")
+                        start = cable[1]
+                        end = cable[0]
                         for i in range(len(cables)):
                             if cable[0] == cables[i][0]:
                                 cables.pop(i)                           #Elimina el cable simulando edición
                                 indice = len(edicion_coordenadas) - 2   #Indicar indice de la lista "edicion_coordenadas"
                                 nuevo = (edicion_coordenadas[indice])   #Obtener coordenadas de tipo conector
                                 cables.insert(i,(nuevo,cable[1]))       #Inserta directamente un nuevo cable simulando edición
-                                break
+
+                        if start and end:
+                            start.eliminar_conexion(start, end)
+                            if start.nombre.startswith(("conector1_", "conector2_")):
+                                 for nodo in conectores:
+                                    if nodo.y == start.y:
+                                        nodo.eliminar_conexion(nodo, end)
+                            # -------------------- elimina columnas ------------------------
+                            else:
+                                #print("--------------------------------")
+                                cont=0
+                                for nodo in conectores:
+                                    if nodo.x == start.x:
+                                        if start.nombre.startswith("conector3_"):
+                                            #print(nodo.nombre,"\t",cont)
+                                            cont+=1
+                                            nodo.eliminar_conexion(nodo, end)
+                                        elif start.nombre.startswith("conector4_"):
+                                            nodo.eliminar_conexion(nodo, end) 
+                            # ------------------------ Agregar corriente en destino ------------------------
+                            if start.nombre in ["pila+", "pila-"]:          # Coordenadas de inicio / coordenadas de destino ( tipo conector)
+                                for nodo in conectores:
+                                    if nodo.y == nuevo.y:  # ver si estan en la misma fila
+                                        start.agregar_conexion(nodo)
+                            else:
+                                for nodo in conectores:
+                                    if nodo.x == nuevo.x:  # ver si estan en la misma columna | se limita el alcance
+                                        if nuevo.nombre.startswith("conector3_"):
+                                            if nodo.nombre.startswith("conector3_") and nodo.nombre!=start.nombre:
+                                                start.agregar_conexion(nodo)
+
+                                        elif nuevo.nombre.startswith("conector4_"):
+                                            if nodo.nombre.startswith("conector4_"):
+                                                if nodo.nombre.startswith("conector4_") and nodo.nombre != start.nombre:
+                                                    start.agregar_conexion(nodo)                                               
                         edicion_coordenadas.clear() #limpieza de lista
                         boton_edicion = False
                        
                     elif cable[1].x - rango_click <= x <= cable[1].x + rango_click and cable[1].y - rango_click <= y <= cable[1].y + rango_click: 
                         print("Entró en el destino del cable")
+                        start = cable[1]
+                        end = cable[0]
                         for i in range(len(cables)):
                             if cable[1] == cables[i][1]:
                                 cables.pop(i)                           #Elimina el cable simulando edición
                                 indice = len(edicion_coordenadas) - 2   #Indicar indice de la lista "edicion_coordenadas"
                                 nuevo = (edicion_coordenadas[indice])   #Obtener coordenadas de tipo conector
-                                cables.insert(i,(nuevo,cable[0]))       #Inserta directamente un nuevo cable simulando edición
+                                cables.insert(i,(cable[0],nuevo))       #Inserta directamente un nuevo cable simulando edición
                                 break
 
-                        """""
+
                         if start and end:
                             start.eliminar_conexion(start, end)
                             if start.nombre.startswith(("conector1_", "conector2_")):
@@ -1230,27 +1268,42 @@ while running:
                                         nodo.eliminar_conexion(nodo, end)
                             # -------------------- elimina columnas ------------------------
                             else:
-                                print("--------------------------------")
+                                #print("--------------------------------")
                                 cont=0
                                 for nodo in conectores:
                                     if nodo.x == start.x:
                                         if start.nombre.startswith("conector3_"):
-                                            print(nodo.nombre,"\t",cont)
+                                            #print(nodo.nombre,"\t",cont)
                                             cont+=1
                                             nodo.eliminar_conexion(nodo, end)
 
                                         elif start.nombre.startswith("conector4_"):
                                             nodo.eliminar_conexion(nodo, end)
-                        """""
+                            
+                            # ------------------------ Agregar corriente en destino ------------------------
+                            if end.nombre in ["pila+", "pila-"]:          # Coordenadas de inicio / coordenadas de destino ( tipo conector)
+                                for nodo in conectores:
+                                    if nodo.y == nuevo.y:  # ver si estan en la misma fila
+                                        end.agregar_conexion(nodo)
+                            else:
+                                for nodo in conectores:
+                                    if nodo.x == nuevo.x:  # ver si estan en la misma columna | se limita el alcance
+                                        if nuevo.nombre.startswith("conector3_"):
+                                            if nodo.nombre.startswith("conector3_") and nodo.nombre!=end.nombre:
+                                                end.agregar_conexion(nodo)
+
+                                        elif nuevo.nombre.startswith("conector4_"):
+                                            if nodo.nombre.startswith("conector4_"):
+                                                if nodo.nombre.startswith("conector4_") and nodo.nombre != end.nombre:
+                                                    end.agregar_conexion(nodo)                                                     
                         edicion_coordenadas.clear() #limpieza de lista
                         boton_edicion = False
-        
+                    
                 while i < len(led_coordenadas):
                     if led_coordenadas[i][0] == edicion_coordenadas[len(edicion_coordenadas) - 1].x and led_coordenadas[i][1] == edicion_coordenadas[len(edicion_coordenadas) - 1].y: 
                         print("entró en el origen del LED")
                         x = edicion_coordenadas[len(edicion_coordenadas) - 2].x #coordenada x que el usuario escogio para cambiar
                         y = edicion_coordenadas[len(edicion_coordenadas) - 2].y #coordenada y que el usuario escogio para cambiar
-
                         x_origen = led_coordenadas[i][0]
                         y_origen = led_coordenadas[i][1]
                         x_destino = led_coordenadas[i+1][0]
@@ -1355,7 +1408,7 @@ while running:
                             boton_edicion = False
                             break
                     i+=2
-                i=0
+                i = 0
                 while i < len(switch_coordenadas):
                     if switch_coordenadas[i][0] == edicion_coordenadas[len(edicion_coordenadas) - 1].x and switch_coordenadas[i][1] == edicion_coordenadas[len(edicion_coordenadas) - 1].y:
                         print("Entró en el origen del switch")
@@ -1442,10 +1495,6 @@ while running:
         menu.dibujar_recuadro_escogido(screen,100,x_menu + 520,y_menu + 15)     
         menu.dib_basurero(screen, x_menu + 535, y_menu + 30)
 
-    elif boton_led and boton_switch and boton_basurero:
-        boton_led = False
-        boton_switch = False
-        boton_basurero = False
         ##################### Muestra donde hay o no energy ######################
 
     for c in conectores: # busca las pilas y las envia a cambiar o no estado fase / neutro
