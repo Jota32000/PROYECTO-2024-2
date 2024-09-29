@@ -48,13 +48,14 @@ class Conector:
         print(f">>> Conexiones de {self.nombre}:")
         for conector in self.conexiones:
             print(conector)"""
-
 conectores = []
 boton_cable = False #Estado del boton del cable (activado = true o desactivado = false)
 boton_led = False #Estado del boton de la led (activado = true o desactivado = false)
 boton_switch = False #Estado del boton del switch (activado = true o desactivado = false)
 boton_edicion = False #Estado del boton de edición (activado = true o desactivado = false)
 boton_basurero = False #Estado del boton del basurero (activado=true o desactivado = false)
+global verificador
+verificador = False #Estado de verificador a la hora de eliminar un elemento
 cables = []
 conectores_cables = []
 edicion_coordenadas = []
@@ -215,8 +216,6 @@ class Protoboard:
                     primer_conector_columna = conector
                 else:
                     primer_conector_columna.agregar_conexion(conector)
-
-
 class Pila:
     def __init__(self,pila_x,pila_y):
         self.pila_x = pila_x
@@ -621,7 +620,6 @@ class Menu:
         else:
             boton_basurero = not boton_basurero  # Desactivar el basurero
 class Cableado:
-
     def __init__(self):
         self.dibujando_cable = False
         self.inicio_cable = None
@@ -868,10 +866,6 @@ class Cableado:
         guardar_switch.clear()
         #--------- FIN ---------
         return
-
-
-
-
 class Led:
     def __init__(self,color,x,y,x1,x2,y1,y2):
         self.color=color
@@ -965,28 +959,80 @@ class Basurero:
         pass
     def eliminar_led(self,x,y):
         rango_click = 10
+        global verificador
         #Buscador de led en la lista de los leds
         for led in guardar_led:
             #si se clickea en el rango correspondiente, se borra de la lista led
             if led.x - rango_click <= x <= led.x + rango_click and led.y - rango_click <= y <= led.y + rango_click:
                 guardar_led.remove(led)
+            verificador = True
     def eliminar_switch(self,x,y):
         rango_click = 20
+        global verificador
         #Buscador de led en la lista de los switchs
         for switch in guardar_switch:
             #si se clickea en el rango correspondiente, se borra de la lista switch
             if switch.x - rango_click <= x <= switch.x + rango_click and switch.y - rango_click <= y <= switch.y + rango_click:
                 guardar_switch.remove(switch)
-
+            verificador = True
     def eliminar_cable(self,x,y):
         rango_click = 10
+        global verificador
         #Buscador de cable en la lista de los cables
         for cable in cables:
             #si se clickea en el rango correspondiente, se borra de la lista cable
             if cable[0].x - rango_click <= x <= cable[0].x + rango_click and cable[0].y - rango_click <= y <= cable[0].y + rango_click:
+                start = cable[1]
+                end = cable[0]
                 cables.remove(cable)
+                #print("Click en el origen del cable")
+
+                if start and end:
+                    end.eliminar_conexion(start, end)
+                    if end.nombre.startswith(("conector1_", "conector2_")):
+                        for nodo in conectores:
+                            if nodo.y == end.y:
+                                nodo.eliminar_conexion(nodo, start)
+                    # -------------------- elimina columnas ------------------------
+                    else:
+                        #print("--------------------------------")
+                        cont=0
+                        for nodo in conectores:
+                            if nodo.x == start.x:
+                                if start.nombre.startswith("conector3_"):
+                                    #print(nodo.nombre,"\t",cont)
+                                    cont+=1
+                                    nodo.eliminar_conexion(nodo, end)
+                                elif end.nombre.startswith("conector4_"):
+                                    nodo.eliminar_conexion(nodo, end)
+                verificador = True
+
             elif cable[1].x - rango_click <= x <= cable[1].x + rango_click and cable[1].y - rango_click <= y <= cable[1].y + rango_click:
+                start = cable[1]
+                end = cable[0]
                 cables.remove(cable)
+                #print("Click en el destino del cable")
+
+                if start and end:
+                    start.eliminar_conexion(start, end)
+                    if start.nombre.startswith(("conector1_", "conector2_")):
+                        for nodo in conectores:
+                            if nodo.y == start.y:
+                                nodo.eliminar_conexion(nodo, end)
+                    # -------------------- elimina columnas ------------------------
+                    else:
+                        #print("--------------------------------")
+                        cont=0
+                        for nodo in conectores:
+                            if nodo.x == start.x:
+                                if start.nombre.startswith("conector3_"):
+                                    #print(nodo.nombre,"\t",cont)
+                                    cont+=1
+                                    nodo.eliminar_conexion(nodo, end)
+
+                                elif start.nombre.startswith("conector4_"):
+                                    nodo.eliminar_conexion(nodo, end)
+                verificador = True                                        
 def dibujar_a(screen, x, y,ancho,alto,color):
     pygame.draw.line(screen, color, (x, y + alto), (x + ancho // 2, y), 2)  # Línea diagonal izquierda
     pygame.draw.line(screen, color, (x + ancho // 2, y), (x + ancho, y + alto), 2)  # Línea diagonal derecha
@@ -1167,7 +1213,6 @@ while running:
 
     # Manejo de eventos de la pantalla
     for event in pygame.event.get():
-
         if event.type == QUIT or event.type == K_ESCAPE or event.type == pygame.QUIT:
             running = False
         if event.type == VIDEORESIZE:
@@ -1182,16 +1227,18 @@ while running:
                 else:
                     screen = pygame.display.set_mode((screen.get_width(), screen.get_height()), pygame.RESIZABLE)
 
-        #manejo de eventos especial para que cuando se quiera eliminar un item, se elimine bien y no se quiera agregar un cable
-
+        # Manejo de eventos especial para que cuando se quiera eliminar un item, se elimine bien y no se quiera agregar un cable
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and boton_basurero:
                 (mouse_x, mouse_y) = pygame.mouse.get_pos()
-                basurero.eliminar_led(mouse_x, mouse_y)
-                basurero.eliminar_switch(mouse_x, mouse_y)
                 basurero.eliminar_cable(mouse_x, mouse_y)
+                if verificador == False:
+                    basurero.eliminar_led(mouse_x, mouse_y)
+                if verificador == False:
+                    basurero.eliminar_switch(mouse_x, mouse_y)
+                verificador = False
                 boton_basurero = False
-        #manejo de eventos normal para cables, led y switch
 
+        # Manejo de eventos normal para cables, led y switch
         elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and boton_basurero == False:
             mouse_pos = pygame.mouse.get_pos()  # Obtén la posición del mouse
             for switch in guardar_switch:
@@ -1294,13 +1341,10 @@ while running:
                     pass
                 else:
                     edicion_coordenadas.append(conector_cercano)
-                    #print("Origen: ",cables[0][0].x,cables[0][0].y)
-                    #print("Destino: ",cables[0][1].x,cables[0][1].y)
-                    #print("Edición: ",edicion_coordenadas[len(edicion_coordenadas) - 1].x,edicion_coordenadas[len(edicion_coordenadas) - 1].y)
 
                 for cable in cables:
                     if cable[0].x - rango_click <= x <= cable[0].x + rango_click and cable[0].y - rango_click <= y <= cable[0].y + rango_click:
-                        print("entró en el origen del cable")
+                        #print("entró en el origen del cable")
                         start = cable[1]
                         end = cable[0]
                         for i in range(len(cables)):
@@ -1349,7 +1393,7 @@ while running:
                         boton_edicion = False
                        
                     elif cable[1].x - rango_click <= x <= cable[1].x + rango_click and cable[1].y - rango_click <= y <= cable[1].y + rango_click: 
-                        print("Entró en el destino del cable")
+                        #print("Entró en el destino del cable")
                         start = cable[1]
                         end = cable[0]
                         for i in range(len(cables)):
@@ -1359,7 +1403,6 @@ while running:
                                 nuevo = (edicion_coordenadas[indice])   #Obtener coordenadas de tipo conector
                                 cables.insert(i,(cable[0],nuevo))       #Inserta directamente un nuevo cable simulando edición
                                 break
-
 
                         if start and end:
                             start.eliminar_conexion(start, end)
@@ -1403,7 +1446,7 @@ while running:
                     
                 while i < len(led_coordenadas) and validador == False:
                     if led_coordenadas[i][0] == edicion_coordenadas[len(edicion_coordenadas) - 1].x and led_coordenadas[i][1] == edicion_coordenadas[len(edicion_coordenadas) - 1].y: 
-                        print("entró en el origen del LED")
+                        #print("entró en el origen del LED")
                         x = edicion_coordenadas[len(edicion_coordenadas) - 2].x #coordenada x que el usuario escogio para cambiar
                         y = edicion_coordenadas[len(edicion_coordenadas) - 2].y #coordenada y que el usuario escogio para cambiar
                         x_origen = led_coordenadas[i][0]
@@ -1457,7 +1500,7 @@ while running:
                             break
 
                     elif led_coordenadas[i+1][0] == edicion_coordenadas[len(edicion_coordenadas) - 1].x and led_coordenadas[i+1][1] == edicion_coordenadas[len(edicion_coordenadas) - 1].y: 
-                        print("Entró en el destino del LED")
+                        #print("Entró en el destino del LED")
                         x = edicion_coordenadas[len(edicion_coordenadas) - 2].x #coordenada x que el usuario escogio para cambiar
                         y = edicion_coordenadas[len(edicion_coordenadas) - 2].y #coordenada y que el usuario escogio para cambiar
                         x_origen = led_coordenadas[i][0]    #Obtengo coordenada x de origen
@@ -1515,7 +1558,7 @@ while running:
                 i = 0
                 while i < len(switch_coordenadas) and validador == False:
                     if switch_coordenadas[i][0] == edicion_coordenadas[len(edicion_coordenadas) - 1].x and switch_coordenadas[i][1] == edicion_coordenadas[len(edicion_coordenadas) - 1].y:
-                        print("Entró en el origen del switch")
+                        #print("Entró en el origen del switch")
                         x = edicion_coordenadas[len(edicion_coordenadas) - 2].x #coordenada x que el usuario escogio para cambiar
                         y = edicion_coordenadas[len(edicion_coordenadas) - 2].y #coordenada y que el usuario escogio para cambiar
                         x_origen = switch_coordenadas[i][0] #Obtengo coordenada x de origen
@@ -1546,7 +1589,7 @@ while running:
                             break
 
                     elif switch_coordenadas[i+1][0] == edicion_coordenadas[len(edicion_coordenadas) - 1].x and switch_coordenadas[i+1][1] == edicion_coordenadas[len(edicion_coordenadas) - 1].y:   
-                        print("Entró en el destino del switch")
+                        #print("Entró en el destino del switch")
                         x = edicion_coordenadas[len(edicion_coordenadas) - 2].x #coordenada x que el usuario escogio para cambiar
                         y = edicion_coordenadas[len(edicion_coordenadas) - 2].y #coordenada y que el usuario escogio para cambiar
                         x_origen = switch_coordenadas[i][0]
@@ -1600,8 +1643,6 @@ while running:
     elif boton_basurero:
         menu.dibujar_recuadro_escogido(screen,100,x_menu + 520,y_menu + 15)     
         menu.dib_basurero(screen, x_menu + 535, y_menu + 30)
-
-
 
     for c in conectores: # busca las pilas y las envia a cambiar o no estado fase / neutro
         if c.nombre == "pila+":
