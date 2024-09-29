@@ -1286,6 +1286,7 @@ while running:
                  
             elif boton_edicion:
                 i = 0
+                validador = False
                 rango_click = 10
                 mouse_pos = pygame.mouse.get_pos()
                 conector_cercano = punto_mas_cercano(mouse_pos, conectores, distancia_maxima) #obtencion de punto cercano
@@ -1344,6 +1345,7 @@ while running:
                                                 if nodo.nombre.startswith("conector4_") and nodo.nombre != start.nombre:
                                                     start.agregar_conexion(nodo)                                               
                         edicion_coordenadas.clear() #limpieza de lista
+                        validador = True
                         boton_edicion = False
                        
                     elif cable[1].x - rango_click <= x <= cable[1].x + rango_click and cable[1].y - rango_click <= y <= cable[1].y + rango_click: 
@@ -1396,9 +1398,10 @@ while running:
                                                 if nodo.nombre.startswith("conector4_") and nodo.nombre != end.nombre:
                                                     end.agregar_conexion(nodo)                                                     
                         edicion_coordenadas.clear() #limpieza de lista
+                        validador = True
                         boton_edicion = False
                     
-                while i < len(led_coordenadas):
+                while i < len(led_coordenadas) and validador == False:
                     if led_coordenadas[i][0] == edicion_coordenadas[len(edicion_coordenadas) - 1].x and led_coordenadas[i][1] == edicion_coordenadas[len(edicion_coordenadas) - 1].y: 
                         print("entró en el origen del LED")
                         x = edicion_coordenadas[len(edicion_coordenadas) - 2].x #coordenada x que el usuario escogio para cambiar
@@ -1450,6 +1453,7 @@ while running:
                             guardar_led.insert(i, led_a) # Insertar directamente el LED en la posición original
                             led_coordenadas[i] = x,y
                             boton_edicion = False 
+                            validador = True
                             break
 
                     elif led_coordenadas[i+1][0] == edicion_coordenadas[len(edicion_coordenadas) - 1].x and led_coordenadas[i+1][1] == edicion_coordenadas[len(edicion_coordenadas) - 1].y: 
@@ -1505,10 +1509,11 @@ while running:
                             guardar_led.insert(i, led_a) # Inserta directamente en la posicion correspondiente las nuevas coordenadas
                             led_coordenadas[i+1] = x,y # Actualiza las coordenadas en la lista de las posiciones de cada led
                             boton_edicion = False
+                            validador = True
                             break
                     i+=2
                 i = 0
-                while i < len(switch_coordenadas):
+                while i < len(switch_coordenadas) and validador == False:
                     if switch_coordenadas[i][0] == edicion_coordenadas[len(edicion_coordenadas) - 1].x and switch_coordenadas[i][1] == edicion_coordenadas[len(edicion_coordenadas) - 1].y:
                         print("Entró en el origen del switch")
                         x = edicion_coordenadas[len(edicion_coordenadas) - 2].x #coordenada x que el usuario escogio para cambiar
@@ -1537,6 +1542,7 @@ while running:
                             guardar_switch.insert(i, switch_a) # Insertar directamente el switch en la posición original
                             switch_coordenadas[i] = (x,y) # Actualiza las coordenadas en la lista de las posiciones de cada switch
                             boton_edicion = False 
+                            validador = True
                             break
 
                     elif switch_coordenadas[i+1][0] == edicion_coordenadas[len(edicion_coordenadas) - 1].x and switch_coordenadas[i+1][1] == edicion_coordenadas[len(edicion_coordenadas) - 1].y:   
@@ -1566,6 +1572,7 @@ while running:
                             guardar_switch.insert(i, switch_a) # Insertar directamente el switch en la posición original
                             switch_coordenadas[i+1] = (x,y) # Actualiza las coordenadas en la lista de las posiciones de cada switch
                             boton_edicion = False 
+                            validador = True
                             break
                     i+=2
 
@@ -1601,12 +1608,12 @@ while running:
             if not c.conexiones:
                 c.padre =c
             cableado.energy_protoboard(c)
-            print("+",c.padre.nombre)
+            #print("+",c.padre.nombre)
         if c.nombre == "pila-":
             if not c.conexiones:
                 c.padre =c
             cableado.energy_protoboard(c)
-            print("-",c.padre.nombre)
+            #print("-",c.padre.nombre)
 
     def dibujar_conectores(screen, conectores): # le da color a los puntos segun el tipo de energy
         for conector in conectores:
@@ -1642,6 +1649,3 @@ for nodo in conectores:
 """for nodo in conectores:
     if nodo.padre != nodo:
         print ("Nodo",nodo.nombre," padre",nodo.padre.nombre)"""
-
-
-
