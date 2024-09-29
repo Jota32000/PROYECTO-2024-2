@@ -1321,13 +1321,13 @@ while running:
                                 #print("--------------------------------")
                                 cont=0
                                 for nodo in conectores:
-                                    if nodo.x == end.x:
-                                        if end.nombre.startswith("conector3_"):
+                                    if nodo.x == start.x:
+                                        if start.nombre.startswith("conector3_"):
                                             #print(nodo.nombre,"\t",cont)
                                             cont+=1
-                                            nodo.eliminar_conexion(nodo, start)
+                                            nodo.eliminar_conexion(nodo, end)
                                         elif end.nombre.startswith("conector4_"):
-                                            nodo.eliminar_conexion(nodo, start) 
+                                            nodo.eliminar_conexion(nodo, end) 
                             # ------------------------ Agregar corriente en destino ------------------------
                             if start.nombre in ["pila+", "pila-"]:          # Coordenadas de inicio / coordenadas de destino ( tipo conector)
                                 for nodo in conectores:
