@@ -21,16 +21,34 @@ class Conector:
             # dibuja los puntos protoboard
             pygame.draw.line(screen, self.color, (self.x, self.y + i), (self.x + self.largo, self.y + i))
 
+
+    """def __str__(self):
+        return f"{self.nombre}\nx={self.x} y={self.y}"""
+
+
     def agregar_conexion(self, nodo):
         self.conexiones.append(nodo) # conexion bidireccional A->B | B->A
         nodo.conexiones.append(self)
         cableado.actualizarbosque(self, nodo)
+        """print("##########################################################")
+        print("origen: ", self.nombre, "\ndestino: ", nodo.nombre)
+        if self.conexiones:
+            print("----------- Lista conexiones -----------")
+            print("largo: ", len(self.conexiones))
+            self.imprimir_conexiones()"""
 
     def eliminar_conexion(self,nodo, nodo_objetivo):
         if nodo_objetivo in self.conexiones: # ve que no se haya eliminado ya la conexion con ese nodo
             nodo.conexiones.remove(nodo_objetivo)
             nodo_objetivo.conexiones.remove(nodo)
             cableado.buscar_conexiones(nodo, nodo_objetivo)
+
+
+    """def imprimir_conexiones(self):
+        print(f">>> Conexiones de {self.nombre}:")
+        for conector in self.conexiones:
+            print(conector)"""
+
 conectores = []
 boton_cable = False #Estado del boton del cable (activado = true o desactivado = false)
 boton_led = False #Estado del boton de la led (activado = true o desactivado = false)
@@ -163,9 +181,11 @@ class Protoboard:
                     conectores.append(conector)
                 conector.dibujar(screen)
 
-        for i in range(num_filas):
-            y_pos = inicio_y + i * 20
-            for j in range(num_columnas):
+        for j in range(num_columnas):
+            primer_conector_columna = None  # guarda el primer nodo de cada columna
+
+            for i in range(num_filas):
+                y_pos = inicio_y + i * 20
                 x_pos = inicio_x + j * separacion_x
                 nombre_c3 = f"conector3_{i}_{j}"
                 conector = Conector(nombre_c3, x_pos, y_pos + 70)
@@ -173,15 +193,30 @@ class Protoboard:
                     conectores.append(conector)
                 conector.dibujar(screen)
 
-        for i in range(num_filas):
-            y_pos = inicio_y + i * 20
-            for j in range(num_columnas):
+                # conectar con el primer nodo de la columna
+                if i == 0:
+                    primer_conector_columna = conector  # guardar el primer nodo de la columna
+                else:
+                    primer_conector_columna.agregar_conexion(conector)
+        # solo repito el proceso
+        for j in range(num_columnas):
+            primer_conector_columna = None
+
+            for i in range(num_filas):
                 x_pos = inicio_x + j * separacion_x
+                y_pos = inicio_y + i * 20
                 nombre_c4 = f"conector4_{i}_{j}"
                 conector = Conector(nombre_c4, x_pos, y_pos + 210)
+
                 if CONECTORES_SIZE:
                     conectores.append(conector)
                 conector.dibujar(screen)
+                if i == 0:
+                    primer_conector_columna = conector
+                else:
+                    primer_conector_columna.agregar_conexion(conector)
+
+
 class Pila:
     def __init__(self,pila_x,pila_y):
         self.pila_x = pila_x
@@ -586,6 +621,7 @@ class Menu:
         else:
             boton_basurero = not boton_basurero  # Desactivar el basurero
 class Cableado:
+
     def __init__(self):
         self.dibujando_cable = False
         self.inicio_cable = None
@@ -596,18 +632,19 @@ class Cableado:
 
             if conector_inicio.fase or conector_inicio.neutro or conector_fin.fase or conector_fin.neutro:
                 if conector_inicio.fase and conector_fin.fase:
-                    color = (234, 79, 235)
+                    color = (234, 79, 235) # morado
                 elif conector_inicio.neutro and conector_fin.neutro:
-                    color = (61, 205, 234)
+                    color = (61, 205, 234) # azul cielo dark
                 else:
                     color = "black"
             else:
                 color = "black"
             pygame.draw.line(screen, color, (cable[0].x, cable[0].y), (cable[1].x, cable[1].y), 3)
+
     def comienzo_cable(self, conector_origen):
         self.inicio_cable = conector_origen
         self.dibujando_cable = True
-        conectores_cables.append(conector_origen)
+
     def energy_protoboard(self, pila_turno):
         for nodo in conectores: # ve los padres de p+ y p- segun eso da energy o no
             if pila_turno.nombre == "pila+":
@@ -622,12 +659,13 @@ class Cableado:
                     nodo.neutro = True
                 else:
                     nodo.neutro = False
+
     def finalizar_cable(self, conector_siguiente):
-        #print(self.inicio_cable.nombre,conector_siguiente.nombre)
+
         if self.inicio_cable.nombre == conector_siguiente.nombre:
             print("----------------------------")
-            print("selecciona un punto")
-            print("eso no es valido")
+            print("Selecciono un punto")
+            print("Eso no es valido")
             print("----------------------------")
             self.dibujando_cable = False
             self.inicio_cable = None
@@ -636,8 +674,8 @@ class Cableado:
         if ((self.inicio_cable.fase and conector_siguiente.neutro) or (
                 self.inicio_cable.neutro and conector_siguiente.fase)):
             print("----------------------------------")
-            print("corto de pixar")
-            print("no puede conectar neutro y fase")
+            print("Corto de pixar")
+            print("No puede conectar neutro y fase")
             print("----------------------------------")
             self.activar_explosion()
             self.dibujando_cable = False
@@ -652,49 +690,97 @@ class Cableado:
             self.inicio_cable = None
             return
 
-            #------------------ Fin Validaciones de cables -------------------
-        if not self.quitar_cable(self.inicio_cable, conector_siguiente):    # Coordenadas de inicio / coordenadas de destino
+        if not self.quitar_cable(self.inicio_cable, conector_siguiente):
+            for cable in cables:
+                if self.inicio_cable in cable or conector_siguiente in cable:
+                    print("-------------------------------------------")
+                    print("Ya hay un cable en este nodo")
+                    print("-------------------------------------------")
+                    self.dibujando_cable = False
+                    self.inicio_cable = None
+                    return
+            # ------------------ Fin Validaciones de cables -------------------
+
             cables.append((self.inicio_cable, conector_siguiente))
-            conectores_cables.append(conector_siguiente)
-            # -----------------------------------------------------------------
-            if self.inicio_cable.nombre in ["pila+", "pila-"]:
+
+            # si coloco de c3/c4 a c1 o c2 se pase la energia de fila a columna
+            if (self.inicio_cable.nombre.startswith(("conector3_", "conector4_")) and
+                    conector_siguiente.nombre.startswith(("conector1_", "conector2_"))):
+
                 for nodo in conectores:
-                    if nodo.y == conector_siguiente.y:  # ver si estan en la misma fila
+                    if nodo.y == conector_siguiente.y:
                         self.inicio_cable.agregar_conexion(nodo)
+
+            # ---------------- Fin validacion fila columna -------------------
+
+            elif self.inicio_cable.nombre in ["pila+", "pila-"] :
+                for nodo in conectores:
+                    if nodo.y == conector_siguiente.y:  # misma fila (solo c1 y c2)
+                        self.inicio_cable.agregar_conexion(nodo)
+
+            elif self.inicio_cable.nombre.startswith(("conector1_", "conector2_")) and conector_siguiente.nombre.startswith(("pila")):
+                for nodo in conectores:
+                    if nodo.y == self.inicio_cable.y:  # misma fila (solo c1 y c2)
+                        conector_siguiente.agregar_conexion(nodo)
+
             else:
                 for nodo in conectores:
                     if nodo.x == conector_siguiente.x:  # ver si estan en la misma columna | se limita el alcance
                         if conector_siguiente.nombre.startswith("conector3_"):
-                            if nodo.nombre.startswith("conector3_") and nodo.nombre!=self.inicio_cable.nombre:
+                            if nodo.nombre.startswith("conector3_") and nodo.nombre != self.inicio_cable.nombre:
                                 self.inicio_cable.agregar_conexion(nodo)
-
-                        elif conector_siguiente.nombre.startswith("conector4_"):
-                            if nodo.nombre.startswith("conector4_"):
-                                if nodo.nombre.startswith("conector4_") and nodo.nombre != self.inicio_cable.nombre:
-                                    self.inicio_cable.agregar_conexion(nodo)
+                        elif conector_siguiente.nombre.startswith("conector4_"): # limita el rango de add solo a c4_
+                            if nodo.nombre.startswith("conector4_") and nodo.nombre != self.inicio_cable.nombre:
+                                self.inicio_cable.agregar_conexion(nodo)
+        if self.inicio_cable.padre.nombre.startswith("pila"):
+            print(self.inicio_cable.padre.nombre)
         self.dibujando_cable = False
         self.inicio_cable = None
+
     def quitar_cable(self, start, end):
         for cable in cables:
+
             if (cable[0] == start and cable[1] == end) or (cable[0] == end and cable[1] == start):
                 cables.remove(cable)
 
-                # ----------------------- Elimina filas ----------------------------
                 if start and end:
+
+                    # elimina la conexión entre start y end
                     start.eliminar_conexion(start, end)
+                    end.eliminar_conexion(end, start)
+
+                    if self.inicio_cable.nombre.startswith("pila"):
+                        print("holalllllll")
+                        end.padre = end
+                        self.inicio_cable.padre = self.inicio_cable
+
+                    # elimina conexiones en filas y columnas
                     if start.nombre.startswith(("conector1_", "conector2_")):
                         for nodo in conectores:
                             if nodo.y == start.y:
                                 nodo.eliminar_conexion(nodo, end)
-                    # -------------------- elimina columnas ------------------------
-                    else:
+                                end.eliminar_conexion(end, nodo)
+
+                    elif start.nombre.startswith(("conector3_", "conector4_")):
                         for nodo in conectores:
                             if nodo.x == start.x:
-                                if start.nombre.startswith("conector3_"):
-                                    nodo.eliminar_conexion(nodo, end)
+                                nodo.eliminar_conexion(nodo, end)
+                                end.eliminar_conexion(end, nodo)
 
-                                elif start.nombre.startswith("conector4_"):
-                                    nodo.eliminar_conexion(nodo, end)
+                    # lo mismo para end
+                    if end.nombre.startswith(("conector1_", "conector2_")):
+                        for nodo in conectores:
+                            if nodo.y == end.y:
+                                nodo.eliminar_conexion(nodo, start)
+                                start.eliminar_conexion(start, nodo)
+
+                    elif end.nombre.startswith(("conector3_", "conector4_")):
+                        for nodo in conectores:
+                            if nodo.x == end.x:
+                                nodo.eliminar_conexion(nodo, start)
+                                start.eliminar_conexion(start, nodo)
+
+
                 return True
         return False
     def dibujar_cable_actual(self):
@@ -706,7 +792,10 @@ class Cableado:
                 color = (61, 205, 234)
             else:
                 color = "black"
+
             pygame.draw.line(screen, color, (self.inicio_cable.x, self.inicio_cable.y), current_pos, 3)
+
+
     def actualizarbosque(self, origen, destino):
         if origen.padre != destino.padre:
             coincidencia_origen = 0
@@ -727,10 +816,12 @@ class Cableado:
                 viejo_padre = origen.padre
 
             self.actualizar_padre_subarbol(viejo_padre, nuevo_padre)
+
     def actualizar_padre_subarbol(self, viejo_padre, nuevo_padre):
         for nodo in conectores:
             if nodo.padre == viejo_padre:
                 nodo.padre = nuevo_padre
+
     def buscar_conexiones(self,nodo, nodo_objetivo):
         visitados = []
         conneciones = []
@@ -752,8 +843,12 @@ class Cableado:
             nodo.padre = nodo
             for i in visitados:
                 i.padre = nodo
+
     def activar_explosion(self):
-        print("NUKE")
+        print("ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ")
+        print("                   NUKE")
+        print("∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨")
+
         screen.fill((243, 190, 49))
         pygame.display.flip()
         pygame.time.delay(100)
@@ -773,6 +868,10 @@ class Cableado:
         guardar_switch.clear()
         #--------- FIN ---------
         return
+
+
+
+
 class Led:
     def __init__(self,color,x,y,x1,x2,y1,y2):
         self.color=color
@@ -1495,14 +1594,20 @@ while running:
         menu.dibujar_recuadro_escogido(screen,100,x_menu + 520,y_menu + 15)     
         menu.dib_basurero(screen, x_menu + 535, y_menu + 30)
 
-        ##################### Muestra donde hay o no energy ######################
+
 
     for c in conectores: # busca las pilas y las envia a cambiar o no estado fase / neutro
         if c.nombre == "pila+":
+            if not c.conexiones:
+                c.padre =c
             cableado.energy_protoboard(c)
+            print("+",c.padre.nombre)
+        if c.nombre == "pila-":
+            if not c.conexiones:
+                c.padre =c
+            cableado.energy_protoboard(c)
+            print("-",c.padre.nombre)
 
-        elif c.nombre == "pila-":
-            cableado.energy_protoboard(c)
     def dibujar_conectores(screen, conectores): # le da color a los puntos segun el tipo de energy
         for conector in conectores:
             if not conector.nombre.startswith("pila"):
@@ -1516,21 +1621,27 @@ while running:
     dibujar_conectores(screen, conectores)
     pygame.display.flip()
     CONECTORES_SIZE = 0  # evita exceso conectores
-    mainClock.tick(60)
+    mainClock.tick(30)
+
 pygame.quit()
-"""
-print("\n|------------- TEND -------------|\n")
-print("Conexiones restantes:")
+"""print("\n|------------- INFO -------------|\n")
+aux=0
+for c in conectores:
+    if c.nombre != c.padre.nombre:
+        print(f"{aux}) N {c.nombre} P {c.padre.nombre}")
+        aux+=1
+
+print("\n|------------- TEND -------------|\n")"""
+
+"""#print("Conexiones restantes:")
 for nodo in conectores:
     conexiones = [n.nombre for n in nodo.conexiones]
     if conexiones:
-        print(f"Nodo {nodo.nombre} está conectado con: {conexiones}")
+        print(f"Nodo {nodo.nombre} está conectado con: {conexiones}")"""
 
-        #start: cable de origen (eliminar corriente)
-        #end: cable destino (nace corriente)
-                                                               
-                # ----------------------- Elimina filas ----------------------------
-                
-        
-        
-        """
+"""for nodo in conectores:
+    if nodo.padre != nodo:
+        print ("Nodo",nodo.nombre," padre",nodo.padre.nombre)"""
+
+
+
