@@ -1594,23 +1594,7 @@ while running:
         menu.dibujar_recuadro_escogido(screen,100,x_menu + 520,y_menu + 15)     
         menu.dib_basurero(screen, x_menu + 535, y_menu + 30)
 
-        ##################### Muestra donde hay o no energy ######################
 
-    for c in conectores: # busca las pilas y las envia a cambiar o no estado fase / neutro
-        if c.nombre == "pila+":
-            cableado.energy_protoboard(c)
-
-    elif boton_switch and boton_basurero:
-        boton_switch = False
-        boton_basurero = False
-
-    elif boton_led and boton_switch and boton_basurero:
-        boton_led = False
-        boton_switch = False
-        boton_basurero = False
-
-
-        ##################### Muestra donde hay o no energy ######################
 
     for c in conectores: # busca las pilas y las envia a cambiar o no estado fase / neutro
         if c.nombre == "pila+":
