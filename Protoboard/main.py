@@ -2,8 +2,8 @@ import pygame
 import math
 from pygame.locals import *
 
-global CONECTORES_SIZE
-CONECTORES_SIZE = 1  # para no tener mas elementos de los necesarios
+
+
 class Conector:
     def __init__(self, nombre, x, y):
         self.nombre = nombre
@@ -145,8 +145,19 @@ class Protoboard:
                 x_pos = inicio_x + j * separacion_x
                 y_pos = inicio_y + i * 20
                 nombre_c1 = f"conector1_{i}_{j}"
-                conector = Conector(nombre_c1, x_pos, y_pos)
-                if CONECTORES_SIZE:
+                # se crea un conector y se verifica si ya existe
+                conector_existente = None
+                for conector in conectores:
+                    if conector.nombre == nombre_c1:
+                        conector_existente = conector # la bandera ahora tiene conector
+                        break
+                # si existe solo se cambian las coordenadas
+                if conector_existente:
+                    conector_existente.x = x_pos
+                    conector_existente.y = y_pos
+                # si no existe se crea un nuevo conector y se agrega a la lista
+                else:
+                    conector = Conector(nombre_c1, x_pos, y_pos)
                     conectores.append(conector)
                 conector.dibujar(screen)
         for i in range(2):
@@ -154,8 +165,17 @@ class Protoboard:
                 x_pos = inicio_x + j * separacion_x
                 y_pos = inicio_y + i * 20
                 nombre_c2 = f"conector2_{i}_{j}"
-                conector = Conector(nombre_c2, x_pos, y_pos + self.ancho - 64)
-                if CONECTORES_SIZE:
+                conector_existente = None
+                for conector in conectores:
+                    if conector.nombre == nombre_c2:
+                        conector_existente = conector
+                        break
+
+                if conector_existente:
+                    conector_existente.x = x_pos
+                    conector_existente.y = y_pos + self.ancho - 64
+                else:
+                    conector = Conector(nombre_c2, x_pos, y_pos + self.ancho - 64)
                     conectores.append(conector)
                 conector.dibujar(screen)
         for j in range(num_columnas):
@@ -164,15 +184,30 @@ class Protoboard:
                 y_pos = inicio_y + i * 20
                 x_pos = inicio_x + j * separacion_x
                 nombre_c3 = f"conector3_{i}_{j}"
-                conector = Conector(nombre_c3, x_pos, y_pos + 70)
-                if CONECTORES_SIZE:
-                    conectores.append(conector)
-                conector.dibujar(screen)
-                # conectar con el primer nodo de la columna
-                if i == 0:
-                    primer_conector_columna = conector  # guardar el primer nodo de la columna
+
+                conector_existente = None
+                for conector in conectores:
+                    if conector.nombre == nombre_c3:
+                        conector_existente = conector
+                        break
+
+                if conector_existente:
+                    conector_existente.x = x_pos
+                    conector_existente.y = y_pos + 70
+                    conector = conector_existente
                 else:
-                    primer_conector_columna.agregar_conexion(conector)
+                    conector = Conector(nombre_c3, x_pos, y_pos + 70)
+                    conectores.append(conector)
+
+                conector.dibujar(screen)
+                # asigna el primer conector de la columna
+                if i == 0:
+                    primer_conector_columna = conector
+                else:
+                    # verifica si la conexion ya existe y evita code duplicado
+                    if conector not in primer_conector_columna.conexiones:
+                        primer_conector_columna.agregar_conexion(conector) # si no la agrega
+
         # solo repito el proceso
         for j in range(num_columnas):
             primer_conector_columna = None
@@ -180,14 +215,28 @@ class Protoboard:
                 x_pos = inicio_x + j * separacion_x
                 y_pos = inicio_y + i * 20
                 nombre_c4 = f"conector4_{i}_{j}"
-                conector = Conector(nombre_c4, x_pos, y_pos + 210)
-                if CONECTORES_SIZE:
+
+                conector_existente = None
+                for conector in conectores:
+                    if conector.nombre == nombre_c4:
+                        conector_existente = conector
+                        break
+
+                if conector_existente:
+                    conector_existente.x = x_pos
+                    conector_existente.y = y_pos + 210
+                    conector = conector_existente
+                else:
+                    conector = Conector(nombre_c4, x_pos, y_pos + 210)
                     conectores.append(conector)
                 conector.dibujar(screen)
                 if i == 0:
                     primer_conector_columna = conector
                 else:
-                    primer_conector_columna.agregar_conexion(conector)
+                    if conector not in primer_conector_columna.conexiones:
+                        primer_conector_columna.agregar_conexion(conector)
+
+
 class Pila:
     def __init__(self,pila_x,pila_y):
         self.pila_x = pila_x
@@ -197,11 +246,34 @@ class Pila:
         self.color_componentes_pila = (170, 170, 170)
         self.largo = 750
         self.ancho = 550
-        if CONECTORES_SIZE:
-            conector_pila1 = Conector("pila+", self.pila_x + 65, self.pila_y - 15) #positivo
+
+        conector_existente_pila1 = None
+        for conector in conectores:
+            if conector.nombre == "pila+":
+                conector_existente_pila1 = conector
+                break
+
+        if conector_existente_pila1:
+            conector_existente_pila1.x = self.pila_x + 65
+            conector_existente_pila1.y = self.pila_y - 15
+        else:
+            conector_pila1 = Conector("pila+", self.pila_x + 65, self.pila_y - 15)
             conectores.append(conector_pila1)
-            conector_pila2 = Conector("pila-", self.pila_x + 35, self.pila_y - 15) #negativo
+
+
+        conector_existente_pila2 = None
+        for conector in conectores:
+            if conector.nombre == "pila-":
+                conector_existente_pila2 = conector
+                break
+
+        if conector_existente_pila2:
+            conector_existente_pila2.x = self.pila_x + 35
+            conector_existente_pila2.y = self.pila_y - 15
+        else:
+            conector_pila2 = Conector("pila-", self.pila_x + 35, self.pila_y - 15)
             conectores.append(conector_pila2)
+
             conector_pila1.fase = True
             conector_pila2.neutro = True
     def dibujarPila(self,screen):
@@ -563,6 +635,8 @@ class Menu:
             boton_basurero = not boton_basurero
         else:
             boton_basurero = not boton_basurero  # Desactivar el basurero
+
+
 class Cableado:
     def __init__(self):
         self.dibujando_cable = False
@@ -674,8 +748,7 @@ class Cableado:
                         elif conector_siguiente.nombre.startswith("conector4_"): # limita el rango de add solo a c4_
                             if nodo.nombre.startswith("conector4_") and nodo.nombre != self.inicio_cable.nombre:
                                 self.inicio_cable.agregar_conexion(nodo)
-        if self.inicio_cable.padre.nombre.startswith("pila"):
-            print(self.inicio_cable.padre.nombre)
+
         self.dibujando_cable = False
         self.inicio_cable = None
 
@@ -1015,23 +1088,22 @@ def switch_presionado(switch, mouse_pos):
     return False
 #Main
 pygame.init()
-
+# --------- esto lo tengo que trabajar para fullscreen ----------------
 # Obtener el tamaño de la pantalla
 screen_info = pygame.display.Info()
 screen_width = screen_info.current_w
 screen_height = screen_info.current_h
 
 # Configurar la pantalla en un tamaño
-window_width = int(screen_width * 0.9)
-window_height = int(screen_height * 0.85)
+#window_width = int(screen_width * 0.9)
+#window_height = int(screen_height * 0.85)
 
 # Crear la ventana con el tamaño ajustado
-screen = pygame.display.set_mode((window_width, window_height))
+screen = pygame.display.set_mode((1000,650),pygame.RESIZABLE)
 
 pygame.display.set_caption("Protoboard")
 mainClock = pygame.time.Clock()
-monitor_size = [pygame.display.Info().current_w, pygame.display.Info().current_h]
-
+#---------- fin a trabajar ----------
 #Crear el cableado
 cableado = Cableado()
 fullscreen = False
@@ -1049,7 +1121,7 @@ ultimo_conector= None
 while running:
     screen.fill("white") # directo el color sin variables extra
 
-    x_proto = (screen.get_width() - 650) // 2 
+    x_proto = (screen.get_width() - 650) // 2
     y_proto = (screen.get_height() - 300) // 2
 
     # Crear y dibujar Protoboard
@@ -1065,7 +1137,7 @@ while running:
     
     # Crear y dibujar Menú
     x_menu = x_proto 
-    y_menu = y_proto - 200
+    y_menu = y_proto - 170
 
     menu = Menu(x_menu,y_menu)
     menu.dibujar(screen)
@@ -1103,20 +1175,14 @@ while running:
 
     # Manejo de eventos de la pantalla
     for event in pygame.event.get():
-
         if event.type == QUIT or event.type == K_ESCAPE or event.type == pygame.QUIT:
             running = False
         if event.type == VIDEORESIZE:
             if not fullscreen:
-                screen = pygame.display.set_mode((event.w, event.h), pygame.RESIZABLE)
-
-        if event.type == KEYDOWN:
-            if event.key == K_f:
-                fullscreen = not fullscreen
-                if fullscreen:
-                    screen = pygame.display.set_mode(monitor_size, pygame.FULLSCREEN)
+                if event.w > 1000 or event.h > 650:
+                    screen = pygame.display.set_mode((event.w, event.h), pygame.RESIZABLE)
                 else:
-                    screen = pygame.display.set_mode((screen.get_width(), screen.get_height()), pygame.RESIZABLE)
+                    screen = pygame.display.set_mode((1000, 650), pygame.RESIZABLE)
 
         #manejo de eventos especial para que cuando se quiera eliminar un item, se elimine bien y no se quiera agregar un cable
 
@@ -1159,7 +1225,7 @@ while running:
             if boton_led:
                 if not conector_cercano:
                     pass
-                    #print(" ")
+
                 elif x1 == 0:
                     x1 = conector_cercano.x
                     y1 = conector_cercano.y
@@ -1526,14 +1592,14 @@ while running:
     for c in conectores: # busca las pilas y las envia a cambiar o no estado fase / neutro
         if c.nombre == "pila+":
             if not c.conexiones:
-                c.padre =c
+                c.padre = c
             cableado.energy_protoboard(c)
-            print("+",c.padre.nombre)
+
         if c.nombre == "pila-":
             if not c.conexiones:
-                c.padre =c
+                c.padre = c
             cableado.energy_protoboard(c)
-            print("-",c.padre.nombre)
+
 
     def dibujar_conectores(screen, conectores): # le da color a los puntos segun el tipo de energy
         for conector in conectores:
@@ -1547,7 +1613,6 @@ while running:
 
     dibujar_conectores(screen, conectores)
     pygame.display.flip()
-    CONECTORES_SIZE = 0  # evita exceso conectores
     mainClock.tick(30)
 
 pygame.quit()
