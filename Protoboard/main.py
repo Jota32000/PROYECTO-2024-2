@@ -21,33 +21,16 @@ class Conector:
             # dibuja los puntos protoboard
             pygame.draw.line(screen, self.color, (self.x, self.y + i), (self.x + self.largo, self.y + i))
 
-
-    """def __str__(self):
-        return f"{self.nombre}\nx={self.x} y={self.y}"""
-
-
     def agregar_conexion(self, nodo):
         self.conexiones.append(nodo) # conexion bidireccional A->B | B->A
         nodo.conexiones.append(self)
         cableado.actualizarbosque(self, nodo)
-        """print("##########################################################")
-        print("origen: ", self.nombre, "\ndestino: ", nodo.nombre)
-        if self.conexiones:
-            print("----------- Lista conexiones -----------")
-            print("largo: ", len(self.conexiones))
-            self.imprimir_conexiones()"""
 
     def eliminar_conexion(self,nodo, nodo_objetivo):
         if nodo_objetivo in self.conexiones: # ve que no se haya eliminado ya la conexion con ese nodo
             nodo.conexiones.remove(nodo_objetivo)
             nodo_objetivo.conexiones.remove(nodo)
             cableado.buscar_conexiones(nodo, nodo_objetivo)
-
-
-    """def imprimir_conexiones(self):
-        print(f">>> Conexiones de {self.nombre}:")
-        for conector in self.conexiones:
-            print(conector)"""
 
 conectores = []
 boton_cable = False #Estado del boton del cable (activado = true o desactivado = false)
@@ -92,8 +75,6 @@ class Protoboard:
         # Llamar al metodo para dibujar conectores
 
         self.dibujar_conectores(screen)
-
-
     def dibujar_conectores(self, screen):
         # Espaciado entre conectores
         separacion_x = 20
@@ -159,8 +140,6 @@ class Protoboard:
         dibujar_j(screen, inicio_x +self.largo-55, inicio_y + 65, 10, 10, (84, 84, 84))
         dibujar_mas(screen, inicio_x + self.largo - 55, inicio_y + 20, 10, (222, 17, 17))
         dibujar_menos(screen, inicio_x + self.largo - 55, inicio_y + 2, (17, 17, 222))
-
-        #fors
         for i in range(2):
             for j in range(num_columnas):
                 x_pos = inicio_x + j * separacion_x
@@ -170,7 +149,6 @@ class Protoboard:
                 if CONECTORES_SIZE:
                     conectores.append(conector)
                 conector.dibujar(screen)
-
         for i in range(2):
             for j in range(num_columnas):
                 x_pos = inicio_x + j * separacion_x
@@ -180,10 +158,8 @@ class Protoboard:
                 if CONECTORES_SIZE:
                     conectores.append(conector)
                 conector.dibujar(screen)
-
         for j in range(num_columnas):
             primer_conector_columna = None  # guarda el primer nodo de cada columna
-
             for i in range(num_filas):
                 y_pos = inicio_y + i * 20
                 x_pos = inicio_x + j * separacion_x
@@ -192,7 +168,6 @@ class Protoboard:
                 if CONECTORES_SIZE:
                     conectores.append(conector)
                 conector.dibujar(screen)
-
                 # conectar con el primer nodo de la columna
                 if i == 0:
                     primer_conector_columna = conector  # guardar el primer nodo de la columna
@@ -201,13 +176,11 @@ class Protoboard:
         # solo repito el proceso
         for j in range(num_columnas):
             primer_conector_columna = None
-
             for i in range(num_filas):
                 x_pos = inicio_x + j * separacion_x
                 y_pos = inicio_y + i * 20
                 nombre_c4 = f"conector4_{i}_{j}"
                 conector = Conector(nombre_c4, x_pos, y_pos + 210)
-
                 if CONECTORES_SIZE:
                     conectores.append(conector)
                 conector.dibujar(screen)
@@ -215,8 +188,6 @@ class Protoboard:
                     primer_conector_columna = conector
                 else:
                     primer_conector_columna.agregar_conexion(conector)
-
-
 class Pila:
     def __init__(self,pila_x,pila_y):
         self.pila_x = pila_x
@@ -226,57 +197,39 @@ class Pila:
         self.color_componentes_pila = (170, 170, 170)
         self.largo = 750
         self.ancho = 550
-
         if CONECTORES_SIZE:
             conector_pila1 = Conector("pila+", self.pila_x + 65, self.pila_y - 15) #positivo
             conectores.append(conector_pila1)
-
             conector_pila2 = Conector("pila-", self.pila_x + 35, self.pila_y - 15) #negativo
             conectores.append(conector_pila2)
             conector_pila1.fase = True
             conector_pila2.neutro = True
-
     def dibujarPila(self,screen):
-
         #Dibujo parte superior pila
-
         pygame.draw.line(screen, (self.color_cabeza_pila), (self.pila_x, self.pila_y + 30), (self.pila_x, self.pila_y), 3)
         pygame.draw.line(screen, (self.color_cabeza_pila), (self.pila_x, self.pila_y + 30), (self.pila_x + 100, self.pila_y + 30), 3)
         pygame.draw.line(screen, (self.color_cabeza_pila), (self.pila_x + 100, self.pila_y + 30), (self.pila_x + 100, self.pila_y), 3)
         pygame.draw.line(screen, (self.color_cabeza_pila), (self.pila_x, self.pila_y), (self.pila_x + 100, self.pila_y), 3)
-
         #Ciclo que permite rellenar la pila
-
         for i in range(100):
             pygame.draw.line(screen, (self.color_cabeza_pila), (self.pila_x, self.pila_y), (self.pila_x + i, self.pila_y + 30), 3)
             pygame.draw.line(screen, (self.color_cabeza_pila), (self.pila_x + 100, self.pila_y + 30), (self.pila_x + 100 - i, self.pila_y), 3)
-
         #Dibujo parte inferior pila
-
         pygame.draw.line(screen, (self.color_cuerpo_pila), (self.pila_x + 100, self.pila_y + 30), (self.pila_x + 100, self.pila_y + 120), 3)
         pygame.draw.line(screen, (self.color_cuerpo_pila), (self.pila_x + 100, self.pila_y + 120), (self.pila_x, self.pila_y + 120), 3)
         pygame.draw.line(screen, (self.color_cuerpo_pila), (self.pila_x, self.pila_y + 120), (self.pila_x, self.pila_y + 30), 3)
-
         #Ciclo que permite rellenar la parte interior de la pila
-
         for i in range(100):
             pygame.draw.line(screen, (self.color_cuerpo_pila), (self.pila_x, self.pila_y + 30), (self.pila_x + i, self.pila_y + 120))
             pygame.draw.line(screen, (self.color_cuerpo_pila), (self.pila_x + 100, self.pila_y + 120), (self.pila_x + 100 - i, self.pila_y + 30))
-
-        #Dibujo de los componentes de la pila
-
         #Componente negativo (-)
-
         pygame.draw.line(screen, (self.color_componentes_pila), (self.pila_x + 30, self.pila_y - 2), (self.pila_x + 30, self.pila_y - 16), 3)
         pygame.draw.line(screen, (self.color_componentes_pila), (self.pila_x + 30, self.pila_y - 16), (self.pila_x + 40, self.pila_y - 16), 3)
         pygame.draw.line(screen, (self.color_componentes_pila), (self.pila_x + 40, self.pila_y - 16), (self.pila_x + 40, self.pila_y - 2), 3)
-
         #Componente Positivo (+)
-
         pygame.draw.line(screen, (self.color_componentes_pila), (self.pila_x + 60, self.pila_y  - 2), (self.pila_x + 60, self.pila_y - 16), 3)
         pygame.draw.line(screen, (self.color_componentes_pila), (self.pila_x + 60, self.pila_y - 16), (self.pila_x + 60, self.pila_y - 16), 3)
         pygame.draw.line(screen, (self.color_componentes_pila), (self.pila_x + 70, self.pila_y - 2), (self.pila_x + 70, self.pila_y - 16), 3)
-
         #Ciclo para rellenar componente 1
         for i in range(10):
             pygame.draw.line(screen, (self.color_componentes_pila), (self.pila_x + 60, self.pila_y - 16), (self.pila_x + 60 + i, self.pila_y - 2), 3)
@@ -286,15 +239,9 @@ class Pila:
         for i in range(10):
             pygame.draw.line(screen, (self.color_componentes_pila), (self.pila_x + 30, self.pila_y - 16), (self.pila_x + 30 + i, self.pila_y - 2), 3)
             pygame.draw.line(screen, (self.color_componentes_pila), (self.pila_x + 40, self.pila_y - 2), (self.pila_x + 40 - i, self.pila_y - 16), 3)
-
-        #Inclusión de positivo y negativo
-
         #Negativo
-
         pygame.draw.line(screen, (self.color_cuerpo_pila), (self.pila_x + 40, self.pila_y + 15), (self.pila_x + 30, self.pila_y + 15), 2)
-
         #Positivo
-
         pygame.draw.line(screen, (self.color_cuerpo_pila), (self.pila_x + 70, self.pila_y + 15), (self.pila_x + 60, self.pila_y + 15), 2)
         pygame.draw.line(screen, (self.color_cuerpo_pila), (self.pila_x + 65, self.pila_y + 10), (self.pila_x + 65, self.pila_y + 20), 2)
 class Menu:
@@ -307,18 +254,15 @@ class Menu:
         self.border_color = (0, 0, 0)
         self.border_thickness = 2
         self.border_radius = 10
-
         # Definir las áreas de colisión para los botones
         self.boton_led_x = self.x + 50
         self.boton_led_y = self.y + 50
         self.boton_led_ancho = 100
         self.boton_led_alto = 100
-
         self.boton_switch_x =  self.x + 50
         self.boton_switch_y =  self.y + 180
         self.boton_switch_ancho = 100
         self.boton_switch_alto = 100
-
         self.boton_switch_x = self.x + 50
         self.boton_switch_y = self.y + 320
         self.boton_switch_ancho = 100
@@ -328,7 +272,6 @@ class Menu:
         y_borde = self.y + 5
         l1=self.l1-5
         l2=self.l2-5
-
         # Dibujar las líneas rectas entre las esquinas
         pygame.draw.line(screen, self.color, (self.x , self.y), (self.x + self.l1, self.y),20)  # Línea superior
         pygame.draw.line(screen, self.color, (self.x + self.l1, self.y ), (self.x + self.l1, self.y + self.l2),20)  # Línea derecha
@@ -621,7 +564,6 @@ class Menu:
         else:
             boton_basurero = not boton_basurero  # Desactivar el basurero
 class Cableado:
-
     def __init__(self):
         self.dibujando_cable = False
         self.inicio_cable = None
@@ -794,8 +736,6 @@ class Cableado:
                 color = "black"
 
             pygame.draw.line(screen, color, (self.inicio_cable.x, self.inicio_cable.y), current_pos, 3)
-
-
     def actualizarbosque(self, origen, destino):
         if origen.padre != destino.padre:
             coincidencia_origen = 0
@@ -868,10 +808,6 @@ class Cableado:
         guardar_switch.clear()
         #--------- FIN ---------
         return
-
-
-
-
 class Led:
     def __init__(self,color,x,y,x1,x2,y1,y2):
         self.color=color
@@ -1196,25 +1132,24 @@ while running:
             mouse_pos = pygame.mouse.get_pos()  # Obtén la posición del mouse
             for switch in guardar_switch:
                 if switch_presionado(switch, mouse_pos):  # Verifica si un switch fue presionado
-                    print(f"Switch presionado en coordenadas: ({switch.x}, {switch.y})")
-                    patita1 = punto_mas_cercano((switch.x1,switch.y1), conectores, distancia_maxima)
-                    patita2 = punto_mas_cercano((switch.x2,switch.y2), conectores, distancia_maxima)
-                    conector_p1=None
+                    patita1 = punto_mas_cercano((switch.x1, switch.y1), conectores, distancia_maxima)
+                    patita2 = punto_mas_cercano((switch.x2, switch.y2), conectores, distancia_maxima)
+                    conector_p1 = None
                     conector_p2 = None
                     for i in conectores:
                         if i.x == patita1.x and i.y == patita1.y:
                             conector_p1 = i
                         elif i.x == patita2.x and i.y == patita2.y:
                             conector_p2 = i
-                    if conector_p1==None or conector_p2== None:
+                    if conector_p1 is None or conector_p2 is None:
                         print("existe problemas en los conectores")
-                    if switch.estado== True:
-                        conector_p1.eliminar_conexion(conector_p1,conector_p2)
-                        switch.estado= False
+                    elif switch.estado:  # Si el switch está encendido, lo apagamos
+                        conector_p1.eliminar_conexion(conector_p1, conector_p2)
+                        switch.estado = False
                         print("Switch apagado")
-                    if switch.estado==False:
+                    else:  # Si el switch está apagado, lo encendemos
                         conector_p1.agregar_conexion(conector_p2)
-                        switch.estado= True
+                        switch.estado = True
                         print("Switch encendido")
 
             mouse_pos = event.pos
@@ -1293,10 +1228,6 @@ while running:
                     pass
                 else:
                     edicion_coordenadas.append(conector_cercano)
-                    #print("Origen: ",cables[0][0].x,cables[0][0].y)
-                    #print("Destino: ",cables[0][1].x,cables[0][1].y)
-                    #print("Edición: ",edicion_coordenadas[len(edicion_coordenadas) - 1].x,edicion_coordenadas[len(edicion_coordenadas) - 1].y)
-
                 for cable in cables:
                     if cable[0].x - rango_click <= x <= cable[0].x + rango_click and cable[0].y - rango_click <= y <= cable[0].y + rango_click:
                         print("entró en el origen del cable")
@@ -1357,8 +1288,6 @@ while running:
                                 nuevo = (edicion_coordenadas[indice])   #Obtener coordenadas de tipo conector
                                 cables.insert(i,(cable[0],nuevo))       #Inserta directamente un nuevo cable simulando edición
                                 break
-
-
                         if start and end:
                             start.eliminar_conexion(start, end)
                             if start.nombre.startswith(("conector1_", "conector2_")):
@@ -1594,8 +1523,6 @@ while running:
         menu.dibujar_recuadro_escogido(screen,100,x_menu + 520,y_menu + 15)     
         menu.dib_basurero(screen, x_menu + 535, y_menu + 30)
 
-
-
     for c in conectores: # busca las pilas y las envia a cambiar o no estado fase / neutro
         if c.nombre == "pila+":
             if not c.conexiones:
@@ -1624,24 +1551,3 @@ while running:
     mainClock.tick(30)
 
 pygame.quit()
-"""print("\n|------------- INFO -------------|\n")
-aux=0
-for c in conectores:
-    if c.nombre != c.padre.nombre:
-        print(f"{aux}) N {c.nombre} P {c.padre.nombre}")
-        aux+=1
-
-print("\n|------------- TEND -------------|\n")"""
-
-"""#print("Conexiones restantes:")
-for nodo in conectores:
-    conexiones = [n.nombre for n in nodo.conexiones]
-    if conexiones:
-        print(f"Nodo {nodo.nombre} está conectado con: {conexiones}")"""
-
-"""for nodo in conectores:
-    if nodo.padre != nodo:
-        print ("Nodo",nodo.nombre," padre",nodo.padre.nombre)"""
-
-
-
