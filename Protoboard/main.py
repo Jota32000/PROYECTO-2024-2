@@ -94,7 +94,6 @@ class Protoboard:
 
         self.dibujar_conectores(screen)
 
-
     def dibujar_conectores(self, screen):
         # Espaciado entre conectores
         separacion_x = 20
@@ -234,30 +233,25 @@ class Pila:
             conectores.append(conector_pila2)
             conector_pila1.fase = True
             conector_pila2.neutro = True
-
     def dibujarPila(self,screen):
 
         #Dibujo parte superior pila
-
         pygame.draw.line(screen, (self.color_cabeza_pila), (self.pila_x, self.pila_y + 30), (self.pila_x, self.pila_y), 3)
         pygame.draw.line(screen, (self.color_cabeza_pila), (self.pila_x, self.pila_y + 30), (self.pila_x + 100, self.pila_y + 30), 3)
         pygame.draw.line(screen, (self.color_cabeza_pila), (self.pila_x + 100, self.pila_y + 30), (self.pila_x + 100, self.pila_y), 3)
         pygame.draw.line(screen, (self.color_cabeza_pila), (self.pila_x, self.pila_y), (self.pila_x + 100, self.pila_y), 3)
 
         #Ciclo que permite rellenar la pila
-
         for i in range(100):
             pygame.draw.line(screen, (self.color_cabeza_pila), (self.pila_x, self.pila_y), (self.pila_x + i, self.pila_y + 30), 3)
             pygame.draw.line(screen, (self.color_cabeza_pila), (self.pila_x + 100, self.pila_y + 30), (self.pila_x + 100 - i, self.pila_y), 3)
 
         #Dibujo parte inferior pila
-
         pygame.draw.line(screen, (self.color_cuerpo_pila), (self.pila_x + 100, self.pila_y + 30), (self.pila_x + 100, self.pila_y + 120), 3)
         pygame.draw.line(screen, (self.color_cuerpo_pila), (self.pila_x + 100, self.pila_y + 120), (self.pila_x, self.pila_y + 120), 3)
         pygame.draw.line(screen, (self.color_cuerpo_pila), (self.pila_x, self.pila_y + 120), (self.pila_x, self.pila_y + 30), 3)
 
         #Ciclo que permite rellenar la parte interior de la pila
-
         for i in range(100):
             pygame.draw.line(screen, (self.color_cuerpo_pila), (self.pila_x, self.pila_y + 30), (self.pila_x + i, self.pila_y + 120))
             pygame.draw.line(screen, (self.color_cuerpo_pila), (self.pila_x + 100, self.pila_y + 120), (self.pila_x + 100 - i, self.pila_y + 30))
@@ -265,13 +259,11 @@ class Pila:
         #Dibujo de los componentes de la pila
 
         #Componente negativo (-)
-
         pygame.draw.line(screen, (self.color_componentes_pila), (self.pila_x + 30, self.pila_y - 2), (self.pila_x + 30, self.pila_y - 16), 3)
         pygame.draw.line(screen, (self.color_componentes_pila), (self.pila_x + 30, self.pila_y - 16), (self.pila_x + 40, self.pila_y - 16), 3)
         pygame.draw.line(screen, (self.color_componentes_pila), (self.pila_x + 40, self.pila_y - 16), (self.pila_x + 40, self.pila_y - 2), 3)
 
         #Componente Positivo (+)
-
         pygame.draw.line(screen, (self.color_componentes_pila), (self.pila_x + 60, self.pila_y  - 2), (self.pila_x + 60, self.pila_y - 16), 3)
         pygame.draw.line(screen, (self.color_componentes_pila), (self.pila_x + 60, self.pila_y - 16), (self.pila_x + 60, self.pila_y - 16), 3)
         pygame.draw.line(screen, (self.color_componentes_pila), (self.pila_x + 70, self.pila_y - 2), (self.pila_x + 70, self.pila_y - 16), 3)
@@ -289,11 +281,9 @@ class Pila:
         #Inclusión de positivo y negativo
 
         #Negativo
-
         pygame.draw.line(screen, (self.color_cuerpo_pila), (self.pila_x + 40, self.pila_y + 15), (self.pila_x + 30, self.pila_y + 15), 2)
 
         #Positivo
-
         pygame.draw.line(screen, (self.color_cuerpo_pila), (self.pila_x + 70, self.pila_y + 15), (self.pila_x + 60, self.pila_y + 15), 2)
         pygame.draw.line(screen, (self.color_cuerpo_pila), (self.pila_x + 65, self.pila_y + 10), (self.pila_x + 65, self.pila_y + 20), 2)
 class Menu:
@@ -638,11 +628,9 @@ class Cableado:
             else:
                 color = "black"
             pygame.draw.line(screen, color, (cable[0].x, cable[0].y), (cable[1].x, cable[1].y), 3)
-
     def comienzo_cable(self, conector_origen):
         self.inicio_cable = conector_origen
         self.dibujando_cable = True
-
     def energy_protoboard(self, pila_turno):
         for nodo in conectores: # ve los padres de p+ y p- segun eso da energy o no
             if pila_turno.nombre == "pila+":
@@ -657,7 +645,6 @@ class Cableado:
                     nodo.neutro = True
                 else:
                     nodo.neutro = False
-
     def finalizar_cable(self, conector_siguiente):
 
         if self.inicio_cable.nombre == conector_siguiente.nombre:
@@ -734,7 +721,6 @@ class Cableado:
             print(self.inicio_cable.padre.nombre)
         self.dibujando_cable = False
         self.inicio_cable = None
-
     def quitar_cable(self, start, end):
         for cable in cables:
 
@@ -792,8 +778,6 @@ class Cableado:
                 color = "black"
 
             pygame.draw.line(screen, color, (self.inicio_cable.x, self.inicio_cable.y), current_pos, 3)
-
-
     def actualizarbosque(self, origen, destino):
         if origen.padre != destino.padre:
             coincidencia_origen = 0
@@ -814,12 +798,10 @@ class Cableado:
                 viejo_padre = origen.padre
 
             self.actualizar_padre_subarbol(viejo_padre, nuevo_padre)
-
     def actualizar_padre_subarbol(self, viejo_padre, nuevo_padre):
         for nodo in conectores:
             if nodo.padre == viejo_padre:
                 nodo.padre = nuevo_padre
-
     def buscar_conexiones(self,nodo, nodo_objetivo):
         visitados = []
         conneciones = []
@@ -841,7 +823,6 @@ class Cableado:
             nodo.padre = nodo
             for i in visitados:
                 i.padre = nodo
-
     def activar_explosion(self):
         print("ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ")
         print("                   NUKE")
@@ -1033,6 +1014,42 @@ class Basurero:
                                 elif start.nombre.startswith("conector4_"):
                                     nodo.eliminar_conexion(nodo, end)
                 verificador = True                                        
+class Motor:
+    def __init__(self,x,y):
+        self.x = x
+        self.y = y
+    def dibujar_motor(self,screen):
+        gris_claro = (192, 192, 192)
+        # Cuerpo del motor
+        puntos = [
+            (self.x, self.y), 
+            (self.x + 120, self.y), 
+            (self.x + 120, self.y + 60), 
+            (self.x + 80, self.y + 60), 
+            (self.x + 80, self.y + 100), 
+            (self.x + 40, self.y + 100), 
+            (self.x + 40, self.y + 60), 
+            (self.x, self.y + 60)
+        ]
+        pygame.draw.polygon(screen,gris_claro, puntos)
+        
+        # Detalles del motor
+        pygame.draw.line(screen,"gray", (self.x + 40, self.y), (self.x + 40, self.y + 80), 3)
+        pygame.draw.line(screen,"gray", (self.x + 80, self.y), (self.x + 80, self.y + 80), 3)
+        
+        # Tornillos
+        for i in range(5):
+            pygame.draw.line(screen, "black", (self.x + 10 + i * 25, self.y + 60), (self.x + 10 + i * 25, self.y + 70), 2)
+
+        # Adornos
+        pygame.draw.line(screen, "red", (self.x + 50, self.y + 15), (self.x + 70, self.y + 15), 5)
+        pygame.draw.line(screen, "red", (self.x + 50, self.y + 40), (self.x + 70, self.y + 40), 5)
+
+        # Lineas decorativas
+        pygame.draw.line(screen, "dark gray", (self.x + 40, self.y), (self.x + 40, self.y + 60), 5)
+        pygame.draw.line(screen, "dark gray", (self.x + 80, self.y), (self.x + 80, self.y + 60), 5)
+        
+
 def dibujar_a(screen, x, y,ancho,alto,color):
     pygame.draw.line(screen, color, (x, y + alto), (x + ancho // 2, y), 2)  # Línea diagonal izquierda
     pygame.draw.line(screen, color, (x + ancho // 2, y), (x + ancho, y + alto), 2)  # Línea diagonal derecha
@@ -1183,6 +1200,14 @@ while running:
     # Crear funcionalidad de basurero
     basurero = Basurero()
     clock = pygame.time.Clock()
+
+    # Crear y dibujar motor
+    x_motor = x_proto + 750
+    y_motor = y_proto + 150 
+
+    motor = Motor(x_motor - 50, y_motor - 20)
+    motor.dibujar_motor(screen)
+
     def buscar_conector_por_nombre(nombre, lista_conectores):
         for conector in lista_conectores:
             if conector.nombre == nombre:
