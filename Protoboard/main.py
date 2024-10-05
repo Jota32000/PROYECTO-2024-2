@@ -21,22 +21,10 @@ class Conector:
             # dibuja los puntos protoboard
             pygame.draw.line(screen, self.color, (self.x, self.y + i), (self.x + self.largo, self.y + i))
 
-
-
-    """def __str__(self):
-        return f"{self.nombre}\nx={self.x} y={self.y}"""
-
-
     def agregar_conexion(self, nodo):
         self.conexiones.append(nodo) # conexion bidireccional A->B | B->A
         nodo.conexiones.append(self)
         cableado.actualizarbosque(self, nodo)
-        """print("##########################################################")
-        print("origen: ", self.nombre, "\ndestino: ", nodo.nombre)
-        if self.conexiones:
-            print("----------- Lista conexiones -----------")
-            print("largo: ", len(self.conexiones))
-            self.imprimir_conexiones()"""
 
     def eliminar_conexion(self,nodo, nodo_objetivo):
         if nodo_objetivo in self.conexiones: # ve que no se haya eliminado ya la conexion con ese nodo
@@ -44,18 +32,14 @@ class Conector:
             nodo_objetivo.conexiones.remove(nodo)
             cableado.buscar_conexiones(nodo, nodo_objetivo)
 
-
-    """def imprimir_conexiones(self):
-        print(f">>> Conexiones de {self.nombre}:")
-        for conector in self.conexiones:
-            print(conector)"""
-
 conectores = []
 boton_cable = False #Estado del boton del cable (activado = true o desactivado = false)
 boton_led = False #Estado del boton de la led (activado = true o desactivado = false)
 boton_switch = False #Estado del boton del switch (activado = true o desactivado = false)
 boton_edicion = False #Estado del boton de edición (activado = true o desactivado = false)
 boton_basurero = False #Estado del boton del basurero (activado=true o desactivado = false)
+global verificador
+verificador = False #Estado de verificador a la hora de eliminar un elemento
 cables = []
 conectores_cables = []
 edicion_coordenadas = []
@@ -93,7 +77,6 @@ class Protoboard:
         # Llamar al metodo para dibujar conectores
 
         self.dibujar_conectores(screen)
-
 
     def dibujar_conectores(self, screen):
         # Espaciado entre conectores
@@ -160,8 +143,6 @@ class Protoboard:
         dibujar_j(screen, inicio_x +self.largo-55, inicio_y + 65, 10, 10, (84, 84, 84))
         dibujar_mas(screen, inicio_x + self.largo - 55, inicio_y + 20, 10, (222, 17, 17))
         dibujar_menos(screen, inicio_x + self.largo - 55, inicio_y + 2, (17, 17, 222))
-
-        #fors
         for i in range(2):
             for j in range(num_columnas):
                 x_pos = inicio_x + j * separacion_x
@@ -182,7 +163,6 @@ class Protoboard:
                     conector = Conector(nombre_c1, x_pos, y_pos)
                     conectores.append(conector)
                 conector.dibujar(screen)
-
         for i in range(2):
             for j in range(num_columnas):
                 x_pos = inicio_x + j * separacion_x
@@ -201,9 +181,8 @@ class Protoboard:
                     conector = Conector(nombre_c2, x_pos, y_pos + self.ancho - 64)
                     conectores.append(conector)
                 conector.dibujar(screen)
-
         for j in range(num_columnas):
-            primer_conector_columna = None
+            primer_conector_columna = None  # guarda el primer nodo de cada columna
             for i in range(num_filas):
                 y_pos = inicio_y + i * 20
                 x_pos = inicio_x + j * separacion_x
@@ -300,48 +279,32 @@ class Pila:
 
             conector_pila1.fase = True
             conector_pila2.neutro = True
-
     def dibujarPila(self,screen):
-
         #Dibujo parte superior pila
-
         pygame.draw.line(screen, (self.color_cabeza_pila), (self.pila_x, self.pila_y + 30), (self.pila_x, self.pila_y), 3)
         pygame.draw.line(screen, (self.color_cabeza_pila), (self.pila_x, self.pila_y + 30), (self.pila_x + 100, self.pila_y + 30), 3)
         pygame.draw.line(screen, (self.color_cabeza_pila), (self.pila_x + 100, self.pila_y + 30), (self.pila_x + 100, self.pila_y), 3)
         pygame.draw.line(screen, (self.color_cabeza_pila), (self.pila_x, self.pila_y), (self.pila_x + 100, self.pila_y), 3)
-
         #Ciclo que permite rellenar la pila
-
         for i in range(100):
             pygame.draw.line(screen, (self.color_cabeza_pila), (self.pila_x, self.pila_y), (self.pila_x + i, self.pila_y + 30), 3)
             pygame.draw.line(screen, (self.color_cabeza_pila), (self.pila_x + 100, self.pila_y + 30), (self.pila_x + 100 - i, self.pila_y), 3)
-
         #Dibujo parte inferior pila
-
         pygame.draw.line(screen, (self.color_cuerpo_pila), (self.pila_x + 100, self.pila_y + 30), (self.pila_x + 100, self.pila_y + 120), 3)
         pygame.draw.line(screen, (self.color_cuerpo_pila), (self.pila_x + 100, self.pila_y + 120), (self.pila_x, self.pila_y + 120), 3)
         pygame.draw.line(screen, (self.color_cuerpo_pila), (self.pila_x, self.pila_y + 120), (self.pila_x, self.pila_y + 30), 3)
-
         #Ciclo que permite rellenar la parte interior de la pila
-
         for i in range(100):
             pygame.draw.line(screen, (self.color_cuerpo_pila), (self.pila_x, self.pila_y + 30), (self.pila_x + i, self.pila_y + 120))
             pygame.draw.line(screen, (self.color_cuerpo_pila), (self.pila_x + 100, self.pila_y + 120), (self.pila_x + 100 - i, self.pila_y + 30))
-
-        #Dibujo de los componentes de la pila
-
         #Componente negativo (-)
-
         pygame.draw.line(screen, (self.color_componentes_pila), (self.pila_x + 30, self.pila_y - 2), (self.pila_x + 30, self.pila_y - 16), 3)
         pygame.draw.line(screen, (self.color_componentes_pila), (self.pila_x + 30, self.pila_y - 16), (self.pila_x + 40, self.pila_y - 16), 3)
         pygame.draw.line(screen, (self.color_componentes_pila), (self.pila_x + 40, self.pila_y - 16), (self.pila_x + 40, self.pila_y - 2), 3)
-
         #Componente Positivo (+)
-
         pygame.draw.line(screen, (self.color_componentes_pila), (self.pila_x + 60, self.pila_y  - 2), (self.pila_x + 60, self.pila_y - 16), 3)
         pygame.draw.line(screen, (self.color_componentes_pila), (self.pila_x + 60, self.pila_y - 16), (self.pila_x + 60, self.pila_y - 16), 3)
         pygame.draw.line(screen, (self.color_componentes_pila), (self.pila_x + 70, self.pila_y - 2), (self.pila_x + 70, self.pila_y - 16), 3)
-
         #Ciclo para rellenar componente 1
         for i in range(10):
             pygame.draw.line(screen, (self.color_componentes_pila), (self.pila_x + 60, self.pila_y - 16), (self.pila_x + 60 + i, self.pila_y - 2), 3)
@@ -351,15 +314,9 @@ class Pila:
         for i in range(10):
             pygame.draw.line(screen, (self.color_componentes_pila), (self.pila_x + 30, self.pila_y - 16), (self.pila_x + 30 + i, self.pila_y - 2), 3)
             pygame.draw.line(screen, (self.color_componentes_pila), (self.pila_x + 40, self.pila_y - 2), (self.pila_x + 40 - i, self.pila_y - 16), 3)
-
-        #Inclusión de positivo y negativo
-
         #Negativo
-
         pygame.draw.line(screen, (self.color_cuerpo_pila), (self.pila_x + 40, self.pila_y + 15), (self.pila_x + 30, self.pila_y + 15), 2)
-
         #Positivo
-
         pygame.draw.line(screen, (self.color_cuerpo_pila), (self.pila_x + 70, self.pila_y + 15), (self.pila_x + 60, self.pila_y + 15), 2)
         pygame.draw.line(screen, (self.color_cuerpo_pila), (self.pila_x + 65, self.pila_y + 10), (self.pila_x + 65, self.pila_y + 20), 2)
 class Menu:
@@ -372,18 +329,15 @@ class Menu:
         self.border_color = (0, 0, 0)
         self.border_thickness = 2
         self.border_radius = 10
-
         # Definir las áreas de colisión para los botones
         self.boton_led_x = self.x + 50
         self.boton_led_y = self.y + 50
         self.boton_led_ancho = 100
         self.boton_led_alto = 100
-
         self.boton_switch_x =  self.x + 50
         self.boton_switch_y =  self.y + 180
         self.boton_switch_ancho = 100
         self.boton_switch_alto = 100
-
         self.boton_switch_x = self.x + 50
         self.boton_switch_y = self.y + 320
         self.boton_switch_ancho = 100
@@ -393,7 +347,6 @@ class Menu:
         y_borde = self.y + 5
         l1=self.l1-5
         l2=self.l2-5
-
         # Dibujar las líneas rectas entre las esquinas
         pygame.draw.line(screen, self.color, (self.x , self.y), (self.x + self.l1, self.y),20)  # Línea superior
         pygame.draw.line(screen, self.color, (self.x + self.l1, self.y ), (self.x + self.l1, self.y + self.l2),20)  # Línea derecha
@@ -685,10 +638,7 @@ class Menu:
             boton_basurero = not boton_basurero
         else:
             boton_basurero = not boton_basurero  # Desactivar el basurero
-
-
 class Cableado:
-
     def __init__(self):
         self.dibujando_cable = False
         self.inicio_cable = None
@@ -707,11 +657,9 @@ class Cableado:
             else:
                 color = "black"
             pygame.draw.line(screen, color, (cable[0].x, cable[0].y), (cable[1].x, cable[1].y), 3)
-
     def comienzo_cable(self, conector_origen):
         self.inicio_cable = conector_origen
         self.dibujando_cable = True
-
     def energy_protoboard(self, pila_turno):
         for nodo in conectores: # ve los padres de p+ y p- segun eso da energy o no
             if pila_turno.nombre == "pila+":
@@ -726,7 +674,6 @@ class Cableado:
                     nodo.neutro = True
                 else:
                     nodo.neutro = False
-
     def finalizar_cable(self, conector_siguiente):
 
         if self.inicio_cable.nombre == conector_siguiente.nombre:
@@ -802,7 +749,6 @@ class Cableado:
 
         self.dibujando_cable = False
         self.inicio_cable = None
-
     def quitar_cable(self, start, end):
         for cable in cables:
 
@@ -860,8 +806,6 @@ class Cableado:
                 color = "black"
 
             pygame.draw.line(screen, color, (self.inicio_cable.x, self.inicio_cable.y), current_pos, 3)
-
-
     def actualizarbosque(self, origen, destino):
         if origen.padre != destino.padre:
             coincidencia_origen = 0
@@ -882,12 +826,10 @@ class Cableado:
                 viejo_padre = origen.padre
 
             self.actualizar_padre_subarbol(viejo_padre, nuevo_padre)
-
     def actualizar_padre_subarbol(self, viejo_padre, nuevo_padre):
         for nodo in conectores:
             if nodo.padre == viejo_padre:
                 nodo.padre = nuevo_padre
-
     def buscar_conexiones(self,nodo, nodo_objetivo):
         visitados = []
         conneciones = []
@@ -909,7 +851,6 @@ class Cableado:
             nodo.padre = nodo
             for i in visitados:
                 i.padre = nodo
-
     def activar_explosion(self):
         print("ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ")
         print("                   NUKE")
@@ -934,10 +875,6 @@ class Cableado:
         guardar_switch.clear()
         #--------- FIN ---------
         return
-
-
-
-
 class Led:
     def __init__(self,color,x,y,x1,x2,y1,y2):
         self.color=color
@@ -1031,28 +968,116 @@ class Basurero:
         pass
     def eliminar_led(self,x,y):
         rango_click = 10
+        global verificador
         #Buscador de led en la lista de los leds
         for led in guardar_led:
             #si se clickea en el rango correspondiente, se borra de la lista led
             if led.x - rango_click <= x <= led.x + rango_click and led.y - rango_click <= y <= led.y + rango_click:
                 guardar_led.remove(led)
+            verificador = True
     def eliminar_switch(self,x,y):
         rango_click = 20
+        global verificador
         #Buscador de led en la lista de los switchs
         for switch in guardar_switch:
             #si se clickea en el rango correspondiente, se borra de la lista switch
             if switch.x - rango_click <= x <= switch.x + rango_click and switch.y - rango_click <= y <= switch.y + rango_click:
                 guardar_switch.remove(switch)
-
+            verificador = True
     def eliminar_cable(self,x,y):
         rango_click = 10
+        global verificador
         #Buscador de cable en la lista de los cables
         for cable in cables:
             #si se clickea en el rango correspondiente, se borra de la lista cable
             if cable[0].x - rango_click <= x <= cable[0].x + rango_click and cable[0].y - rango_click <= y <= cable[0].y + rango_click:
+                start = cable[1]
+                end = cable[0]
                 cables.remove(cable)
+                #print("Click en el origen del cable")
+
+                if start and end:
+                    end.eliminar_conexion(start, end)
+                    if end.nombre.startswith(("conector1_", "conector2_")):
+                        for nodo in conectores:
+                            if nodo.y == end.y:
+                                nodo.eliminar_conexion(nodo, start)
+                    # -------------------- elimina columnas ------------------------
+                    else:
+                        #print("--------------------------------")
+                        cont=0
+                        for nodo in conectores:
+                            if nodo.x == start.x:
+                                if start.nombre.startswith("conector3_"):
+                                    #print(nodo.nombre,"\t",cont)
+                                    cont+=1
+                                    nodo.eliminar_conexion(nodo, end)
+                                elif end.nombre.startswith("conector4_"):
+                                    nodo.eliminar_conexion(nodo, end)
+                verificador = True
+
             elif cable[1].x - rango_click <= x <= cable[1].x + rango_click and cable[1].y - rango_click <= y <= cable[1].y + rango_click:
+                start = cable[1]
+                end = cable[0]
                 cables.remove(cable)
+                #print("Click en el destino del cable")
+
+                if start and end:
+                    start.eliminar_conexion(start, end)
+                    if start.nombre.startswith(("conector1_", "conector2_")):
+                        for nodo in conectores:
+                            if nodo.y == start.y:
+                                nodo.eliminar_conexion(nodo, end)
+                    # -------------------- elimina columnas ------------------------
+                    else:
+                        #print("--------------------------------")
+                        cont=0
+                        for nodo in conectores:
+                            if nodo.x == start.x:
+                                if start.nombre.startswith("conector3_"):
+                                    #print(nodo.nombre,"\t",cont)
+                                    cont+=1
+                                    nodo.eliminar_conexion(nodo, end)
+
+                                elif start.nombre.startswith("conector4_"):
+                                    nodo.eliminar_conexion(nodo, end)
+                verificador = True                                        
+class Motor:
+    def __init__(self,x,y):
+        self.x = x
+        self.y = y
+    def dibujar_motor(self,screen):
+        gris_claro = (192, 192, 192)
+        # Cuerpo del motor
+        puntos = [
+            (self.x, self.y), 
+            (self.x + 120, self.y), 
+            (self.x + 120, self.y + 60), 
+            (self.x + 80, self.y + 60), 
+            (self.x + 80, self.y + 100), 
+            (self.x + 40, self.y + 100), 
+            (self.x + 40, self.y + 60), 
+            (self.x, self.y + 60)
+        ]
+        pygame.draw.polygon(screen,gris_claro, puntos)
+        
+        # Detalles del motor
+        pygame.draw.line(screen,"gray", (self.x + 40, self.y), (self.x + 40, self.y + 80), 3)
+        pygame.draw.line(screen,"gray", (self.x + 80, self.y), (self.x + 80, self.y + 80), 3)
+        
+        # Tornillos
+        for i in range(5):
+            pygame.draw.line(screen, "black", (self.x + 10 + i * 25, self.y + 60), (self.x + 10 + i * 25, self.y + 70), 2)
+
+        # Adornos
+        pygame.draw.line(screen, "red", (self.x + 50, self.y + 15), (self.x + 70, self.y + 15), 5)
+        pygame.draw.line(screen, "red", (self.x + 50, self.y + 40), (self.x + 70, self.y + 40), 5)
+
+        # Lineas decorativas
+        pygame.draw.line(screen, "dark gray", (self.x + 40, self.y), (self.x + 40, self.y + 60), 5)
+        pygame.draw.line(screen, "dark gray", (self.x + 80, self.y), (self.x + 80, self.y + 60), 5)
+        
+
 def dibujar_a(screen, x, y,ancho,alto,color):
     pygame.draw.line(screen, color, (x, y + alto), (x + ancho // 2, y), 2)  # Línea diagonal izquierda
     pygame.draw.line(screen, color, (x + ancho // 2, y), (x + ancho, y + alto), 2)  # Línea diagonal derecha
@@ -1202,6 +1227,14 @@ while running:
     # Crear funcionalidad de basurero
     basurero = Basurero()
     clock = pygame.time.Clock()
+
+    # Crear y dibujar motor
+    x_motor = x_proto + 750
+    y_motor = y_proto + 150 
+
+    motor = Motor(x_motor - 50, y_motor - 20)
+    motor.dibujar_motor(screen)
+
     def buscar_conector_por_nombre(nombre, lista_conectores):
         for conector in lista_conectores:
             if conector.nombre == nombre:
@@ -1241,39 +1274,40 @@ while running:
                 else:
                     screen = pygame.display.set_mode((1000, 650), pygame.RESIZABLE)
 
-        #manejo de eventos especial para que cuando se quiera eliminar un item, se elimine bien y no se quiera agregar un cable
-
+        # Manejo de eventos especial para que cuando se quiera eliminar un item, se elimine bien y no se quiera agregar un cable
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and boton_basurero:
                 (mouse_x, mouse_y) = pygame.mouse.get_pos()
-                basurero.eliminar_led(mouse_x, mouse_y)
-                basurero.eliminar_switch(mouse_x, mouse_y)
                 basurero.eliminar_cable(mouse_x, mouse_y)
+                if verificador == False:
+                    basurero.eliminar_led(mouse_x, mouse_y)
+                if verificador == False:
+                    basurero.eliminar_switch(mouse_x, mouse_y)
+                verificador = False
                 boton_basurero = False
-        #manejo de eventos normal para cables, led y switch
 
+        # Manejo de eventos normal para cables, led y switch
         elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and boton_basurero == False:
             mouse_pos = pygame.mouse.get_pos()  # Obtén la posición del mouse
             for switch in guardar_switch:
                 if switch_presionado(switch, mouse_pos):  # Verifica si un switch fue presionado
-                    print(f"Switch presionado en coordenadas: ({switch.x}, {switch.y})")
-                    patita1 = punto_mas_cercano((switch.x1,switch.y1), conectores, distancia_maxima)
-                    patita2 = punto_mas_cercano((switch.x2,switch.y2), conectores, distancia_maxima)
-                    conector_p1=None
+                    patita1 = punto_mas_cercano((switch.x1, switch.y1), conectores, distancia_maxima)
+                    patita2 = punto_mas_cercano((switch.x2, switch.y2), conectores, distancia_maxima)
+                    conector_p1 = None
                     conector_p2 = None
                     for i in conectores:
                         if i.x == patita1.x and i.y == patita1.y:
                             conector_p1 = i
                         elif i.x == patita2.x and i.y == patita2.y:
                             conector_p2 = i
-                    if conector_p1==None or conector_p2== None:
+                    if conector_p1 is None or conector_p2 is None:
                         print("existe problemas en los conectores")
-                    if switch.estado== True:
-                        conector_p1.eliminar_conexion(conector_p1,conector_p2)
-                        switch.estado= False
+                    elif switch.estado:  # Si el switch está encendido, lo apagamos
+                        conector_p1.eliminar_conexion(conector_p1, conector_p2)
+                        switch.estado = False
                         print("Switch apagado")
-                    if switch.estado==False:
+                    else:  # Si el switch está apagado, lo encendemos
                         conector_p1.agregar_conexion(conector_p2)
-                        switch.estado= True
+                        switch.estado = True
                         print("Switch encendido")
 
             mouse_pos = event.pos
@@ -1345,6 +1379,7 @@ while running:
                  
             elif boton_edicion:
                 i = 0
+                validador = False
                 rango_click = 10
                 mouse_pos = pygame.mouse.get_pos()
                 conector_cercano = punto_mas_cercano(mouse_pos, conectores, distancia_maxima) #obtencion de punto cercano
@@ -1352,13 +1387,10 @@ while running:
                     pass
                 else:
                     edicion_coordenadas.append(conector_cercano)
-                    #print("Origen: ",cables[0][0].x,cables[0][0].y)
-                    #print("Destino: ",cables[0][1].x,cables[0][1].y)
-                    #print("Edición: ",edicion_coordenadas[len(edicion_coordenadas) - 1].x,edicion_coordenadas[len(edicion_coordenadas) - 1].y)
 
                 for cable in cables:
                     if cable[0].x - rango_click <= x <= cable[0].x + rango_click and cable[0].y - rango_click <= y <= cable[0].y + rango_click:
-                        print("entró en el origen del cable")
+                        #print("entró en el origen del cable")
                         start = cable[1]
                         end = cable[0]
                         for i in range(len(cables)):
@@ -1379,13 +1411,13 @@ while running:
                                 #print("--------------------------------")
                                 cont=0
                                 for nodo in conectores:
-                                    if nodo.x == end.x:
-                                        if end.nombre.startswith("conector3_"):
+                                    if nodo.x == start.x:
+                                        if start.nombre.startswith("conector3_"):
                                             #print(nodo.nombre,"\t",cont)
                                             cont+=1
-                                            nodo.eliminar_conexion(nodo, start)
+                                            nodo.eliminar_conexion(nodo, end)
                                         elif end.nombre.startswith("conector4_"):
-                                            nodo.eliminar_conexion(nodo, start) 
+                                            nodo.eliminar_conexion(nodo, end) 
                             # ------------------------ Agregar corriente en destino ------------------------
                             if start.nombre in ["pila+", "pila-"]:          # Coordenadas de inicio / coordenadas de destino ( tipo conector)
                                 for nodo in conectores:
@@ -1403,10 +1435,11 @@ while running:
                                                 if nodo.nombre.startswith("conector4_") and nodo.nombre != start.nombre:
                                                     start.agregar_conexion(nodo)                                               
                         edicion_coordenadas.clear() #limpieza de lista
+                        validador = True
                         boton_edicion = False
                        
                     elif cable[1].x - rango_click <= x <= cable[1].x + rango_click and cable[1].y - rango_click <= y <= cable[1].y + rango_click: 
-                        print("Entró en el destino del cable")
+                        #print("Entró en el destino del cable")
                         start = cable[1]
                         end = cable[0]
                         for i in range(len(cables)):
@@ -1416,7 +1449,6 @@ while running:
                                 nuevo = (edicion_coordenadas[indice])   #Obtener coordenadas de tipo conector
                                 cables.insert(i,(cable[0],nuevo))       #Inserta directamente un nuevo cable simulando edición
                                 break
-
 
                         if start and end:
                             start.eliminar_conexion(start, end)
@@ -1455,11 +1487,12 @@ while running:
                                                 if nodo.nombre.startswith("conector4_") and nodo.nombre != end.nombre:
                                                     end.agregar_conexion(nodo)                                                     
                         edicion_coordenadas.clear() #limpieza de lista
+                        validador = True
                         boton_edicion = False
                     
-                while i < len(led_coordenadas):
+                while i < len(led_coordenadas) and validador == False:
                     if led_coordenadas[i][0] == edicion_coordenadas[len(edicion_coordenadas) - 1].x and led_coordenadas[i][1] == edicion_coordenadas[len(edicion_coordenadas) - 1].y: 
-                        print("entró en el origen del LED")
+                        #print("entró en el origen del LED")
                         x = edicion_coordenadas[len(edicion_coordenadas) - 2].x #coordenada x que el usuario escogio para cambiar
                         y = edicion_coordenadas[len(edicion_coordenadas) - 2].y #coordenada y que el usuario escogio para cambiar
                         x_origen = led_coordenadas[i][0]
@@ -1509,10 +1542,11 @@ while running:
                             guardar_led.insert(i, led_a) # Insertar directamente el LED en la posición original
                             led_coordenadas[i] = x,y
                             boton_edicion = False 
+                            validador = True
                             break
 
                     elif led_coordenadas[i+1][0] == edicion_coordenadas[len(edicion_coordenadas) - 1].x and led_coordenadas[i+1][1] == edicion_coordenadas[len(edicion_coordenadas) - 1].y: 
-                        print("Entró en el destino del LED")
+                        #print("Entró en el destino del LED")
                         x = edicion_coordenadas[len(edicion_coordenadas) - 2].x #coordenada x que el usuario escogio para cambiar
                         y = edicion_coordenadas[len(edicion_coordenadas) - 2].y #coordenada y que el usuario escogio para cambiar
                         x_origen = led_coordenadas[i][0]    #Obtengo coordenada x de origen
@@ -1564,12 +1598,13 @@ while running:
                             guardar_led.insert(i, led_a) # Inserta directamente en la posicion correspondiente las nuevas coordenadas
                             led_coordenadas[i+1] = x,y # Actualiza las coordenadas en la lista de las posiciones de cada led
                             boton_edicion = False
+                            validador = True
                             break
                     i+=2
                 i = 0
-                while i < len(switch_coordenadas):
+                while i < len(switch_coordenadas) and validador == False:
                     if switch_coordenadas[i][0] == edicion_coordenadas[len(edicion_coordenadas) - 1].x and switch_coordenadas[i][1] == edicion_coordenadas[len(edicion_coordenadas) - 1].y:
-                        print("Entró en el origen del switch")
+                        #print("Entró en el origen del switch")
                         x = edicion_coordenadas[len(edicion_coordenadas) - 2].x #coordenada x que el usuario escogio para cambiar
                         y = edicion_coordenadas[len(edicion_coordenadas) - 2].y #coordenada y que el usuario escogio para cambiar
                         x_origen = switch_coordenadas[i][0] #Obtengo coordenada x de origen
@@ -1596,10 +1631,11 @@ while running:
                             guardar_switch.insert(i, switch_a) # Insertar directamente el switch en la posición original
                             switch_coordenadas[i] = (x,y) # Actualiza las coordenadas en la lista de las posiciones de cada switch
                             boton_edicion = False 
+                            validador = True
                             break
 
                     elif switch_coordenadas[i+1][0] == edicion_coordenadas[len(edicion_coordenadas) - 1].x and switch_coordenadas[i+1][1] == edicion_coordenadas[len(edicion_coordenadas) - 1].y:   
-                        print("Entró en el destino del switch")
+                        #print("Entró en el destino del switch")
                         x = edicion_coordenadas[len(edicion_coordenadas) - 2].x #coordenada x que el usuario escogio para cambiar
                         y = edicion_coordenadas[len(edicion_coordenadas) - 2].y #coordenada y que el usuario escogio para cambiar
                         x_origen = switch_coordenadas[i][0]
@@ -1625,6 +1661,7 @@ while running:
                             guardar_switch.insert(i, switch_a) # Insertar directamente el switch en la posición original
                             switch_coordenadas[i+1] = (x,y) # Actualiza las coordenadas en la lista de las posiciones de cada switch
                             boton_edicion = False 
+                            validador = True
                             break
                     i+=2
 
@@ -1653,8 +1690,6 @@ while running:
         menu.dibujar_recuadro_escogido(screen,100,x_menu + 520,y_menu + 15)     
         menu.dib_basurero(screen, x_menu + 535, y_menu + 30)
 
-
-
     for c in conectores: # busca las pilas y las envia a cambiar o no estado fase / neutro
         if c.nombre == "pila+":
             if not c.conexiones:
@@ -1682,17 +1717,3 @@ while running:
     mainClock.tick(30)
 
 pygame.quit()
-"""print("\n|------------- INFO -------------|\n")
-aux=0
-for c in conectores:
-    if c.nombre != c.padre.nombre:
-        print(f"{aux}) N {c.nombre} P {c.padre.nombre}")
-        aux+=1
-
-print("\n|------------- TEND -------------|\n")"""
-
-"""#print("Conexiones restantes:")
-for nodo in conectores:
-    conexiones = [n.nombre for n in nodo.conexiones]
-    if conexiones:
-        print(f"Nodo {nodo.nombre} está conectado con: {conexiones}")"""
