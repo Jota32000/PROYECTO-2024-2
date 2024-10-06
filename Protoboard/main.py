@@ -717,8 +717,7 @@ class Resistencia:
                 pygame.draw.line(screen, "red",(x_medio + 4, y_medio - 5), (x_medio + 4, y_medio + 5), 3)
                 pygame.draw.line(screen, "dark green",(x_medio - 3, y_medio - 5), (x_medio - 3, y_medio + 5), 3)
                 pygame.draw.line(screen, "blue",(x_medio - 10, y_medio - 10), (x_medio - 10, y_medio + 10), 3)
-                pygame.draw.line(screen, "yellow",(x_medio + 10, y_medio - 10), (x_medio + 10, y_medio + 10) ,1)
-                    
+                pygame.draw.line(screen, "yellow",(x_medio + 10, y_medio - 10), (x_medio + 10, y_medio + 10) ,1)      
     def comienzo_resistencia(self, conector_origen):
         self.inicio_resistencia = conector_origen
         self.dibujando_resistencia = True
@@ -736,7 +735,6 @@ class Resistencia:
                     nodo.neutro = True
                 else:
                     nodo.neutro = False
-
     def finalizar_resistencia(self, conector_siguiente):
         if self.inicio_resistencia.nombre == conector_siguiente.nombre:
             print("----------------------------")
@@ -822,7 +820,6 @@ class Resistencia:
         if self.dibujando_resistencia and self.inicio_resistencia:
             current_pos = pygame.mouse.get_pos()
             pygame.draw.line(screen, "dark gray", (self.inicio_resistencia.x, self.inicio_resistencia.y), current_pos, 3)
-
     def actualizarbosque(self, origen, destino):
         if origen.padre != destino.padre:
             coincidencia_origen = 0
@@ -897,7 +894,6 @@ class Cableado:
     def __init__(self):
         self.dibujando_cable = False
         self.inicio_cable = None
-
     def dibujar_cables(self):
         for cable in cables:
             # verificar fase y neutro sino da problemas
@@ -915,7 +911,6 @@ class Cableado:
     def comienzo_cable(self, conector_origen):
         self.inicio_cable = conector_origen
         self.dibujando_cable = True
-
     def energy_protoboard(self, pila_turno):
         for nodo in conectores: # ve los padres de p+ y p- segun eso da energy o no
             if pila_turno.nombre == "pila+":
@@ -930,7 +925,6 @@ class Cableado:
                     nodo.neutro = True
                 else:
                     nodo.neutro = False
-
     def finalizar_cable(self, conector_siguiente):
         if self.inicio_cable.nombre == conector_siguiente.nombre:
             print("----------------------------")
@@ -1062,7 +1056,6 @@ class Cableado:
                 if not c.conexiones:
                     c.padre = c
                 cableado.energy_protoboard(c)
-
     def actualizarbosque(self, origen, destino):
         if origen.padre != destino.padre:
             coincidencia_origen = 0
@@ -1083,12 +1076,10 @@ class Cableado:
                 viejo_padre = origen.padre
 
             self.actualizar_padre_subarbol(viejo_padre, nuevo_padre)
-
     def actualizar_padre_subarbol(self, viejo_padre, nuevo_padre):
         for nodo in conectores:
             if nodo.padre == viejo_padre:
                 nodo.padre = nuevo_padre
-
     def buscar_conexiones(self,nodo, nodo_objetivo):
         visitados = []
         conneciones = []
@@ -1110,7 +1101,6 @@ class Cableado:
             nodo.padre = nodo
             for i in visitados:
                 i.padre = nodo
-
     def activar_explosion(self,conector_siguiente):
         print("ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ")
         print("                   NUKE")
@@ -1159,7 +1149,6 @@ class Led:
         self.y2 = y2
         self.nombre_start = inicio
         self.nombre_end = fin
-
     def led_apagada(self,screen):
 
         conector1 = None
@@ -1211,7 +1200,6 @@ class Led:
             end_x = start_x + int(circle_radius * math.cos(math.radians(angle)))
             end_y = start_y + int(circle_radius * math.sin(math.radians(angle)))
             pygame.draw.line(screen,self.color, (start_x, start_y), (end_x, end_y), 2)
-
 class Switch:
     def __init__(self, x, y, x1, x2, y1, y2,inicio,fin):
         self.x = x
@@ -1238,7 +1226,6 @@ class Switch:
 
         self.x, self.y = (((self.x1 + self.x2) / 2) - 10, ((self.y1 + self.y2) / 2) - 10)
 
-
         # Dibujar patitas
         pygame.draw.line(screen, (0, 0, 0), (self.x1, self.y1), (self.x + lado // 2, self.y + lado // 2), 2)  # patita 1
         pygame.draw.line(screen, (0, 0, 0), (self.x2, self.y2), (self.x + lado // 2, self.y + lado // 2), 2)  # patita 2
@@ -1261,7 +1248,6 @@ class Switch:
         pygame.draw.line(screen, (0, 0, 0), (self.x + lado, self.y + lado), (self.x, self.y + lado),
                          2)  # Línea inferior
         pygame.draw.line(screen, (0, 0, 0), (self.x, self.y + lado), (self.x, self.y), 2)  # Línea izquierda
-
 class Basurero:
     def __init__(self):
         #No presenta atributos
@@ -1545,20 +1531,18 @@ screen_info = pygame.display.Info()
 screen_width = screen_info.current_w
 screen_height = screen_info.current_h
 
-# Configurar la pantalla en un tamaño
-#window_width = int(screen_width * 0.9)
-#window_height = int(screen_height * 0.85)
-
 # Crear la ventana con el tamaño ajustado
 screen = pygame.display.set_mode((1000,650),pygame.RESIZABLE)
 
 pygame.display.set_caption("Protoboard")
 mainClock = pygame.time.Clock()
-#---------- fin a trabajar ----------
+
 #Crear el cableado
 cableado = Cableado()
+
 #Crear la resistencia
 resistencia = Resistencia()
+
 fullscreen = False
 running = True
 x1 = 0
@@ -1598,13 +1582,6 @@ while running:
     # Crear funcionalidad de basurero
     basurero = Basurero()
     clock = pygame.time.Clock()
-
-    # Crear y dibujar motor
-    x_motor = x_proto + 750
-    y_motor = y_proto + 150 
-
-    #motor = Motor(x_motor - 50, y_motor - 20)
-    #motor.dibujar_motor(screen)
 
     def buscar_conector_por_nombre(nombre, lista_conectores):
         for conector in lista_conectores:
@@ -1775,7 +1752,6 @@ while running:
                  
             elif boton_edicion:
                 i = 0
-                validador = False
                 rango_click = 10
                 mouse_pos = pygame.mouse.get_pos()
                 conector_cercano = punto_mas_cercano(mouse_pos, conectores, distancia_maxima) #obtencion de punto cercano
@@ -1830,7 +1806,6 @@ while running:
                                                 if nodo.nombre.startswith("conector4_") and nodo.nombre != start.nombre:
                                                     start.agregar_conexion(nodo)                                               
                         edicion_coordenadas.clear() #limpieza de lista
-                        validador = True
                         boton_edicion = False
                        
                     elif cable[1].x - rango_click <= x <= cable[1].x + rango_click and cable[1].y - rango_click <= y <= cable[1].y + rango_click: 
@@ -1882,10 +1857,9 @@ while running:
                                                 if nodo.nombre.startswith("conector4_") and nodo.nombre != end.nombre:
                                                     end.agregar_conexion(nodo)                                                     
                         edicion_coordenadas.clear() #limpieza de lista
-                        validador = True
                         boton_edicion = False
                     
-                while i < len(led_coordenadas) and validador == False:
+                while i < len(led_coordenadas)  and len(edicion_coordenadas) > 0:
                     if led_coordenadas[i][0] == edicion_coordenadas[len(edicion_coordenadas) - 1].x and led_coordenadas[i][1] == edicion_coordenadas[len(edicion_coordenadas) - 1].y: 
                         #print("entró en el origen del LED")
                         x = edicion_coordenadas[len(edicion_coordenadas) - 2].x #coordenada x que el usuario escogio para cambiar
@@ -1947,7 +1921,6 @@ while running:
                             guardar_led.insert(i, led_a) # Insertar directamente el LED en la posición original
                             led_coordenadas[i] = x,y
                             boton_edicion = False 
-                            validador = True
                             break
 
                     elif led_coordenadas[i+1][0] == edicion_coordenadas[len(edicion_coordenadas) - 1].x and led_coordenadas[i+1][1] == edicion_coordenadas[len(edicion_coordenadas) - 1].y: 
@@ -2013,12 +1986,11 @@ while running:
                             guardar_led.insert(i, led_a) # Inserta directamente en la posicion correspondiente las nuevas coordenadas
                             led_coordenadas[i+1] = x,y # Actualiza las coordenadas en la lista de las posiciones de cada led
                             boton_edicion = False
-                            validador = True
                             break
                     i+=2
                 i = 0
 
-                while i < len(switch_coordenadas) and validador == False:
+                while i < len(switch_coordenadas) and len(edicion_coordenadas) > 0:
                     if switch_coordenadas[i][0] == edicion_coordenadas[len(edicion_coordenadas) - 1].x and switch_coordenadas[i][1] == edicion_coordenadas[len(edicion_coordenadas) - 1].y:
                         #print("Entró en el origen del switch")
                         x = edicion_coordenadas[len(edicion_coordenadas) - 2].x #coordenada x que el usuario escogio para cambiar
@@ -2056,7 +2028,6 @@ while running:
                             guardar_switch.insert(i, switch_a) # Insertar directamente el switch en la posición original
                             switch_coordenadas[i] = (x,y) # Actualiza las coordenadas en la lista de las posiciones de cada switch
                             boton_edicion = False 
-                            validador = True
                             break
 
                     elif switch_coordenadas[i+1][0] == edicion_coordenadas[len(edicion_coordenadas) - 1].x and switch_coordenadas[i+1][1] == edicion_coordenadas[len(edicion_coordenadas) - 1].y:   
@@ -2086,7 +2057,7 @@ while running:
                                     name_fin = c.nombre
                                 if x_origen == c.x and y_origen == c.y:
                                     name_inicio = c.nombre
-                            switch_a = Switch(x_mitad, y_mitad, x_origen, x, y_origen, y) # Dibujar el switch
+                            switch_a = Switch(x_mitad, y_mitad, x_origen, x, y_origen, y,name_inicio,name_fin) # Dibujar el switch
                             switch_a.switch_proto(screen)
 
                             x_origen, x_destino, y_origen, y_destino = 0, 0, 0, 0
@@ -2094,7 +2065,6 @@ while running:
                             guardar_switch.insert(i, switch_a) # Insertar directamente el switch en la posición original
                             switch_coordenadas[i+1] = (x,y) # Actualiza las coordenadas en la lista de las posiciones de cada switch
                             boton_edicion = False 
-                            validador = True
                             break
                     i+=2
 
