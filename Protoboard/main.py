@@ -1381,7 +1381,7 @@ while running:
                         led_a.led_apagada(screen)
                         # Restablecer variables
                         x1, x2, y1, y2 = 0, 0, 0, 0
-                        mm.led_pulsado = False
+
                         guardar_led.append(led_a)
 
             elif mm.switch_pulsado:
@@ -1414,7 +1414,6 @@ while running:
                         switch_a = Switch(x_mitad, y_mitad, x1, x2, x3, x4, y1, y2, y3, y4)
                         switch_a.switch_proto(screen)
                         x1, x2, y1, y2, x3, x4, y3, y4 = 0, 0, 0, 0, 0, 0, 0, 0
-                        mm.switch_pulsado = False
                         guardar_switch.append(switch_a)
 
             elif mm.cable_pulsado:
