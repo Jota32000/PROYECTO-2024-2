@@ -1,7 +1,5 @@
 conectores = []
 
-
-
 cables = []
 conectores_cables = []
 edicion_coordenadas = []
