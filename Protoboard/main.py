@@ -35,6 +35,8 @@ boton_led = False  # Estado del boton de la led (activado = true o desactivado =
 boton_switch = False  # Estado del boton del switch (activado = true o desactivado = false)
 boton_edicion = False  # Estado del boton de edición (activado = true o desactivado = false)
 boton_basurero = False  # Estado del boton del basurero (activado=true o desactivado = false)
+boton_switch16=False
+boton_switch4=False
 global verificador
 verificador = False  # Estado de verificador a la hora de eliminar un elemento
 cables = []
@@ -372,6 +374,8 @@ class Menu_f:
         self.proto_pulsado = False
         self.editar_pulsado = False
         self.borrar_pulsado = False
+        self.switch_4_pulsado =False
+        self.switch_16_pulsado =False
     def div_boton(self, screen, x, y, color):
         self.ancho = self.ancho_boton
         self.alto = 60
@@ -401,7 +405,7 @@ class Menu_f:
         # Lista de textos para cada división
         textos = ["CABLE", "LED", "SWITCH", "RESISTENCIA", "SHIP", "MOTOR", "PROTOBOARD", "EDITAR", "BORRAR"]
 
-        # Crear superficie para el botón LED (semi-transparente)
+        # Crear superficie para el botón
         boton_cable_surface = pygame.Surface((self.ancho_boton, 39), pygame.SRCALPHA)  # Botón CABLE
         boton_cable_surface.fill((0, 0, 0, 0))  # Rellenar la superficie con transparencia
         boton_led_surface = pygame.Surface((self.ancho_boton, 39), pygame.SRCALPHA)  # Botón LED
@@ -421,7 +425,7 @@ class Menu_f:
         boton_basurero_surface = pygame.Surface((self.ancho_boton, 39), pygame.SRCALPHA)  # Boton basurero
         boton_basurero_surface.fill((0, 0, 0, 0))  # Rellenar la superficie con transparencia
         x_inic = 0
-        # Dibujar el botón en la superficie del botón LED
+        # Dibujar el botón en la superficie del botón
         self.div_boton(boton_cable_surface, x_inic, 3, self.color_cable)
         self.div_boton(boton_led_surface, 0, 3, self.color_led)
         self.div_boton(boton_switch_surface, 0, 3, self.color_switch)
@@ -453,6 +457,7 @@ class Menu_f:
             # Posicionar el texto en el centro de cada división
             texto_rect = texto_renderizado.get_rect(center=(x_pos - self.ancho_boton // 2, self.y - 20))
             screen.blit(texto_renderizado, texto_rect)
+
     def manejar_eventos(self, event):  # Agregar screen como argumento
         if event.type == pygame.MOUSEBUTTONDOWN:
             pos = pygame.mouse.get_pos()
@@ -591,16 +596,6 @@ class Menu_f:
                 else:
                     self.borrar_pulsado = True
                     self.color_borrar = self.color_pulsar
-    def borrar_led(self,x,y,leds):
-        rango=20
-        mi_led=None
-        for led in leds:
-            if x>=led.x-rango and x<=led.x+rango and y>=led.y-rango and y<=led.y+rango:
-                mi_led=led
-        if(mi_led!=None):
-            leds.remove(mi_led)
-        else:
-            print("No se ha encontrado el led")
 class Cableado:
     def __init__(self):
         self.dibujando_cable = False
@@ -941,29 +936,72 @@ class Switch:
         pygame.draw.line(screen, (0, 0, 0), (self.x + lado, self.y + lado), (self.x, self.y + lado),
                          2)  # Línea inferior
         pygame.draw.line(screen, (0, 0, 0), (self.x, self.y + lado), (self.x, self.y), 2)  # Línea izquierda
-def buscar_led(x,y):
-    rango_click = 10
-    mi_led = None
-    # Buscador de led en la lista de los leds
-    for led in guardar_led:
-        # si se clickea en el rango correspondiente, se borra de la lista led
-        if led.x - rango_click <= x <= led.x + rango_click and led.y - rango_click <= y <= led.y + rango_click:
-            mi_led = led
-    return mi_led
+class Switch_16:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.color_cuerpo = (127, 179, 213)  # Color del cuerpo del switch
+        self.cApagado = (255, 255, 255)  # Color de los botones apagados
+        self.cEncendido = (225, 178, 178)  # Color de los botones encendidos
+        self.disL = 20  # Distancia horizontal entre botones
+        self.disA = 40  # Distancia vertical entre botones
+        self.largo = 150
+        self.ancho = 36
+        self.boton_colores = [self.cApagado] * 8  # Lista de colores de los botones
+        self.boton_surfaces = []  # Lista para almacenar superficies de los botones
+
+        # Crear superficies para los botones
+        self.crear_botones()
+
+    def crear_botones(self):
+        for i in range(8):
+            surface = pygame.Surface((7, 14))  # Tamaño del botón
+            surface.fill(self.cApagado)  # Color inicial del botón
+            self.boton_surfaces.append(surface)
+
+    def dibujar(self, screen):
+        # Dibujar el cuerpo del switch
+        pygame.draw.line(screen, (0, 0, 0), (self.x, self.y), (self.x, self.y + self.disA), 2)
+        for i in range(1, 8):
+            pygame.draw.line(screen, (0, 0, 0), (self.x + self.disL * i, self.y), (self.x + self.disL * i, self.y + self.disA), 2)
+
+        # Dibujar el relleno del cuerpo
+        pygame.draw.line(screen, (0, 0, 0), (self.x - 5, self.y + 6), (self.x + self.largo, self.y + 6), 2)
+        pygame.draw.line(screen, (0, 0, 0), (self.x - 5, self.y + self.ancho), (self.x + self.largo, self.y + self.ancho), 2)
+        pygame.draw.line(screen,(0,0,0),(self.x - 5, self.y + 6),(self.x - 5, self.y + self.ancho),2)
+        pygame.draw.line(screen, (0, 0, 0), (self.x + self.largo, self.y + 6), (self.x + self.largo, self.y + self.ancho), 2)
+        for i in range(self.y + 7, self.y + self.ancho):
+            pygame.draw.line(screen, self.color_cuerpo, (self.x - 4, i), (self.x + self.largo, i))
+
+        # Dibujar los botones en sus posiciones
+        for i in range(8):
+            x_pos = self.x + self.disL * i
+            y_pos = self.y + 13
+            screen.blit(self.boton_surfaces[i], (x_pos, y_pos))
+
+    def detectar_click(self, pos):
+        # Verificar si el clic está dentro de algún botón
+        for i in range(8):
+            boton_x = self.x + self.disL * i
+            boton_y = self.y + 13
+            if boton_x <= pos[0] <= boton_x + 7 and boton_y <= pos[1] <= boton_y + 14:
+                # Cambiar el color del botón al ser presionado
+                if self.boton_colores[i] == self.cApagado:
+                    self.boton_colores[i] = self.cEncendido  # Cambiar a encendido
+                else:
+                    self.boton_colores[i] = self.cApagado  # Cambiar a apagado
+                # Actualizar la superficie del botón
+                self.boton_surfaces[i].fill(self.boton_colores[i])
 class Basurero:
     def __init__(self):
         # No presenta atributos
         pass
-
     def eliminar_led(self, x, y):
         mi_led=buscar_led(x,y)
         if mi_led is not None:
             guardar_led.remove(mi_led)
         else:
             print("No se ha encontrado un led dentro del rango de clic")
-
-
-
     def eliminar_switch(self, x, y):
         rango_click = 20
         mi_switch = None
@@ -973,18 +1011,16 @@ class Basurero:
             if switch.x - rango_click <= x <= switch.x + rango_click and switch.y - rango_click <= y <= switch.y + rango_click:
                 mi_switch = switch
         if mi_switch is not None:
-                guardar_switch.remove(mi_switch)
+            guardar_switch.remove(mi_switch)
         else:
             print("No se ha encontrado un led dentro del rango de clic")
-
     def eliminar_cable(self, x, y):
         rango_click = 10
         global verificador
         # Buscador de cable en la lista de los cables
         for cable in cables:
             # si se clickea en el rango correspondiente, se borra de la lista cable
-            if cable[0].x - rango_click <= x <= cable[0].x + rango_click and cable[0].y - rango_click <= y <= cable[
-                0].y + rango_click:
+            if cable[0].x - rango_click <= x <= cable[0].x + rango_click and cable[0].y - rango_click <= y <= cable[0].y + rango_click:
                 start = cable[1]
                 end = cable[0]
                 cables.remove(cable)
@@ -1037,38 +1073,22 @@ class Basurero:
                                 elif start.nombre.startswith("conector4_"):
                                     nodo.eliminar_conexion(nodo, end)
                 verificador = True
-class Motor:
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
-    def dibujar_motor(self, screen):
-        gris_claro = (192, 192, 192)
-        # Cuerpo del motor
-        puntos = [
-            (self.x, self.y),
-            (self.x + 120, self.y),
-            (self.x + 120, self.y + 60),
-            (self.x + 80, self.y + 60),
-            (self.x + 80, self.y + 100),
-            (self.x + 40, self.y + 100),
-            (self.x + 40, self.y + 60),
-            (self.x, self.y + 60)
-        ]
-        pygame.draw.polygon(screen, gris_claro, puntos)
-        # Detalles del motor
-        pygame.draw.line(screen, "gray", (self.x + 40, self.y), (self.x + 40, self.y + 80), 3)
-        pygame.draw.line(screen, "gray", (self.x + 80, self.y), (self.x + 80, self.y + 80), 3)
-        # Tornillos
-        for i in range(5):
-            pygame.draw.line(screen, "black", (self.x + 10 + i * 25, self.y + 60), (self.x + 10 + i * 25, self.y + 70),
-                             2)
-        # Adornos
-        pygame.draw.line(screen, "red", (self.x + 50, self.y + 15), (self.x + 70, self.y + 15), 5)
-        pygame.draw.line(screen, "red", (self.x + 50, self.y + 40), (self.x + 70, self.y + 40), 5)
-
-        # Lineas decorativas
-        pygame.draw.line(screen, "dark gray", (self.x + 40, self.y), (self.x + 40, self.y + 60), 5)
-        pygame.draw.line(screen, "dark gray", (self.x + 80, self.y), (self.x + 80, self.y + 60), 5)
+def buscar_led(x,y):
+    rango_click = 10
+    mi_led = None
+    # Buscador de led en la lista de los leds
+    for led in guardar_led:
+        # si se clickea en el rango correspondiente, se borra de la lista led
+        if led.x - rango_click <= x <= led.x + rango_click and led.y - rango_click <= y <= led.y + rango_click:
+            mi_led = led
+    return mi_led
+def buscar_switch(x,y):
+    rango_clik = 10
+    mi_switch = None
+    for switch in guardar_switch:
+        if switch.x - rango_clik <= x <= switch.x + rango_clik and switch.y - rango_clik <= y <= switch.y+rango_clik:
+            mi_switch = switch
+    return mi_switch
 def dibujar_a(screen, x, y, ancho, alto, color):
     pygame.draw.line(screen, color, (x, y + alto), (x + ancho // 2, y), 2)  # Línea diagonal izquierda
     pygame.draw.line(screen, color, (x + ancho // 2, y), (x + ancho, y + alto), 2)  # Línea diagonal derecha
@@ -1154,7 +1174,6 @@ def dibujar_0(screen, x, y, alto, color):
     pygame.draw.line(screen, color, (x, y + alto), (x + alto, y + alto), 2)
     pygame.draw.line(screen, color, (x + alto, y + alto), (x + alto, y), 2)
     pygame.draw.line(screen, color, (x, y), (x + alto, y), 2)
-
 def switch_presionado(switch, mouse_pos):
     lado = 40  # Tamaño del switch (cuadrado)
     x, y = mouse_pos
@@ -1166,10 +1185,8 @@ def buscar_conector_por_nombre(nombre, lista_conectores):
         if conector.nombre == nombre:
             return conector
     return None
-
 def distancia(punto1, punto2):
     return math.sqrt((punto1[0] - punto2[0]) ** 2 + (punto1[1] - punto2[1]) ** 2)
-
 def punto_mas_cercano(pos_mouse, lista_conectores, distancia_maxima):
     punto_cercano = None
     distancia_minima = 10000
@@ -1181,6 +1198,15 @@ def punto_mas_cercano(pos_mouse, lista_conectores, distancia_maxima):
             distancia_minima = dist
             punto_cercano = conector
     return punto_cercano
+
+def dibujar_conectores(screen, conectores):  # le da color a los puntos segun el tipo de energy
+    for conector in conectores:
+        if not conector.nombre.startswith("pila"):
+            if conector.fase:
+                pygame.draw.line(screen, "red", (conector.x, conector.y), (conector.x + conector.largo, conector.y),6)
+            elif conector.neutro:
+                pygame.draw.line(screen, "blue", (conector.x, conector.y),(conector.x + conector.largo, conector.y),6)
+
 # Main
 pygame.init()
 # --------- esto lo tengo que trabajar para fullscreen ----------------
@@ -1188,10 +1214,6 @@ pygame.init()
 screen_info = pygame.display.Info()
 screen_width = screen_info.current_w
 screen_height = screen_info.current_h
-
-# Configurar la pantalla en un tamaño
-# window_width = int(screen_width * 0.9)
-# window_height = int(screen_height * 0.85)
 
 # Crear la ventana con el tamaño ajustado
 screen = pygame.display.set_mode((1000, 650), pygame.RESIZABLE)
@@ -1217,17 +1239,23 @@ guardar_switch = []
 switch_coordenadas = []
 ultimo_conector = None
 mm = Menu_f()
+switch16=Switch_16(350,265)
 # editar led
 led_a_editar = None
 conector_1_editar = None
 conector_2_editar = None
+# editar switch
+switch_editar=None
+c_1_editar=None
+c_2_editar=None
+c_3_editar=None
+c_4_editar=None
 
 while running:
     screen.fill("white")  # directo el color sin variables extra
 
     x_proto = (screen.get_width() - 650) // 2
     y_proto = (screen.get_height() - 300) // 2
-
     # Crear y dibujar Protoboard
     protoboard = Protoboard(x_proto, y_proto)
     protoboard.crear(screen)
@@ -1235,22 +1263,18 @@ while running:
     # Crear y dibujar Pila
     x_pila = (screen.get_width() - 950) // 2
     y_pila = (screen.get_height() - 50) // 2
-
     pila = Pila(x_pila, y_pila)
     pila.dibujarPila(screen)
-
+    #dibujar menu
     mm.dibujar(screen)
+
+    #dibujar swuitch de 16
+    switch16.dibujar(screen)
+
 
     # Crear funcionalidad de basurero
     basurero = Basurero()
     clock = pygame.time.Clock()
-
-    # Crear y dibujar motor
-    x_motor = x_proto + 750
-    y_motor = y_proto + 150
-
-    motor = Motor(x_motor - 50, y_motor - 20)
-    motor.dibujar_motor(screen)
 
     distancia_maxima = 10
     cableado.dibujar_cables()
@@ -1301,6 +1325,7 @@ while running:
                         print("Switch encendido")
             mouse_pos = event.pos
             conector_cercano = punto_mas_cercano(mouse_pos, conectores, distancia_maxima)
+            switch16.detectar_click(mouse_pos)
             x, y = event.pos
             if mm.borrar_pulsado:
                 if mm.led_pulsado:
@@ -1339,22 +1364,62 @@ while running:
                         print("error al editar led")
                     # busca el led que se quiere editar
                     # seleccionar los conectores nuevos
-                    # actualizar los conectores al el led
+                    # actualizar los conectores al led
                     print("editar led")
-                elif mm.switch_pulsado:
-                    # busca el switch que se quiere editar
-                    # seleccionar los conectores nuevos
-                    # actualizar los conectores al el switch
+
+                if mm.switch_pulsado:
+                    if switch_editar is None:
+                        print("buscando switch")
+                        switch_editar = buscar_switch(x, y)
+                    elif c_1_editar is None:
+                        print("buscando conector 1")
+                        c_1_editar = punto_mas_cercano(mouse_pos, conectores, distancia_maxima)
+                    elif c_2_editar is None:
+                        print("buscando conector 2")
+                        c_2_aux = punto_mas_cercano(mouse_pos, conectores, distancia_maxima)
+                        if c_2_aux is not None and c_2_aux != c_1_editar:
+                            c_2_editar = c_2_aux
+                        else:
+                            print("conector 2 no válido, es igual al conector 1")
+                    elif c_3_editar is None:
+                        print("buscando conector 3")
+                        c_3_aux = punto_mas_cercano(mouse_pos, conectores, distancia_maxima)
+                        if c_3_aux is not None and c_3_aux != c_1_editar and c_3_aux != c_2_editar:
+                            c_3_editar = c_3_aux
+                        else:
+                            print("conector 3 no válido, es igual a conector 1 o conector 2")
+                    elif c_4_editar is None:
+                        print("buscando conector 4")
+                        c_4_aux = punto_mas_cercano(mouse_pos, conectores, distancia_maxima)
+                        if c_4_aux is not None and c_4_aux != c_1_editar and c_4_aux != c_2_editar and c_4_aux != c_3_editar:
+                            c_4_editar = c_4_aux
+                            print("conectores válidos")
+                            # Asignar las posiciones de las patitas del switch
+                            switch_editar.x1 = c_1_editar.x
+                            switch_editar.y1 = c_1_editar.y
+                            switch_editar.x2 = c_2_editar.x
+                            switch_editar.y2 = c_2_editar.y
+                            switch_editar.x3 = c_3_editar.x
+                            switch_editar.y3 = c_3_editar.y
+                            switch_editar.x4 = c_4_editar.x
+                            switch_editar.y4 = c_4_editar.y
+                            # Reiniciar las variables de edición
+                            switch_editar = None
+                            c_1_editar = None
+                            c_2_editar = None
+                            c_3_editar = None
+                            c_4_editar = None
+                            print("switch editado")
+                        else:
+                            print("conector 4 no válido, es igual a conector 1, 2 o 3")
+                    else:
+                        print("error al editar switch")
+                    # Proceso de edición del switch
                     print("editar switch")
-                elif mm.cable_pulsado:
-                    # busca el cable que se quiere editar
-                    # seleccionar los conectores nuevos
-                    # actualizar los conectores al el cable
-                    print("editar cable")
                 else:
                     print("No se ha seleccionado un elemento para editar")
 
-            elif mm.led_pulsado :
+            elif mm.led_pulsado:
                 if not conector_cercano:
                     pass
 
@@ -1436,13 +1501,7 @@ while running:
             if not c.conexiones:
                 c.padre = c
             cableado.energy_protoboard(c)
-    def dibujar_conectores(screen, conectores):  # le da color a los puntos segun el tipo de energy
-        for conector in conectores:
-            if not conector.nombre.startswith("pila"):
-                if conector.fase:
-                    pygame.draw.line(screen, "red", (conector.x, conector.y), (conector.x + conector.largo, conector.y),6)
-                elif conector.neutro:
-                    pygame.draw.line(screen, "blue", (conector.x, conector.y),(conector.x + conector.largo, conector.y),6)
+
     dibujar_conectores(screen, conectores)
     pygame.display.flip()
     mainClock.tick(30)
