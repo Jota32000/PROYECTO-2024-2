@@ -8,3 +8,25 @@ Protoboard/.idea/misc.xml
 Protoboard/.idea/modules.xml
 
 Protoboard/.idea/Protoboard.iml
+
+Protoboard/__pycache__/Basurero.cpython-39.pyc
+
+Protoboard/__pycache__/Cableado.cpython-39.pyc
+
+Protoboard/__pycache__/Conector.cpython-39.pyc
+
+Protoboard/__pycache__/Datos.cpython-39.pyc
+
+Protoboard/__pycache__/Led.cpython-39.pyc
+
+Protoboard/__pycache__/Menu.cpython-39.pyc
+
+Protoboard/__pycache__/Pila.cpython-39.pyc
+
+Protoboard/__pycache__/Protoboard.cpython-39.pyc
+
+Protoboard/__pycache__/Resistencia.cpython-39.pyc
+
+Protoboard/__pycache__/Switch.cpython-39.pyc
+
+Protoboard/__pycache__/Switch_16.cpython-39.pyc
