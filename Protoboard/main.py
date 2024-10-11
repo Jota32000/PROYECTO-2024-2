@@ -6,7 +6,7 @@ from Protoboard import Protoboard
 from Cableado import Cableado
 from Basurero import Basurero
 from Pila import Pila
-from Menu import Menu_f
+from Menu import Menu
 from Led import Led
 from Switch_16 import Switch_16
 from Conector import Conector
@@ -98,7 +98,7 @@ x4 = 0
 y3 = 0
 y4 = 0
 ultimo_conector = None
-mm = Menu_f()
+mm = Menu()
 switch16=Switch_16(350,265)
 # editar led
 led_a_editar = None

@@ -5,7 +5,7 @@ import math
 from Datos import *
 
 
-class Menu_f:
+class Menu:
     def __init__(self):
         self.x = 0
         self.y = 50
