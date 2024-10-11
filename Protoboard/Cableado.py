@@ -39,20 +39,6 @@ class Cableado:
             self.inicio_cable = None
             return
 
-        if ((self.inicio_cable.fase and conector_siguiente.neutro) or
-                (self.inicio_cable.neutro and conector_siguiente.fase) or
-                (self.inicio_cable.fase and conector_siguiente.fase) or
-                (self.inicio_cable.neutro and conector_siguiente.neutro)):
-            print("----------------------------------")
-            print("Corto de pixar")
-            print("No puede conectar neutro y fase")
-            print("posible error aqui")
-            print("----------------------------------")
-            Conector.activar_explosion(self,screen,self.inicio_cable,conector_siguiente)
-            self.dibujando_cable = False
-            self.inicio_cable = None
-            return
-
         if "pila" in self.inicio_cable.nombre and conector_siguiente.nombre.startswith(("conector3_", "conector4_")):
             print("-------------------------------------------")
             print("Los cables de la pila solo van en los buses")
@@ -67,6 +53,20 @@ class Cableado:
                     print("-------------------------------------------")
                     print("Ya hay un cable en este nodo")
                     print("-------------------------------------------")
+                    self.dibujando_cable = False
+                    self.inicio_cable = None
+                    return
+
+                if ((self.inicio_cable.fase and conector_siguiente.neutro) or
+                        (self.inicio_cable.neutro and conector_siguiente.fase) or
+                        (self.inicio_cable.fase and conector_siguiente.fase) or
+                        (self.inicio_cable.neutro and conector_siguiente.neutro)):
+                    print("----------------------------------")
+                    print("Corto de pixar")
+                    print("No puede conectar neutro y fase")
+                    print("posible error aqui")
+                    print("----------------------------------")
+                    Conector.activar_explosion(self,screen,self.inicio_cable, conector_siguiente)
                     self.dibujando_cable = False
                     self.inicio_cable = None
                     return

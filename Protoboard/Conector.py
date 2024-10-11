@@ -48,7 +48,7 @@ class Conector:
             nodo_objetivo.conexiones.remove(nodo)
             self.buscar_conexiones(nodo, nodo_objetivo)
 
-    def activar_explosion(self,screen,inicio_cable,conector_siguiente,conectores):
+    def activar_explosion(self,screen,inicio_cable,conector_siguiente):
         print("ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ")
         print("                   NUKE")
         print("∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨")
@@ -61,7 +61,7 @@ class Conector:
         pygame.time.delay(100)
         #----- QUITAR OBJETOS -----
 
-        for nodo in conectores:
+        for nodo in self.conectores:
             if inicio_cable.nombre.startswith("pila") and conector_siguiente.nombre.startswith("pila"):
                 # bloquea conector de pila
                 if nodo == conector_siguiente:
