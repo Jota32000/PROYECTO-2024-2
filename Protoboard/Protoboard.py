@@ -1,16 +1,18 @@
 import pygame
 from Conector import Conector
 
-from Datos import *
 class Protoboard:
-    def __init__(self, x, y):
+    def __init__(self, x, y,conectores):
         self.x = x
         self.y = y
         self.largo = 650
         self.ancho = 400
         self.color = (222, 222, 222)
+        self.conectores_creados = False
+        self.conectores=conectores
 
-    def crear(self, screen,conectores):
+
+    def crear(self, screen):
         # Línea superior
         pygame.draw.line(screen, ("black"), (self.x, self.y), (self.x + self.largo, self.y), 3)
         # Línea izquerda
@@ -34,18 +36,14 @@ class Protoboard:
         pygame.draw.line(screen, (207, 207, 207), (self.x, self.y + mitad_largo),(self.x + self.largo, self.y + mitad_largo), 30)
 
         # Llamar al metodo para dibujar conectores
+        self.dibujar_conectores(screen)
 
-        self.dibujar_conectores(screen,conectores)
-
-    def dibujar_conectores(self, screen,conectores):
+    def dibujar_conectores(self, screen):
         # Espaciado entre conectores
         separacion_x = 20
         # Coordenadas iniciales para conectores
         inicio_x = self.x +35
         inicio_y = self.y + 20
-        # Número de filas y columnas de conectores
-        num_filas = 5
-        num_columnas = 30
 
         dibujar_1(screen,inicio_x-3,inicio_y+45,10,(84,84,84))
         dibujar_5(screen,inicio_x+77,inicio_y+45,10,(84,84,84))
@@ -102,103 +100,105 @@ class Protoboard:
         dibujar_j(screen, inicio_x +self.largo-55, inicio_y + 65, 10, 10, (84, 84, 84))
         dibujar_mas(screen, inicio_x + self.largo - 55, inicio_y + 20, 10, (222, 17, 17))
         dibujar_menos(screen, inicio_x + self.largo - 55, inicio_y + 2, (17, 17, 222))
+        #fors
 
-        for i in range(2):
-            for j in range(num_columnas):
-                x_pos = inicio_x + j * separacion_x
-                y_pos = inicio_y + i * 20
-                nombre_c1 = f"conector1_{i}_{j}"
-                # se crea un conector y se verifica si ya existe
-                conector_existente = None
-                for conector in conectores:
-                    if conector.nombre == nombre_c1:
-                        conector_existente = conector # la bandera ahora tiene conector
-                        break
-                # si existe solo se cambian las coordenadas
-                if conector_existente:
-                    conector_existente.x = x_pos
-                    conector_existente.y = y_pos
-                # si no existe se crea un nuevo conector y se agrega a la lista
-                else:
-                    conector = Conector(nombre_c1, x_pos, y_pos)
-                    conectores.append(conector)
-                conector.dibujar(screen,conectores)
-        for i in range(2):
-            for j in range(num_columnas):
-                x_pos = inicio_x + j * separacion_x
-                y_pos = inicio_y + i * 20
-                nombre_c2 = f"conector2_{i}_{j}"
-                conector_existente = None
-                for conector in conectores:
-                    if conector.nombre == nombre_c2:
-                        conector_existente = conector
-                        break
+        if not self.conectores_creados:
+            for i in range(2):
+                for j in range(30):
+                    x_pos = inicio_x + j * separacion_x
+                    y_pos = inicio_y + i * 20
+                    nombre_c1 = f"conector1_{i}_{j}"
+                    # se crea un conector y se verifica si ya existe
+                    conector_existente = None
+                    for conector in self.conectores:
+                        if conector.nombre == nombre_c1:
+                            conector_existente = conector  # la bandera ahora tiene conector
+                            break
+                    # si existe solo se cambian las coordenadas
+                    if conector_existente:
+                        conector_existente.x = x_pos
+                        conector_existente.y = y_pos
+                    # si no existe se crea un nuevo conector y se agrega a la lista
+                    else:
+                        conector = Conector(nombre_c1, x_pos, y_pos,self.conectores)
+                        self.conectores.append(conector)
 
-                if conector_existente:
-                    conector_existente.x = x_pos
-                    conector_existente.y = y_pos + self.ancho - 64
-                else:
-                    conector = Conector(nombre_c2, x_pos, y_pos + self.ancho - 64)
-                    conectores.append(conector)
-                conector.dibujar(screen,conectores)
-        for j in range(num_columnas):
-            primer_conector_columna = None  # guarda el primer nodo de cada columna
-            for i in range(num_filas):
-                y_pos = inicio_y + i * 20
-                x_pos = inicio_x + j * separacion_x
-                nombre_c3 = f"conector3_{i}_{j}"
 
-                conector_existente = None
-                for conector in conectores:
-                    if conector.nombre == nombre_c3:
-                        conector_existente = conector
-                        break
+            for i in range(2):
+                for j in range(30):
+                    x_pos = inicio_x + j * separacion_x
+                    y_pos = inicio_y + i * 20
+                    nombre_c2 = f"conector2_{i}_{j}"
+                    conector_existente = None
+                    for conector in self.conectores:
+                        if conector.nombre == nombre_c2:
+                            conector_existente = conector
+                            break
 
-                if conector_existente:
-                    conector_existente.x = x_pos
-                    conector_existente.y = y_pos + 70
-                    conector = conector_existente
-                else:
-                    conector = Conector(nombre_c3, x_pos, y_pos + 70)
-                    conectores.append(conector)
+                    if conector_existente:
+                        conector_existente.x = x_pos
+                        conector_existente.y = y_pos + self.ancho - 64
+                    else:
+                        conector = Conector(nombre_c2, x_pos, y_pos + self.ancho - 64,self.conectores)
+                        self.conectores.append(conector)
+            for j in range(30):
+                primer_conector_columna = None  # guarda el primer nodo de cada columna
+                for i in range(5):
+                    y_pos = inicio_y + i * 20
+                    x_pos = inicio_x + j * separacion_x
+                    nombre_c3 = f"conector3_{i}_{j}"
 
-                conector.dibujar(screen,conectores)
-                # asigna el primer conector de la columna
-                if i == 0:
-                    primer_conector_columna = conector
-                else:
-                    # verifica si la conexion ya existe y evita code duplicado
-                    if conector not in primer_conector_columna.conexiones:
-                        primer_conector_columna.agregar_conexion(conector) # si no la agrega
+                    conector_existente = None
+                    for conector in self.conectores:
+                        if conector.nombre == nombre_c3:
+                            conector_existente = conector
+                            break
 
-        # solo repito el proceso
-        for j in range(num_columnas):
-            primer_conector_columna = None
-            for i in range(num_filas):
-                x_pos = inicio_x + j * separacion_x
-                y_pos = inicio_y + i * 20
-                nombre_c4 = f"conector4_{i}_{j}"
+                    if conector_existente:
+                        conector_existente.x = x_pos
+                        conector_existente.y = y_pos + 70
+                        conector = conector_existente
+                    else:
+                        conector = Conector(nombre_c3, x_pos, y_pos + 70,self.conectores)
+                        self.conectores.append(conector)
 
-                conector_existente = None
-                for conector in conectores:
-                    if conector.nombre == nombre_c4:
-                        conector_existente = conector
-                        break
+                    conector.dibujar(screen)
+                    # asigna el primer conector de la columna
+                    if i == 0:
+                        primer_conector_columna = conector
+                    else:
+                        # verifica si la conexion ya existe y evita code duplicado
+                        if conector not in primer_conector_columna.conexiones:
+                            primer_conector_columna.agregar_conexion(conector)  # si no la agrega
 
-                if conector_existente:
-                    conector_existente.x = x_pos
-                    conector_existente.y = y_pos + 210
-                    conector = conector_existente
-                else:
-                    conector = Conector(nombre_c4, x_pos, y_pos + 210)
-                    conectores.append(conector)
-                conector.dibujar(screen,conectores)
-                if i == 0:
-                    primer_conector_columna = conector
-                else:
-                    if conector not in primer_conector_columna.conexiones:
-                        primer_conector_columna.agregar_conexion(conector)
+                # solo repito el proceso
+            for j in range(30):
+                primer_conector_columna = None
+                for i in range(5):
+                    x_pos = inicio_x + j * separacion_x
+                    y_pos = inicio_y + i * 20
+                    nombre_c4 = f"conector4_{i}_{j}"
 
+                    conector_existente = None
+                    for conector in self.conectores:
+                        if conector.nombre == nombre_c4:
+                            conector_existente = conector
+                            break
+
+                    if conector_existente:
+                        conector_existente.x = x_pos
+                        conector_existente.y = y_pos + 210
+                        conector = conector_existente
+                    else:
+                        conector = Conector(nombre_c4, x_pos, y_pos + 210,self.conectores)
+                        self.conectores.append(conector)
+                    conector.dibujar(screen)
+                    if i == 0:
+                        primer_conector_columna = conector
+                    else:
+                        if conector not in primer_conector_columna.conexiones:
+                            primer_conector_columna.agregar_conexion(conector)
+            self.conectores_creados = True
 
 def dibujar_a(screen, x, y,ancho,alto,color):
     pygame.draw.line(screen, color, (x, y + alto), (x + ancho // 2, y), 2)  # Línea diagonal izquierda

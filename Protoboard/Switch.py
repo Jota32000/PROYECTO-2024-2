@@ -4,28 +4,21 @@ import math
 from Datos import *
 
 class Switch:
-    def __init__(self, x, y, x1, x2, y1, y2,inicio,fin):
+    def __init__(self, x, y, x1, x2, y1, y2):
         self.x = x
         self.y = y
         self.x1 = x1
         self.x2 = x2
         self.y1 = y1
         self.y2 = y2
-        self.nombre_start = inicio
-        self.nombre_end = fin
         self.estado=False
 
-    def switch_proto(self, screen,conectores):
+    def switch_proto(self, screen):
         lado = 20  # Tamaño del switch (cuadrado)
         body_color = (150, 150, 150)
         circle_radius = 5  # Radio del "círculo" en el medio
 
-        for c in conectores:
-            # Cambiar coordenadas si el nombre coincide y las coordenadas no son iguales
-            if c.nombre == self.nombre_start:
-                self.x1, self.y1 = c.x, c.y  # Cambiar coordenadas de inicio
-            if c.nombre == self.nombre_end:
-                self.x2, self.y2 = c.x, c.y # Cambiar coordenadas de fin
+
 
         self.x, self.y = (((self.x1 + self.x2) / 2) - 10, ((self.y1 + self.y2) / 2) - 10)
 
