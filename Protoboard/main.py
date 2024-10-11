@@ -9,8 +9,9 @@ from Pila import Pila
 from Menu import Menu_f
 from Led import Led
 from Switch_16 import Switch_16
+from Conector import Conector
 import math
-from Datos import *
+
 
 conectores = []
 boton_cable = False  # Estado del boton del cable (activado = true o desactivado = false)
@@ -20,12 +21,13 @@ boton_edicion = False  # Estado del boton de edición (activado = true o desacti
 boton_basurero = False  # Estado del boton del basurero (activado=true o desactivado = false)
 boton_switch16=False
 boton_switch4=False
-global verificador
-verificador = False  # Estado de verificador a la hora de eliminar un elemento
-cables = []
-conectores_cables = []
-edicion_coordenadas = []
 
+cables = []
+resistencias = []
+
+guardar_led = []
+guardar_switch = []
+switch_coordenadas = []
 
 
 
@@ -59,27 +61,8 @@ def buscar_conector_por_nombre(nombre, lista_conectores):
         if conector.nombre == nombre:
             return conector
     return None
-def distancia(punto1, punto2):
-    return math.sqrt((punto1[0] - punto2[0]) ** 2 + (punto1[1] - punto2[1]) ** 2)
-def punto_mas_cercano(pos_mouse, lista_conectores, distancia_maxima):
-    punto_cercano = None
-    distancia_minima = 10000
 
-    for conector in lista_conectores:
-        conector_pos = (conector.x, conector.y)  # Extrae las coordenadas del conector
-        dist = distancia(pos_mouse, conector_pos)
-        if dist < distancia_minima and dist <= distancia_maxima:
-            distancia_minima = dist
-            punto_cercano = conector
-    return punto_cercano
 
-def dibujar_conectores(screen, conectores):  # le da color a los puntos segun el tipo de energy
-    for conector in conectores:
-        if not conector.nombre.startswith("pila"):
-            if conector.fase:
-                pygame.draw.line(screen, "red", (conector.x, conector.y), (conector.x + conector.largo, conector.y),6)
-            elif conector.neutro:
-                pygame.draw.line(screen, "blue", (conector.x, conector.y),(conector.x + conector.largo, conector.y),6)
 
 # Main
 pygame.init()
@@ -96,13 +79,13 @@ pygame.display.set_caption("Protoboard")
 mainClock = pygame.time.Clock()
 # ---------- fin a trabajar ----------
 # Crear el cableado
-cableado = Cableado()
+cableado = Cableado(conectores,cables)
 
 #Crear la resistencia
 resistencia = Resistencia()
 
 ##Crear el basurero
-basurero = Basurero()
+basurero = Basurero(guardar_led, guardar_switch, conectores, cables, resistencias)
 
 fullscreen = False
 running = True
@@ -114,10 +97,6 @@ x3 = 0
 x4 = 0
 y3 = 0
 y4 = 0
-guardar_led = []
-led_coordenadas = []
-guardar_switch = []
-switch_coordenadas = []
 ultimo_conector = None
 mm = Menu_f()
 switch16=Switch_16(350,265)
@@ -132,11 +111,6 @@ c_2_editar=None
 c_3_editar=None
 c_4_editar=None
 
-def buscar_conector_por_nombre(nombre, lista_conectores):
-    for conector in lista_conectores:
-        if conector.nombre == nombre:
-            return conector
-    return None
 
 def distancia(punto1, punto2):
     return math.sqrt((punto1[0] - punto2[0]) ** 2 + (punto1[1] - punto2[1]) ** 2)
@@ -155,32 +129,33 @@ def punto_mas_cercano(pos_mouse, lista_conectores):
 
 x_proto = (screen.get_width() - 650) // 2
 y_proto = (screen.get_height() - 300) // 2
-protoboard = Protoboard(x_proto, y_proto)
+protoboard = Protoboard(x_proto, y_proto,conectores)
 
 # Crear y dibujar Pila
 x_pila = (screen.get_width() - 950) // 2
 y_pila = (screen.get_height() - 50) // 2
-pila = Pila(x_pila, y_pila,conectores)
 
-x_proto = (screen.get_width() - 650) // 2
-y_proto = (screen.get_height() - 300) // 2
-# Crear y dibujar Protoboard
-protoboard = Protoboard(x_proto, y_proto)
+# Crear conectores Pila + -
+pila_mas = Conector("pila+",x_pila + 65, y_pila - 15,conectores)
+pila_menos = Conector("pila-",x_pila + 35, y_pila - 15,conectores)
 
-# Crear y dibujar Pila
-x_pila = (screen.get_width() - 950) // 2
-y_pila = (screen.get_height() - 50) // 2
-pila = Pila(x_pila, y_pila,conectores)
+pila_mas.fase=True
+pila_menos.neutro=True
 
+conectores.append(pila_mas)
+conectores.append(pila_menos)
+
+pila = Pila(x_pila, y_pila)
+conector=Conector("1",0,0,conectores)
 
 
 
 while running:
     screen.fill("white")  # directo el color sin variables extra
 
-    protoboard.crear(screen,conectores)
+    protoboard.crear(screen)
+    conector.dibujar(screen)
 
-    cableado.dibujar_cables(screen,cables)
     pila.dibujarPila(screen)
     #dibujar menu
     mm.dibujar(screen)
@@ -188,21 +163,22 @@ while running:
     #dibujar swuitch de 16
     switch16.dibujar(screen)
 
-
     # Crear funcionalidad de basurero
 
     clock = pygame.time.Clock()
 
     distancia_maxima = 10
 
-
     resistencia.dibujar_resistencia(screen,resistencias)
 
     for i in guardar_led:
-        i.led_apagada(screen,conectores)
+        i.led_apagada(screen)
 
     for i in guardar_switch:
         i.switch_proto(screen,conectores)
+
+    for i in cables:
+        cableado.dibujar_cables(screen, i)
 
     # Manejo de eventos de la pantalla
     for event in pygame.event.get():
@@ -247,6 +223,7 @@ while running:
             conector_cercano = punto_mas_cercano(mouse_pos, conectores)
             switch16.detectar_click(mouse_pos)
             x, y = event.pos
+
             if mm.borrar_pulsado:
                 if mm.led_pulsado:
                     basurero.eliminar_led(x, y)
@@ -263,19 +240,16 @@ while running:
                         led_a_editar = buscar_led(x, y)
                     elif conector_1_editar is None:
                         print("buscando conector 1")
-                        conector_1_editar = punto_mas_cercano(mouse_pos, conectores, distancia_maxima)
+                        conector_1_editar = punto_mas_cercano(mouse_pos, conectores)
                     elif conector_2_editar is None:
                         print("buscando conector 2")
-                        conector_2_aux = punto_mas_cercano(mouse_pos, conectores, distancia_maxima)
+                        conector_2_aux = punto_mas_cercano(mouse_pos, conectores)
                         if conector_2_aux is not None and conector_2_aux != conector_1_editar:
                             print("conector 2 valido")
                             conector_2_editar = conector_2_aux
-                            led_a_editar.x = (conector_1_editar.x + conector_2_editar.x) / 2
-                            led_a_editar.y = (conector_1_editar.y + conector_2_editar.y) / 2
-                            led_a_editar.x1 = conector_1_editar.x
-                            led_a_editar.y1 = conector_1_editar.y
-                            led_a_editar.x2 = conector_2_editar.x
-                            led_a_editar.y2 = conector_2_editar.y
+
+                            led_a_editar.conector1 = conector_1_editar
+                            led_a_editar.conector2 = conector_2_editar
                             led_a_editar = None
                             conector_1_editar = None
                             conector_2_editar = None
@@ -293,24 +267,24 @@ while running:
                         switch_editar = buscar_switch(x, y)
                     elif c_1_editar is None:
                         print("buscando conector 1")
-                        c_1_editar = punto_mas_cercano(mouse_pos, conectores, distancia_maxima)
+                        c_1_editar = punto_mas_cercano(mouse_pos, conectores)
                     elif c_2_editar is None:
                         print("buscando conector 2")
-                        c_2_aux = punto_mas_cercano(mouse_pos, conectores, distancia_maxima)
+                        c_2_aux = punto_mas_cercano(mouse_pos, conectores)
                         if c_2_aux is not None and c_2_aux != c_1_editar:
                             c_2_editar = c_2_aux
                         else:
                             print("conector 2 no válido, es igual al conector 1")
                     elif c_3_editar is None:
                         print("buscando conector 3")
-                        c_3_aux = punto_mas_cercano(mouse_pos, conectores, distancia_maxima)
+                        c_3_aux = punto_mas_cercano(mouse_pos, conectores)
                         if c_3_aux is not None and c_3_aux != c_1_editar and c_3_aux != c_2_editar:
                             c_3_editar = c_3_aux
                         else:
                             print("conector 3 no válido, es igual a conector 1 o conector 2")
                     elif c_4_editar is None:
                         print("buscando conector 4")
-                        c_4_aux = punto_mas_cercano(mouse_pos, conectores, distancia_maxima)
+                        c_4_aux = punto_mas_cercano(mouse_pos, conectores)
                         if c_4_aux is not None and c_4_aux != c_1_editar and c_4_aux != c_2_editar and c_4_aux != c_3_editar:
                             c_4_editar = c_4_aux
                             print("conectores válidos")
@@ -340,33 +314,28 @@ while running:
                     print("No se ha seleccionado un elemento para editar")
 
             elif mm.led_pulsado:
-                if not conector_cercano:
-                    pass
-                elif x1 == 0:
-                    x1 = conector_cercano.x
-                    y1 = conector_cercano.y
-                    conector1 = conector_cercano  # Guarda el primer conector
-                else:
-                    x2 = conector_cercano.x
-                    y2 = conector_cercano.y
-                    conector2 = conector_cercano  # Guarda el segundo conector
-                    # Verifica si los conectores están dentro del rango adecuado
-                    if (((x1 + 40) >= x2) or ((x1 - 40) <= x2) or ((x1 + 20) <= x2) or ((x1 - 20) <= x2)) and \
-                            (((y1 + 40) <= y2) or ((y1 - 40) >= y2) or ((y1 + 20) <= y2) or ((y1 - 20) <= y2)) and \
-                            (x1 - x2) <= 40 and (x2 - x1) <= 40 and (y2 - y1) <= 40 and (y1 - y2) <= 40:
-                        tupla1 = (x1, y1)
-                        tupla2 = (x2, y2)
-                        led_coordenadas.append(tupla1)
-                        led_coordenadas.append(tupla2)
-                        x_mitad, y_mitad = ((x1 + x2) / 2, (y1 + y2) / 2)
-                        c_apagada = (110, 0, 0)  # Color rojo oscuro para apagado
-                        led_a = Led(c_apagada, x_mitad, y_mitad, x1, x2, y1, y2)
-                        # Dibujar el LED
-                        led_a.led_apagada(screen)
-                        # Restablecer variables
-                        x1, x2, y1, y2 = 0, 0, 0, 0
+                if mm.led_pulsado:
+                    if conector_1_editar is None:
+                        print("buscando conector 1")
+                        conector_1_editar = punto_mas_cercano(mouse_pos, conectores)
+                    elif conector_2_editar is None:
+                        print("buscando conector 2")
+                        conector_2_aux = punto_mas_cercano(mouse_pos, conectores)
+                        if conector_2_aux is not None and conector_2_aux != conector_1_editar:
+                            print("conector 2 valido")
+                            conector_2_editar = conector_2_aux
 
-                        guardar_led.append(led_a)
+                            led_a=Led("green",conector_1_editar,conector_2_editar)
+                            guardar_led.append(led_a)
+                            print("led editado")
+                            conector_1_editar = None
+                            conector_2_editar = None
+                    else:
+                        print("error al editar led")
+                    # busca el led que se quiere editar
+                    # seleccionar los conectores nuevos
+                    # actualizar los conectores al led
+                    print("editar led")
 
             elif mm.switch_pulsado:
                 if not conector_cercano:
@@ -406,13 +375,13 @@ while running:
                         if not cableado.dibujando_cable:
                             cableado.comienzo_cable(conector)
                         else:
-                            cableado.finalizar_cable(conector,conectores,cables)
+                            cableado.finalizar_cable(screen,conector)
                             ultimo_conector = conector_cercano
 
-    cableado.dibujar_cable_actual(screen, conectores)
+    cableado.dibujar_cable_actual(screen,pila_mas,pila_menos)
 
-    dibujar_conectores(screen, conectores)
     pygame.display.flip()
     mainClock.tick(30)
 
 pygame.quit()
+#print(len(conectores))
