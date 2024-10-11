@@ -2,9 +2,6 @@ import pygame
 
 import math
 
-from Datos import *
-
-
 class Menu:
     def __init__(self, x, y):
         self.x = x

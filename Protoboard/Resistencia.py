@@ -1,7 +1,5 @@
 import pygame
 
-from Datos import *
-
 class Resistencia:
     def __init__(self):
         self.dibujando_resistencia = False

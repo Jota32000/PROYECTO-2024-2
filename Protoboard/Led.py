@@ -1,52 +1,27 @@
 import pygame
 import math
 
-from Datos import *
-
 class Led:
-    def __init__(self,color,x,y,x1,x2,y1,y2,inicio,fin):
+    def __init__(self,color,conector1,conector2):
         self.color=color
-        self.x = x
-        self.y = y
-        self.x1 = x1
-        self.x2 = x2
-        self.y1 = y1
-        self.y2 = y2
-        self.nombre_start = inicio
-        self.nombre_end = fin
-    def led_apagada(self,screen,conectores):
+        self.conector1 = conector1
+        self.conector2 = conector2
 
-        conector1 = None
-        conector2 = None
-
-        for c in conectores:
-            if c.nombre == self.nombre_start:
-                self.x1, self.y1 = c.x, c.y  # Cambiar coordenadas de inicio
-            elif c.nombre == self.nombre_end:
-                self.x2, self.y2 = c.x, c.y  # Cambiar coordenadas de fin
-
-        for c in conectores:
-            if c.x == self.x1 and c.y == self.y1:
-                conector1 = c
-            elif c.x == self.x2 and c.y == self.y2:
-                conector2 = c
-
-        self.x = (conector1.x + conector2.x) / 2
-        self.y = (conector1.y + conector2.y) / 2
+    def led_apagada(self,screen):
 
         corriente_conector1 = False
-        if conector1.fase or conector1.neutro:
+        if self.conector1.fase or self.conector1.neutro:
             corriente_conector1 = True
         # Verificar si conector2 tiene corriente
         corriente_conector2 = False
-        if conector2.fase or conector2.neutro:
+        if self.conector2.fase or self.conector2.neutro:
             corriente_conector2 = True
 
-        if conector2.fase and conector1.fase:
+        if self.conector2.fase and self.conector1.fase:
             corriente_conector1 = True
             corriente_conector2 = False
 
-        if conector2.neutro and conector1.neutro:
+        if self.conector2.neutro and self.conector1.neutro:
             corriente_conector1 = True
             corriente_conector2 = False
 
@@ -56,12 +31,15 @@ class Led:
         else:
             self.color = (110, 0, 0)  # Color rojo oscuro para apagado
 
-        pygame.draw.line(screen, (0, 0, 0, 0), (self.x1, self.y1), (self.x, self.y), 2)
-        pygame.draw.line(screen, (0, 0, 0, 0), (self.x2, self.y2), (self.x, self.y), 2)
+        x =  (self.conector1.x+self.conector2.x)//2
+        y = (self.conector1.y+self.conector2.y)//2
+
+        pygame.draw.line(screen, (0, 0, 0, 0), (self.conector1.x, self.conector1.y), (x, y), 2)
+        pygame.draw.line(screen, (0, 0, 0, 0), (self.conector2.x, self.conector2.y), (x, y), 2)
         for angle in range(0, 360, 3):
             circle_radius = 6
-            start_x = self.x
-            start_y = self.y
+            start_x = x
+            start_y = y
             end_x = start_x + int(circle_radius * math.cos(math.radians(angle)))
             end_y = start_y + int(circle_radius * math.sin(math.radians(angle)))
             pygame.draw.line(screen,self.color, (start_x, start_y), (end_x, end_y), 2)
