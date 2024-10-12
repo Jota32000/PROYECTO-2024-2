@@ -1,7 +1,4 @@
 import pygame
-
-
-
 class Conector:
     def __init__(self, nombre, x, y,conectores):
         self.nombre = nombre
