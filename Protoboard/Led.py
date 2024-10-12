@@ -6,6 +6,8 @@ class Led:
         self.color=color
         self.conector1 = conector1
         self.conector2 = conector2
+        self.x = (conector1.x + conector2.x) // 2
+        self.y = (conector1.y + conector2.y) // 2
 
     def led_apagada(self,screen):
 

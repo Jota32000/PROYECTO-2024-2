@@ -49,6 +49,11 @@ def buscar_switch(x,y):
             mi_switch = switch
     return mi_switch
 
+def buscar_cable(conector1, conector2):
+    for cable in cables:
+        if (cable.conector_inicio == conector1 and cable.conector_fin == conector2) or (cable.conector_inicio == conector2 and cable.conector_fin == conector1):
+               return cable
+    return None
 
 def switch_presionado(switch, mouse_pos):
     lado = 40  # Tamaño del switch (cuadrado)
@@ -110,6 +115,8 @@ c_1_editar=None
 c_2_editar=None
 c_3_editar=None
 c_4_editar=None
+nuevo_cable = None
+cable_editar = None
 
 
 def distancia(punto1, punto2):
@@ -126,6 +133,8 @@ def punto_mas_cercano(pos_mouse, lista_conectores):
             distancia_minima = dist
             punto_cercano = conector
     return punto_cercano
+
+
 
 x_proto = (screen.get_width() - 650) // 2
 y_proto = (screen.get_height() - 300) // 2
@@ -165,11 +174,8 @@ while running:
 
     # Crear funcionalidad de basurero
 
-    clock = pygame.time.Clock()
-
-    distancia_maxima = 10
-
-    resistencia.dibujar_resistencia(screen,resistencias)
+    for i in cables:
+        i.dibujar_cables(screen)
 
     for i in guardar_led:
         i.led_apagada(screen)
@@ -177,8 +183,8 @@ while running:
     for i in guardar_switch:
         i.switch_proto(screen,conectores)
 
-    for i in cables:
-        cableado.dibujar_cables(screen, i)
+    #for resistencia
+
 
     # Manejo de eventos de la pantalla
     for event in pygame.event.get():
@@ -250,6 +256,8 @@ while running:
 
                             led_a_editar.conector1 = conector_1_editar
                             led_a_editar.conector2 = conector_2_editar
+                            led_a_editar.x = (conector_1_editar.x + conector_2_editar.x) // 2
+                            led_a_editar.y = (conector_1_editar.y + conector_2_editar.y) // 2
                             led_a_editar = None
                             conector_1_editar = None
                             conector_2_editar = None
@@ -261,7 +269,7 @@ while running:
                     # actualizar los conectores al led
                     print("editar led")
 
-                if mm.switch_pulsado:
+                elif mm.switch_pulsado:
                     if switch_editar is None:
                         print("buscando switch")
                         switch_editar = buscar_switch(x, y)
@@ -310,28 +318,66 @@ while running:
                         print("error al editar switch")
                     # Proceso de edición del switch
                     print("editar switch")
-                else:
-                    print("No se ha seleccionado un elemento para editar")
+
+                elif mm.cable_pulsado:
+                    if c_1_editar is None:
+                        print("buscando conector 1")
+                        c_1_editar = punto_mas_cercano(mouse_pos, conectores)
+                    elif c_2_editar is None:
+                        print("buscando conector 2")
+                        c_2_aux = punto_mas_cercano(mouse_pos, conectores)
+                        if c_2_aux is not None and c_2_aux != c_1_editar:
+                            print("conector 2 valido")
+                            c_2_editar = c_2_aux
+                            cable_editar = buscar_cable(c_1_editar, c_2_editar)
+                            if cable_editar is None:
+                                print("Cable no encontrado")
+                                c_1_editar = None
+                                c_2_editar = None
+                    elif (not cable_editar is None) and c_3_editar is None:
+                        print("buscando conector 3")
+                        c_3_aux = punto_mas_cercano(mouse_pos, conectores)
+                        if c_3_aux is not None and c_3_aux != c_1_editar and c_3_aux != c_2_editar:
+                            c_3_editar = c_3_aux
+                    elif (not cable_editar is None) and c_4_editar is None:
+                        print("buscando conector 4")
+                        c_4_aux = punto_mas_cercano(mouse_pos, conectores)
+                        if c_4_aux is not None and c_4_aux != c_1_editar and c_4_aux != c_2_editar and c_4_aux != c_3_editar:
+                            c_4_editar = c_4_aux
+                            # Asignar los conectores al cable
+                            cable_editar.conector_inicio = c_3_editar
+                            cable_editar.conector_fin = c_4_editar
+                            # quitar la conexion anterior
+                            c_1_editar.eliminar_conexion(c_1_editar, c_2_editar)
+                            c_3_editar.agregar_conexion(c_4_editar)
+                            # agregar la nuevas conexiones
+                            # Reiniciar las variables de edicion
+                            c_1_editar = None
+                            c_2_editar = None
+                            c_3_editar = None
+                            c_4_editar = None
+                            cable_editar = None
+                        else:
+                            print("conector 4 no válido, es igual a conector 1, 2 o 3")
 
             elif mm.led_pulsado:
-                if mm.led_pulsado:
-                    if conector_1_editar is None:
-                        print("buscando conector 1")
-                        conector_1_editar = punto_mas_cercano(mouse_pos, conectores)
-                    elif conector_2_editar is None:
-                        print("buscando conector 2")
-                        conector_2_aux = punto_mas_cercano(mouse_pos, conectores)
-                        if conector_2_aux is not None and conector_2_aux != conector_1_editar:
-                            print("conector 2 valido")
-                            conector_2_editar = conector_2_aux
+                if conector_1_editar is None:
+                    print("buscando conector 1")
+                    conector_1_editar = punto_mas_cercano(mouse_pos, conectores)
+                elif conector_2_editar is None:
+                    print("buscando conector 2")
+                    conector_2_aux = punto_mas_cercano(mouse_pos, conectores)
+                    if conector_2_aux is not None and conector_2_aux != conector_1_editar:
+                        print("conector 2 valido")
+                        conector_2_editar = conector_2_aux
 
-                            led_a=Led("green",conector_1_editar,conector_2_editar)
-                            guardar_led.append(led_a)
-                            print("led editado")
-                            conector_1_editar = None
-                            conector_2_editar = None
-                    else:
-                        print("error al editar led")
+                        led_a = Led("green", conector_1_editar, conector_2_editar)
+                        guardar_led.append(led_a)
+                        print("led editado")
+                        conector_1_editar = None
+                        conector_2_editar = None
+                else:
+                    print("error al editar led")
                     # busca el led que se quiere editar
                     # seleccionar los conectores nuevos
                     # actualizar los conectores al led
@@ -365,23 +411,32 @@ while running:
                             x1 - x2) <= 40 and (x2 - x1) <= 40 and (y2 - y1) <= 40 and (y1 - y2) <= 40:
                         x_mitad, y_mitad = (((x1 + x2) / 2) - 10, ((y1 + y2) / 2) - 10)
                         switch_a = Switch(x_mitad, y_mitad, x1, x2, x3, x4, y1, y2, y3, y4)
-                        switch_a.switch_proto(screen,conectores)
+                        switch_a.switch_proto(screen, conectores)
                         x1, x2, y1, y2, x3, x4, y3, y4 = 0, 0, 0, 0, 0, 0, 0, 0
                         guardar_switch.append(switch_a)
 
             elif mm.cable_pulsado:
-                for conector in conectores:
-                    if conector_cercano == conector:
-                        if not cableado.dibujando_cable:
-                            cableado.comienzo_cable(conector)
+                if c_1_editar is None:
+                    c_1_editar = punto_mas_cercano(mouse_pos, conectores)
+                elif c_2_editar is None:
+                    c_2_aux = punto_mas_cercano(mouse_pos, conectores)
+                    if c_2_aux is not None and c_2_aux != c_1_editar:
+                        c_2_editar = c_2_aux
+                        nuevo_cable = Cableado(c_1_editar, c_2_editar)
+                        if nuevo_cable.validar_cable(cables):
+                            cables.append(nuevo_cable)
+                            nuevo_cable.conector_inicio.agregar_conexion(nuevo_cable.conector_fin)
                         else:
-                            cableado.finalizar_cable(screen,conector)
-                            ultimo_conector = conector_cercano
-
-    cableado.dibujar_cable_actual(screen,pila_mas,pila_menos)
-
+                            print("cable no válido")
+                        nuevo_cable = None
+                        c_1_editar = None
+                        c_2_editar = None
+                    else:
+                        print("conector 2 no válido, es igual al conector 1")
+    if not mm.editar_pulsado:
+        cableado.dibujar_cable_actual(screen, c_1_editar)
     pygame.display.flip()
     mainClock.tick(30)
 
 pygame.quit()
-#print(len(conectores))
+
