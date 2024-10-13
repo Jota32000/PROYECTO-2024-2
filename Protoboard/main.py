@@ -42,10 +42,10 @@ def buscar_led(x,y):
             mi_led = led
     return mi_led
 def buscar_switch(x,y):
-    rango_clik = 10
+    rango_clik = 20
     mi_switch = None
     for switch in guardar_switch:
-        if switch.x - rango_clik <= x <= switch.x + rango_clik and switch.y - rango_clik <= y <= switch.y+rango_clik:
+        if (switch.x+(switch.lado//2)) - rango_clik <= x <= switch.x+(switch.lado//2) + rango_clik and switch.y +(switch.lado//2)- rango_clik <= y <= switch.y+(switch.lado//2)+rango_clik:
             mi_switch = switch
     return mi_switch
 def buscar_cable(conector1, conector2):
@@ -180,7 +180,7 @@ while running:
         i.switch_proto(screen)
 
     for i in cables:
-        cableado.dibujar_cables(screen, i)
+        i.dibujar_cables(screen)
     for i in guardar_switch16:
         i.dibujar(screen)
 
@@ -307,6 +307,11 @@ while running:
                             switch_editar.y3 = c_3_editar.y
                             switch_editar.x4 = c_4_editar.x
                             switch_editar.y4 = c_4_editar.y
+                            mitad_x=((c_1_editar.x+c_2_editar.x+c_3_editar.x+c_4_editar.x)//4)-(switch_editar.lado//2)
+                            switch_editar.x=mitad_x
+                            mitad_y = ((c_1_editar.y + c_2_editar.y + c_3_editar.y + c_4_editar.y) // 4) - (switch_editar.lado // 2)
+                            switch_editar.y = mitad_y
+
                             # Reiniciar las variables de edición
                             switch_editar = None
                             c_1_editar = None
