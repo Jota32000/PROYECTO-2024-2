@@ -39,10 +39,8 @@ class Protoboard:
         self.dibujar_conectores(screen)
 
     def dibujar_conectores(self, screen):
-        # Espaciado entre conectores
-        separacion_x = 20
         # Coordenadas iniciales para conectores
-        inicio_x = self.x +35
+        inicio_x = self.x + 35
         inicio_y = self.y + 20
 
         dibujar_1(screen,inicio_x-3,inicio_y+45,10,(84,84,84))
@@ -103,49 +101,63 @@ class Protoboard:
         #fors
 
         if not self.conectores_creados:
+
             for i in range(2):
+                primer_conector_fila = None  # guarda el primer conector de cada fila
                 for j in range(30):
-                    x_pos = inicio_x + j * separacion_x
+                    x_pos = inicio_x + j * 20
                     y_pos = inicio_y + i * 20
                     nombre_c1 = f"conector1_{i}_{j}"
-                    # se crea un conector y se verifica si ya existe
                     conector_existente = None
                     for conector in self.conectores:
                         if conector.nombre == nombre_c1:
-                            conector_existente = conector  # la bandera ahora tiene conector
-                            break
-                    # si existe solo se cambian las coordenadas
-                    if conector_existente:
-                        conector_existente.x = x_pos
-                        conector_existente.y = y_pos
-                    # si no existe se crea un nuevo conector y se agrega a la lista
-                    else:
-                        conector = Conector(nombre_c1, x_pos, y_pos,self.conectores)
-                        self.conectores.append(conector)
-
-
-            for i in range(2):
-                for j in range(30):
-                    x_pos = inicio_x + j * separacion_x
-                    y_pos = inicio_y + i * 20
-                    nombre_c2 = f"conector2_{i}_{j}"
-                    conector_existente = None
-                    for conector in self.conectores:
-                        if conector.nombre == nombre_c2:
                             conector_existente = conector
                             break
 
                     if conector_existente:
                         conector_existente.x = x_pos
-                        conector_existente.y = y_pos + self.ancho - 64
+                        conector_existente.y = y_pos
+                        conector = conector_existente
                     else:
-                        conector = Conector(nombre_c2, x_pos, y_pos + self.ancho - 64,self.conectores)
+                        conector = Conector(nombre_c1, x_pos, y_pos, self.conectores)
                         self.conectores.append(conector)
+
+                    if j == 0:
+                        primer_conector_fila = conector
+                    else:
+                        if conector not in primer_conector_fila.conexiones:
+                            primer_conector_fila.agregar_conexion(conector)  # si no existe, la agrega
+
+            for i in range(2):
+                primer_conector_fila = None
+                for j in range(30):
+                    x_pos = inicio_x + j * 20
+                    y_pos = inicio_y + i * 20
+                    nombre_c2 = f"conector2_{i}_{j}"
+                    conector_existente = None
+
+                    for conector in self.conectores:
+                        if conector.nombre == nombre_c2:
+                            conector_existente = conector
+                            break
+                    if conector_existente:
+                        conector_existente.x = x_pos
+                        conector_existente.y = y_pos + self.ancho - 64
+                        conector = conector_existente
+                    else:
+                        conector = Conector(nombre_c2, x_pos, y_pos + self.ancho - 64, self.conectores)
+                        self.conectores.append(conector)
+                    if j == 0:
+                        primer_conector_fila = conector
+                    else:
+                        if conector not in primer_conector_fila.conexiones:
+                            primer_conector_fila.agregar_conexion(conector)
+
             for j in range(30):
                 primer_conector_columna = None  # guarda el primer nodo de cada columna
                 for i in range(5):
                     y_pos = inicio_y + i * 20
-                    x_pos = inicio_x + j * separacion_x
+                    x_pos = inicio_x + j * 20
                     nombre_c3 = f"conector3_{i}_{j}"
 
                     conector_existente = None
@@ -162,7 +174,7 @@ class Protoboard:
                         conector = Conector(nombre_c3, x_pos, y_pos + 70,self.conectores)
                         self.conectores.append(conector)
 
-                    conector.dibujar(screen)
+
                     # asigna el primer conector de la columna
                     if i == 0:
                         primer_conector_columna = conector
@@ -175,7 +187,7 @@ class Protoboard:
             for j in range(30):
                 primer_conector_columna = None
                 for i in range(5):
-                    x_pos = inicio_x + j * separacion_x
+                    x_pos = inicio_x + j * 20
                     y_pos = inicio_y + i * 20
                     nombre_c4 = f"conector4_{i}_{j}"
 
@@ -192,13 +204,14 @@ class Protoboard:
                     else:
                         conector = Conector(nombre_c4, x_pos, y_pos + 210,self.conectores)
                         self.conectores.append(conector)
-                    conector.dibujar(screen)
+
                     if i == 0:
                         primer_conector_columna = conector
                     else:
                         if conector not in primer_conector_columna.conexiones:
                             primer_conector_columna.agregar_conexion(conector)
             self.conectores_creados = True
+
 
 def dibujar_a(screen, x, y,ancho,alto,color):
     pygame.draw.line(screen, color, (x, y + alto), (x + ancho // 2, y), 2)  # Línea diagonal izquierda

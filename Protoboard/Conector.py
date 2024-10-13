@@ -1,5 +1,4 @@
 import pygame
-
 class Conector:
     def __init__(self, nombre, x, y,conectores):
         self.nombre = nombre
@@ -13,7 +12,6 @@ class Conector:
         self.conexiones = []
         self.padre = self
         self.conectores=conectores
-
 
     def dibujar(self,screen):
         #dibuja los puntos de la protoboard
@@ -34,80 +32,49 @@ class Conector:
                     # dibuja con el color normal del conector
                     pygame.draw.line(screen, conector.color, (conector.x, conector.y),
                                      (conector.x + conector.largo, conector.y),6)
-
     def agregar_conexion(self, nodo):
         self.conexiones.append(nodo) # conexion bidireccional A->B | B->A
         nodo.conexiones.append(self)
         self.actualizarbosque(self, nodo)
-
+        #la corrienbte la fase
     def eliminar_conexion(self,nodo, nodo_objetivo):
         if nodo_objetivo in self.conexiones: # ve que no se haya eliminado ya la conexion con ese nodo
             nodo.conexiones.remove(nodo_objetivo)
             nodo_objetivo.conexiones.remove(nodo)
             self.buscar_conexiones(nodo, nodo_objetivo)
-
-    def activar_explosion(self,screen,inicio_cable,conector_siguiente):
-        print("ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ")
-        print("                   NUKE")
-        print("∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨ʌ∨")
-        screen.fill((243, 190, 49))
-        pygame.display.flip()
-        pygame.time.delay(100)
-
-        screen.fill((0, 0, 0))
-        pygame.display.flip()
-        pygame.time.delay(100)
-        #----- QUITAR OBJETOS -----
-
-        for nodo in self.conectores:
-            if inicio_cable.nombre.startswith("pila") and conector_siguiente.nombre.startswith("pila"):
-                # bloquea conector de pila
-                if nodo == conector_siguiente:
-                    nodo.block = True
-
-            elif conector_siguiente.nombre.startswith(("conector1_", "conector2_")):
-                # block pistas
-                if nodo.y == conector_siguiente.y:
-                    if inicio_cable.nombre.startswith(("conector1_", "conector2_")) or self.inicio_cable.nombre.startswith(("conector3_", "conector4_")):
-                        nodo.block = True
-
-            elif conector_siguiente.nombre.startswith(("conector3_", "conector4_")):
-                # Block columna 3 o 4
-                if nodo.x == conector_siguiente.x:
-                    if conector_siguiente.nombre.startswith("conector3_") and nodo.nombre.startswith("conector3_"):
-                        nodo.block = True
-                    elif conector_siguiente.nombre.startswith("conector4_") and nodo.nombre.startswith("conector4_"):
-                        nodo.block = True
-        #--------- FIN ---------
-        return
-
     def actualizarbosque(self, origen, destino):
         if origen.padre != destino.padre:
-            coincidencia_origen = 0
-            for nodo in self.conectores:
-                if nodo.padre == origen.padre:
-                    coincidencia_origen += 1
-
-            coincidencia_destino = 0
-            for nodo in self.conectores:
-                if nodo.padre == destino.padre:
-                    coincidencia_destino += 1
-
-            if coincidencia_origen >= coincidencia_destino:
+            if origen.nombre.startswith("pila"):
                 nuevo_padre = origen.padre
                 viejo_padre = destino.padre
-
-            else:
+            elif destino.nombre.startswith("pila"):
                 nuevo_padre = destino.padre
                 viejo_padre = origen.padre
+            else:
+                coincidencia_origen = 0
+                for nodo in self.conectores:
+                    if nodo.padre == origen.padre:
+                        coincidencia_origen += 1
+
+                coincidencia_destino = 0
+                for nodo in self.conectores:
+                    if nodo.padre == destino.padre:
+                        coincidencia_destino += 1
+
+                if coincidencia_origen >= coincidencia_destino:
+                    nuevo_padre = origen.padre
+                    viejo_padre = destino.padre
+                else:
+                    nuevo_padre = destino.padre
+                    viejo_padre = origen.padre
 
             self.actualizar_padre_subarbol(viejo_padre, nuevo_padre)
-
     def actualizar_padre_subarbol(self, viejo_padre, nuevo_padre):
         for nodo in self.conectores:
             if nodo.padre == viejo_padre:
                 nodo.padre = nuevo_padre
-
+                nodo.fase = nuevo_padre.fase
+                nodo.neutro = nuevo_padre.neutro
     def buscar_conexiones(self,nodo, nodo_objetivo):
         visitados = []
         conneciones = []
@@ -127,20 +94,9 @@ class Conector:
                 i.padre = nodo_objetivo
         else:
             nodo.padre = nodo
+            nodo.fase = None
+            nodo.neutro = None
             for i in visitados:
                 i.padre = nodo
-
-    def energy_protoboard(self, pila_turno):
-        for nodo in self.conectores: # ve los padres de p+ y p- segun eso da energy o no
-            if pila_turno.nombre == "pila+":
-                if nodo.padre.nombre == pila_turno.padre.nombre:
-                    nodo.fase = True
-                    nodo.neutro = False
-                else:
-                    nodo.fase = False
-            if pila_turno.nombre == "pila-":
-                if nodo.padre.nombre == pila_turno.padre.nombre:
-                    nodo.fase = False
-                    nodo.neutro = True
-                else:
-                    nodo.neutro = False
+                i.fase = None
+                i.neutro = None
