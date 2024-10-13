@@ -4,28 +4,28 @@ import math
 from Datos import *
 
 class Switch:
-    def __init__(self, x, y, x1, x2, y1, y2):
+    def __init__(self, x, y, x1, x2, x3, x4, y1, y2, y3, y4):
         self.x = x
         self.y = y
-        self.x1 = x1
-        self.x2 = x2
-        self.y1 = y1
-        self.y2 = y2
-        self.estado=False
+        self.x1 = x1  # patita 1 izquierda / derecha
+        self.x2 = x2  # patita 2  derecha / izquierda
+        self.x3 = x3  # patita 3
+        self.x4 = x4  # patita 4
+        self.y1 = y1  # patita 1
+        self.y2 = y2  # patita 1
+        self.y3 = y3  # patita 1
+        self.y4 = y4  # patita 1
+        self.estado = False
 
     def switch_proto(self, screen):
-        lado = 20  # Tamaño del switch (cuadrado)
+        lado = 40  # Tamaño del switch (cuadrado)
         body_color = (150, 150, 150)
-        circle_radius = 5  # Radio del "círculo" en el medio
-
-
-
-        self.x, self.y = (((self.x1 + self.x2) / 2) - 10, ((self.y1 + self.y2) / 2) - 10)
-
+        circle_radius = 8  # Radio del "círculo" en el medio
         # Dibujar patitas
         pygame.draw.line(screen, (0, 0, 0), (self.x1, self.y1), (self.x + lado // 2, self.y + lado // 2), 2)  # patita 1
         pygame.draw.line(screen, (0, 0, 0), (self.x2, self.y2), (self.x + lado // 2, self.y + lado // 2), 2)  # patita 2
-
+        pygame.draw.line(screen, (0, 0, 0), (self.x3, self.y3), (self.x + lado // 2, self.y + lado // 2), 2)  # patita 3
+        pygame.draw.line(screen, (0, 0, 0), (self.x4, self.y4), (self.x + lado // 2, self.y + lado // 2), 2)  # patita 4
         # Dibujar cuerpo del switch (con líneas)
         for i in range(lado):
             pygame.draw.line(screen, body_color, (self.x, self.y + i), (self.x + lado, self.y + i))

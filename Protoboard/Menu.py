@@ -1,10 +1,5 @@
 import pygame
 
-import math
-
-from Datos import *
-
-
 class Menu:
     def __init__(self):
         self.x = 0
@@ -15,12 +10,15 @@ class Menu:
         self.color_cable = (162, 206, 143)
         self.color_led = (162, 206, 143)
         self.color_switch = (162, 206, 143)
+        self.color_switch4 = (162, 206, 143)
+        self.color_switch16 = (162, 206, 143)
         self.color_res = (162, 206, 143)
         self.color_ship = (162, 206, 143)
         self.color_motor = (162, 206, 143)
         self.color_proto = (162, 206, 143)
         self.color_editar = (162, 206, 143)
         self.color_borrar = (162, 206, 143)
+        self.color_switch_seleccionado = (162, 0, 0)
         self.ancho_boton = 0  # Atributo para almacenar el ancho
         self.font = pygame.font.Font(None, 22)
         self.cable_pulsado = False
@@ -32,8 +30,11 @@ class Menu:
         self.proto_pulsado = False
         self.editar_pulsado = False
         self.borrar_pulsado = False
-        self.switch_4_pulsado = False
-        self.switch_16_pulsado = False
+        self.boton_switch2_pulsado = False
+        self.boton_switch16_pulsado=False
+
+        self.contador_click = 0
+
     def div_boton(self, screen, x, y, color):
         self.ancho = self.ancho_boton
         self.alto = 60
@@ -46,6 +47,7 @@ class Menu:
         for i in range(y, y + self.alto):  # Recorre de arriba hacia abajo (en el eje y)
             pygame.draw.line(screen, color, (x, i),
                              (x + self.ancho, i))  # Dibuja una línea horizontal desde el borde izquierdo al derecho
+
     def dibujar(self, screen):
         ancho_pantalla, alto_pantalla = screen.get_size()
 
@@ -63,13 +65,18 @@ class Menu:
         # Lista de textos para cada división
         textos = ["CABLE", "LED", "SWITCH", "RESISTENCIA", "SHIP", "MOTOR", "PROTOBOARD", "EDITAR", "BORRAR"]
 
-        # Crear superficie para el botón
+        # Crear superficie para el botón LED (semi-transparente)
         boton_cable_surface = pygame.Surface((self.ancho_boton, 39), pygame.SRCALPHA)  # Botón CABLE
         boton_cable_surface.fill((0, 0, 0, 0))  # Rellenar la superficie con transparencia
         boton_led_surface = pygame.Surface((self.ancho_boton, 39), pygame.SRCALPHA)  # Botón LED
         boton_led_surface.fill((0, 0, 0, 0))  # Rellenar la superficie con transparencia
         boton_switch_surface = pygame.Surface((self.ancho_boton, 39), pygame.SRCALPHA)  # Botón Switch
         boton_switch_surface.fill((0, 0, 0, 0))  # Rellenar la superficie con transparencia
+        if(self.switch_pulsado):
+            boton_switch2_surface = pygame.Surface((self.ancho_boton, 70), pygame.SRCALPHA)  # Botón Switch 4 pines
+            boton_switch2_surface.fill((0, 0, 0, 0))  # Rellenar la superficie con transparencia
+            boton_switch16_surface=pygame.Surface((self.ancho_boton, 70), pygame.SRCALPHA)  # Botón Switch 4 pines
+            boton_switch16_surface.fill((0, 0, 0, 0))  # Rellenar la superficie con transparencia
         boton_resistencia_surface = pygame.Surface((self.ancho_boton, 39), pygame.SRCALPHA)  # Botón resistencia
         boton_resistencia_surface.fill((0, 0, 0, 0))  # Rellenar la superficie con transparencia
         boton_ship_surface = pygame.Surface((self.ancho_boton, 39), pygame.SRCALPHA)  # Botón ship
@@ -83,10 +90,14 @@ class Menu:
         boton_basurero_surface = pygame.Surface((self.ancho_boton, 39), pygame.SRCALPHA)  # Boton basurero
         boton_basurero_surface.fill((0, 0, 0, 0))  # Rellenar la superficie con transparencia
         x_inic = 0
-        # Dibujar el botón en la superficie del botón
+        # Dibujar el botón en la superficie del botón LED
         self.div_boton(boton_cable_surface, x_inic, 3, self.color_cable)
         self.div_boton(boton_led_surface, 0, 3, self.color_led)
         self.div_boton(boton_switch_surface, 0, 3, self.color_switch)
+        if(self.switch_pulsado):
+            #este hace la separacion vertical del boton
+            self.div_boton(boton_switch2_surface, 0, 35,self.color_switch4)
+            self.div_boton(boton_switch16_surface,0,33,self.color_switch16)
         self.div_boton(boton_resistencia_surface, 0, 3, self.color_res)
         self.div_boton(boton_ship_surface, 0, 3, self.color_ship)
         self.div_boton(boton_motor_surface, 0, 3, self.color_motor)
@@ -98,6 +109,9 @@ class Menu:
         screen.blit(boton_cable_surface, (0, 10))
         screen.blit(boton_led_surface, (x_inic + self.ancho_boton, 10))
         screen.blit(boton_switch_surface, (x_inic + (self.ancho_boton * 2), 10))
+        if(self.switch_pulsado):
+            screen.blit(boton_switch2_surface, (x_inic + (self.ancho_boton * 2), 20))
+            screen.blit(boton_switch16_surface, (x_inic + (self.ancho_boton * 2), 60))
         screen.blit(boton_resistencia_surface, (x_inic + (self.ancho_boton * 3), 10))
         screen.blit(boton_ship_surface, (x_inic + (self.ancho_boton * 4), 10))
         screen.blit(boton_motor_surface, (x_inic + (self.ancho_boton * 5), 10))
@@ -111,6 +125,17 @@ class Menu:
             pygame.draw.line(screen, (0, 0, 0), (x_pos, 10), (x_pos, self.y), 3)
 
             # Renderizar el texto
+            if textos[i] == "SWITCH" and self.switch_pulsado:
+                texto_renderizado2 = self.font.render("Switch 4 pines", True, (0, 0, 0))
+                texto_rect2 = texto_renderizado2.get_rect(center=(x_pos - self.ancho_boton // 2, 70))
+                screen.blit(texto_renderizado2, texto_rect2)
+                pygame.draw.line(screen, (0, 0, 0), (x_pos, 50), (x_pos, 130), 3)
+                pygame.draw.line(screen, (0, 0, 0), (self.ancho_boton*2, 50), (self.ancho_boton*2, 130), 3)
+                pygame.draw.line(screen, (0, 0, 0), (self.ancho_boton*2, 90), (x_pos, 90), 3)
+                pygame.draw.line(screen, (0, 0, 0), (self.ancho_boton*2, 130), (x_pos, 130), 3)
+                texto_renderizado3= self.font.render("Switch 16 pines", True, (0, 0, 0))
+                texto_rect3 = texto_renderizado3.get_rect(center=(x_pos - self.ancho_boton // 2, 110))
+                screen.blit(texto_renderizado3, texto_rect3)
             texto_renderizado = self.font.render(textos[i], True, (0, 0, 0))  # Color negro para el texto
             # Posicionar el texto en el centro de cada división
             texto_rect = texto_renderizado.get_rect(center=(x_pos - self.ancho_boton // 2, self.y - 20))
@@ -164,6 +189,36 @@ class Menu:
                 else:
                     self.switch_pulsado = True
                     self.color_switch = self.color_pulsar
+                    self.contador_click = 0
+
+            # Coordenadas y dimensiones del área del botón SWITCH de 4 pines
+            boton_switch4_x = 2 * self.ancho_boton
+            boton_switch4_y = 35  # Asumiendo que empieza a partir de esta coordenada vertical
+            boton_switch4_ancho = self.ancho_boton
+            boton_switch4_alto = 45  # Ajusta la altura según el tamaño del botón
+
+            if boton_switch4_x <= mouse_x <= boton_switch4_x + boton_switch4_ancho and boton_switch4_y <= mouse_y <= boton_switch4_y + boton_switch4_alto:
+                # Cambiar el color del botón SWITCH de 4 pines
+                if self.boton_switch2_pulsado:
+                    self.boton_switch2_pulsado = False
+                    self.color_switch4 = self.color  # Regresar al color original
+                else:
+                    self.boton_switch2_pulsado = True
+                    self.color_switch4 = self.color_pulsar  # Cambiar al color pulsado
+
+            # Coordenadas y dimensiones del área del botón SWITCH 16
+            switch16_x = 2 * self.ancho_boton
+            switch16_y = 100
+            switch16_ancho = self.ancho_boton
+            switch16_alto = 45
+            if self.switch_pulsado and boton_switch_x <= mouse_x <= switch16_x + switch16_ancho and switch16_y <= mouse_y <= switch16_y +switch16_alto:
+                print(f"{self.contador_click}")
+                if (self.boton_switch16_pulsado == True):
+                    self.boton_switch16_pulsado = False
+                    self.color_switch16 = self.color
+                else:
+                    self.boton_switch16_pulsado = True
+                    self.color_switch16 = self.color_pulsar
 
             # Coordenadas y dimensiones del área del botón RESISTENCIA
             boton_resistencia_x = 3 * self.ancho_boton
@@ -254,3 +309,4 @@ class Menu:
                 else:
                     self.borrar_pulsado = True
                     self.color_borrar = self.color_pulsar
+

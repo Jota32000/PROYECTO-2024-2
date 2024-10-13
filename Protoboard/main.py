@@ -28,9 +28,7 @@ resistencias = []
 guardar_led = []
 guardar_switch = []
 switch_coordenadas = []
-
-
-
+guardar_switch16=[]
 
 def buscar_led(x,y):
     rango_click = 10
@@ -48,8 +46,6 @@ def buscar_switch(x,y):
         if switch.x - rango_clik <= x <= switch.x + rango_clik and switch.y - rango_clik <= y <= switch.y+rango_clik:
             mi_switch = switch
     return mi_switch
-
-
 def switch_presionado(switch, mouse_pos):
     lado = 40  # Tamaño del switch (cuadrado)
     x, y = mouse_pos
@@ -62,7 +58,20 @@ def buscar_conector_por_nombre(nombre, lista_conectores):
             return conector
     return None
 
+def distancia(punto1, punto2):
+    return math.sqrt((punto1[0] - punto2[0]) ** 2 + (punto1[1] - punto2[1]) ** 2)
 
+def punto_mas_cercano(pos_mouse, lista_conectores):
+    punto_cercano = None
+    distancia_minima = 10000
+
+    for conector in lista_conectores:
+        conector_pos = (conector.x, conector.y)  # Extrae las coordenadas del conector
+        dist = distancia(pos_mouse, conector_pos)
+        if dist < distancia_minima and dist <= 10:
+            distancia_minima = dist
+            punto_cercano = conector
+    return punto_cercano
 
 # Main
 pygame.init()
@@ -99,7 +108,7 @@ y3 = 0
 y4 = 0
 ultimo_conector = None
 mm = Menu()
-switch16=Switch_16(350,265)
+
 # editar led
 led_a_editar = None
 conector_1_editar = None
@@ -110,22 +119,10 @@ c_1_editar=None
 c_2_editar=None
 c_3_editar=None
 c_4_editar=None
-
-
-def distancia(punto1, punto2):
-    return math.sqrt((punto1[0] - punto2[0]) ** 2 + (punto1[1] - punto2[1]) ** 2)
-
-def punto_mas_cercano(pos_mouse, lista_conectores):
-    punto_cercano = None
-    distancia_minima = 10000
-
-    for conector in lista_conectores:
-        conector_pos = (conector.x, conector.y)  # Extrae las coordenadas del conector
-        dist = distancia(pos_mouse, conector_pos)
-        if dist < distancia_minima and dist <= 10:
-            distancia_minima = dist
-            punto_cercano = conector
-    return punto_cercano
+#editar switch 16
+switch16_editar=None
+c16_1=0
+c16_2=0
 
 x_proto = (screen.get_width() - 650) // 2
 y_proto = (screen.get_height() - 300) // 2
@@ -148,8 +145,6 @@ conectores.append(pila_menos)
 pila = Pila(x_pila, y_pila)
 conector=Conector("1",0,0,conectores)
 
-
-
 while running:
     screen.fill("white")  # directo el color sin variables extra
 
@@ -159,11 +154,6 @@ while running:
     pila.dibujarPila(screen)
     #dibujar menu
     mm.dibujar(screen)
-
-    #dibujar swuitch de 16
-    switch16.dibujar(screen)
-
-    # Crear funcionalidad de basurero
 
     clock = pygame.time.Clock()
 
@@ -175,10 +165,12 @@ while running:
         i.led_apagada(screen)
 
     for i in guardar_switch:
-        i.switch_proto(screen,conectores)
+        i.switch_proto(screen)
 
     for i in cables:
         cableado.dibujar_cables(screen, i)
+    for i in guardar_switch16:
+        i.dibujar(screen)
 
     # Manejo de eventos de la pantalla
     for event in pygame.event.get():
@@ -219,9 +211,11 @@ while running:
                         conector_p1.agregar_conexion(conector_p2)
                         switch.estado = True
                         print("Switch encendido")
+            for switch16 in guardar_switch16:
+                switch16.detectar_click(mouse_pos)
             mouse_pos = event.pos
             conector_cercano = punto_mas_cercano(mouse_pos, conectores)
-            switch16.detectar_click(mouse_pos)
+
             x, y = event.pos
 
             if mm.borrar_pulsado:
@@ -338,36 +332,60 @@ while running:
                     print("editar led")
 
             elif mm.switch_pulsado:
-                if not conector_cercano:
-                    pass
-                elif x1 == 0:
-                    x1 = conector_cercano.x
-                    y1 = conector_cercano.y
-                elif x2 == 0:
-                    x2 = conector_cercano.x
-                    y2 = conector_cercano.y
-                elif x3 == 0:
-                    x3 = conector_cercano.x
-                    y3 = conector_cercano.y
-                else:
-                    x4 = conector_cercano.x
-                    y4 = conector_cercano.y
-                    tupla1 = (x1, y1)
-                    tupla2 = (x2, y2)
-                    tupla3 = (x3, y3)
-                    tupla4 = (x4, y4)
-                    switch_coordenadas.append(tupla1)
-                    switch_coordenadas.append(tupla2)
-                    switch_coordenadas.append(tupla3)
-                    switch_coordenadas.append(tupla4)
-                    if (((x1 + 40) >= x2) or ((x1 - 40) <= x2) or ((x1 + 20) <= x2) or ((x1 - 20) <= x2)) and (
-                            ((y1 + 40) <= y2) or ((y1 - 40) >= y2) or ((y1 + 20) <= y2) or ((y1 - 20) <= y2)) and (
-                            x1 - x2) <= 40 and (x2 - x1) <= 40 and (y2 - y1) <= 40 and (y1 - y2) <= 40:
-                        x_mitad, y_mitad = (((x1 + x2) / 2) - 10, ((y1 + y2) / 2) - 10)
-                        switch_a = Switch(x_mitad, y_mitad, x1, x2, x3, x4, y1, y2, y3, y4)
-                        switch_a.switch_proto(screen,conectores)
-                        x1, x2, y1, y2, x3, x4, y3, y4 = 0, 0, 0, 0, 0, 0, 0, 0
-                        guardar_switch.append(switch_a)
+
+                if mm.boton_switch16_pulsado:
+                    print("boton switch 16 pines")
+                    if not conector_cercano:
+                        pass
+                    elif c16_1 == 0:
+                        c16_1 = conector_cercano.x
+                        c16_2 = conector_cercano.y
+                        print(c16_1,c16_2)
+                        if c16_1!=0 and c16_2!=0:
+                            switch16 = Switch_16(c16_1, c16_2)
+                            guardar_switch16.append(switch16)
+                            c16_1, c16_2 = 0, 0  # Resetear las coordenadas
+                            mm.switch_pulsado = False
+                            mm.color_switch=(162, 206, 143)
+                            mm.boton_switch16_pulsado=False
+                            mm.color_switch16=(162, 206, 143)
+
+                if (mm.boton_switch2_pulsado):
+                    print("boton switch 2")
+                    if not conector_cercano:
+                        pass
+                    elif x1 == 0:
+                        x1 = conector_cercano.x
+                        y1 = conector_cercano.y
+                    elif x2 == 0:
+                        x2 = conector_cercano.x
+                        y2 = conector_cercano.y
+                    elif x3 == 0:
+                        x3 = conector_cercano.x
+                        y3 = conector_cercano.y
+                    else:
+                        x4 = conector_cercano.x
+                        y4 = conector_cercano.y
+                        tupla1 = (x1, y1)
+                        tupla2 = (x2, y2)
+                        tupla3 = (x3, y3)
+                        tupla4 = (x4, y4)
+                        switch_coordenadas.append(tupla1)
+                        switch_coordenadas.append(tupla2)
+                        switch_coordenadas.append(tupla3)
+                        switch_coordenadas.append(tupla4)
+                        if (((x1 + 40) >= x2) or ((x1 - 40) <= x2) or ((x1 + 20) <= x2) or ((x1 - 20) <= x2)) and (
+                                ((y1 + 40) <= y2) or ((y1 - 40) >= y2) or ((y1 + 20) <= y2) or ((y1 - 20) <= y2)) and (
+                                x1 - x2) <= 40 and (x2 - x1) <= 40 and (y2 - y1) <= 40 and (y1 - y2) <= 40:
+                            x_mitad, y_mitad = (((x1 + x2) / 2) - 10, ((y1 + y2) / 2) - 10)
+                            switch_a = Switch(x_mitad, y_mitad, x1, x2, x3, x4, y1, y2, y3, y4)
+                            switch_a.switch_proto(screen)
+                            x1, x2, y1, y2, x3, x4, y3, y4 = 0, 0, 0, 0, 0, 0, 0, 0
+                            mm.switch_pulsado = False
+                            mm.color_switch = (162, 206, 143)
+                            mm.boton_switch2_pulsado= False
+                            mm.color_switch4=(162, 206, 143)
+                            guardar_switch.append(switch_a)
 
             elif mm.cable_pulsado:
                 for conector in conectores:
