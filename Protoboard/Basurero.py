@@ -15,7 +15,6 @@ class Basurero:
             #si se clickea en el rango correspondiente, se borra de la lista led
             if led.x - rango_click <= x <= led.x + rango_click and led.y - rango_click <= y <= led.y + rango_click:
                 self.guardar_led.remove(led)
-
     def eliminar_switch(self,x,y):
         rango_click = 20
         #Buscador de led en la lista de los switchs

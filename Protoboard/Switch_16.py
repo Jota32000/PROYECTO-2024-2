@@ -16,7 +16,6 @@ class Switch_16:
 
         # Crear superficies para los botones
         self.crear_botones()
-
     def crear_botones(self):
         for i in range(8):
             surface = pygame.Surface((7, 14))  # Tamaño del botón
