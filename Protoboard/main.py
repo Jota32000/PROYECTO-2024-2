@@ -21,6 +21,8 @@ boton_basurero = False  # Estado del boton del basurero (activado=true o desacti
 boton_switch16=False
 boton_switch4=False
 
+#hola
+
 cables = []
 cables_coordenadas = []
 resistencias = []
