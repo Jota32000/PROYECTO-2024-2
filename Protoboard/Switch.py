@@ -16,31 +16,32 @@ class Switch:
         self.y3 = y3  # patita 1
         self.y4 = y4  # patita 1
         self.estado = False
+        self.lado = 40  # Tamaño del switch (cuadrado)
 
     def switch_proto(self, screen):
-        lado = 40  # Tamaño del switch (cuadrado)
+
         body_color = (150, 150, 150)
         circle_radius = 8  # Radio del "círculo" en el medio
         # Dibujar patitas
-        pygame.draw.line(screen, (0, 0, 0), (self.x1, self.y1), (self.x + lado // 2, self.y + lado // 2), 2)  # patita 1
-        pygame.draw.line(screen, (0, 0, 0), (self.x2, self.y2), (self.x + lado // 2, self.y + lado // 2), 2)  # patita 2
-        pygame.draw.line(screen, (0, 0, 0), (self.x3, self.y3), (self.x + lado // 2, self.y + lado // 2), 2)  # patita 3
-        pygame.draw.line(screen, (0, 0, 0), (self.x4, self.y4), (self.x + lado // 2, self.y + lado // 2), 2)  # patita 4
+        pygame.draw.line(screen, (0, 0, 0), (self.x1, self.y1), (self.x + self.lado // 2, self.y + self.lado // 2), 2)  # patita 1
+        pygame.draw.line(screen, (0, 0, 0), (self.x2, self.y2), (self.x + self.lado // 2, self.y + self.lado // 2), 2)  # patita 2
+        pygame.draw.line(screen, (0, 0, 0), (self.x3, self.y3), (self.x + self.lado // 2, self.y + self.lado // 2), 2)  # patita 3
+        pygame.draw.line(screen, (0, 0, 0), (self.x4, self.y4), (self.x + self.lado // 2, self.y + self.lado // 2), 2)  # patita 4
         # Dibujar cuerpo del switch (con líneas)
-        for i in range(lado):
-            pygame.draw.line(screen, body_color, (self.x, self.y + i), (self.x + lado, self.y + i))
+        for i in range(self.lado):
+            pygame.draw.line(screen, body_color, (self.x, self.y + i), (self.x + self.lado, self.y + i))
 
         # Dibujar el "círculo" en el centro usando líneas
         for angle in range(0, 360, 10):
-            start_x = self.x + lado // 2
-            start_y = self.y + lado // 2
+            start_x = self.x + self.lado // 2
+            start_y = self.y + self.lado // 2
             end_x = start_x + int(circle_radius * math.cos(math.radians(angle)))
             end_y = start_y + int(circle_radius * math.sin(math.radians(angle)))
             pygame.draw.line(screen, (0, 0, 0), (start_x, start_y), (end_x, end_y), 2)
 
         # Dibujar botón (usando líneas para crear un borde)
-        pygame.draw.line(screen, (0, 0, 0), (self.x, self.y), (self.x + lado, self.y), 2)  # Línea superior
-        pygame.draw.line(screen, (0, 0, 0), (self.x + lado, self.y), (self.x + lado, self.y + lado), 2)  # Línea derecha
-        pygame.draw.line(screen, (0, 0, 0), (self.x + lado, self.y + lado), (self.x, self.y + lado),
+        pygame.draw.line(screen, (0, 0, 0), (self.x, self.y), (self.x + self.lado, self.y), 2)  # Línea superior
+        pygame.draw.line(screen, (0, 0, 0), (self.x + self.lado, self.y), (self.x + self.lado, self.y + self.lado), 2)  # Línea derecha
+        pygame.draw.line(screen, (0, 0, 0), (self.x + self.lado, self.y + self.lado), (self.x, self.y + self.lado),
                          2)  # Línea inferior
-        pygame.draw.line(screen, (0, 0, 0), (self.x, self.y + lado), (self.x, self.y), 2)  # Línea izquierda
+        pygame.draw.line(screen, (0, 0, 0), (self.x, self.y + self.lado), (self.x, self.y), 2)  # Línea izquierda
