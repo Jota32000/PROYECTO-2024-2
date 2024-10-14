@@ -130,6 +130,8 @@ c_1_editar=None
 c_2_editar=None
 c_3_editar=None
 c_4_editar=None
+nuevo_cable = None
+cable_editar = None
 #editar switch 16
 switch16_editar=None
 c16_1=0

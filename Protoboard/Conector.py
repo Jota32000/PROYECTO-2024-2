@@ -75,6 +75,7 @@ class Conector:
                 nodo.padre = nuevo_padre
                 nodo.fase = nuevo_padre.fase
                 nodo.neutro = nuevo_padre.neutro
+
     def buscar_conexiones(self,nodo, nodo_objetivo):
         visitados = []
         conneciones = []
