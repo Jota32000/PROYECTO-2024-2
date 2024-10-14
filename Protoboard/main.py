@@ -110,13 +110,7 @@ fullscreen = False
 running = True
 x1, x2, x3, x4 = 0, 0, 0, 0
 y1, y2, y3, y4 = 0, 0, 0, 0
-#x2 = 0
-#y1 = 0
-#y2 = 0
-#x3 = 0
-#x4 = 0
-#y3 = 0
-#y4 = 0
+
 ultimo_conector = None
 mm = Menu()
 
@@ -136,9 +130,8 @@ cable_editar = None
 switch16_editar=None
 c16_1=0
 c16_2=0
-nuevo_cable = None
 nueva_resistencia = None
-cable_editar = None
+
 
 x_proto = (screen.get_width() - 650) // 2
 y_proto = (screen.get_height() - 300) // 2
@@ -154,6 +147,7 @@ pila_menos = Conector("pila-",x_pila + 35, y_pila - 15,conectores)
 
 pila_mas.fase=True
 pila_menos.neutro=True
+
 
 conectores.append(pila_mas)
 conectores.append(pila_menos)
@@ -181,6 +175,7 @@ while running:
 
     for i in cables:
         i.dibujar_cables(screen)
+
     for i in guardar_switch16:
         i.dibujar(screen)
 
@@ -528,6 +523,18 @@ while running:
                         c_2_editar = None
                     else:
                         print("conector 2 no válido, es igual al conector 1")
+
+            elif mm.motor_pulsado:
+                print("motor pulsado")
+                for c in conectores:
+                    if not c.nombre.startswith("pila"):
+                        c.fase=None
+                        c.neutro=None
+            elif not mm.motor_pulsado:
+                for c in conectores:
+                    c.fase=c.padre.fase
+                    c.neutro=c.padre.neutro
+
     if not mm.editar_pulsado and not mm.res_pulsado:
         cableado.dibujar_cable_actual(screen, c_1_editar)
     elif not mm.editar_pulsado and not mm.cable_pulsado:
@@ -535,3 +542,4 @@ while running:
     pygame.display.flip()
     mainClock.tick(30)
 pygame.quit()
+
