@@ -69,15 +69,6 @@ class Conector:
                     viejo_padre = origen.padre
 
             self.actualizar_padre_subarbol(viejo_padre, nuevo_padre)
-
-                if coincidencia_origen >= coincidencia_destino:
-                    nuevo_padre = origen.padre
-                    viejo_padre = destino.padre
-                else:
-                    nuevo_padre = destino.padre
-                    viejo_padre = origen.padre
-
-            self.actualizar_padre_subarbol(viejo_padre, nuevo_padre)
     def actualizar_padre_subarbol(self, viejo_padre, nuevo_padre):
         for nodo in self.conectores:
             if nodo.padre == viejo_padre:
