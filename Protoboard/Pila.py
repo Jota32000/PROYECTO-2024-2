@@ -1,7 +1,5 @@
 import pygame
-
 from Conector import Conector
-
 class Pila:
     def __init__(self,pila_x,pila_y):
         self.pila_x = pila_x

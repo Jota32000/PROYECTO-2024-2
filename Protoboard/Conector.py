@@ -1,7 +1,4 @@
 import pygame
-
-
-
 class Conector:
     def __init__(self, nombre, x, y,conectores):
         self.nombre = nombre
@@ -15,7 +12,6 @@ class Conector:
         self.conexiones = []
         self.padre = self
         self.conectores=conectores
-
 
     def dibujar(self,screen):
         #dibuja los puntos de la protoboard
@@ -36,19 +32,16 @@ class Conector:
                     # dibuja con el color normal del conector
                     pygame.draw.line(screen, conector.color, (conector.x, conector.y),
                                      (conector.x + conector.largo, conector.y),6)
-
     def agregar_conexion(self, nodo):
         self.conexiones.append(nodo) # conexion bidireccional A->B | B->A
         nodo.conexiones.append(self)
         self.actualizarbosque(self, nodo)
         #la corrienbte la fase
-
     def eliminar_conexion(self,nodo, nodo_objetivo):
         if nodo_objetivo in self.conexiones: # ve que no se haya eliminado ya la conexion con ese nodo
             nodo.conexiones.remove(nodo_objetivo)
             nodo_objetivo.conexiones.remove(nodo)
             self.buscar_conexiones(nodo, nodo_objetivo)
-
     def actualizarbosque(self, origen, destino):
         if origen.padre != destino.padre:
             if origen.nombre.startswith("pila"):
@@ -77,6 +70,14 @@ class Conector:
 
             self.actualizar_padre_subarbol(viejo_padre, nuevo_padre)
 
+                if coincidencia_origen >= coincidencia_destino:
+                    nuevo_padre = origen.padre
+                    viejo_padre = destino.padre
+                else:
+                    nuevo_padre = destino.padre
+                    viejo_padre = origen.padre
+
+            self.actualizar_padre_subarbol(viejo_padre, nuevo_padre)
     def actualizar_padre_subarbol(self, viejo_padre, nuevo_padre):
         for nodo in self.conectores:
             if nodo.padre == viejo_padre:
