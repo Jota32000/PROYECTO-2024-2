@@ -15,6 +15,7 @@ class Basurero:
             #si se clickea en el rango correspondiente, se borra de la lista led
             if led.x - rango_click <= x <= led.x + rango_click and led.y - rango_click <= y <= led.y + rango_click:
                 self.guardar_led.remove(led)
+                print("Led removida con éxito")
     def eliminar_switch(self,x,y):
         rango_click = 20
         #Buscador de led en la lista de los switchs
@@ -22,6 +23,7 @@ class Basurero:
             #si se clickea en el rango correspondiente, se borra de la lista switch
             if switch.x - rango_click <= x <= switch.x + rango_click and switch.y - rango_click <= y <= switch.y + rango_click:
                 self.guardar_switch.remove(switch)
+                print("Switch removida con éxito")
 
     def eliminar_cable(self,conector_cercano):
         #Buscador de cable en la lista de los cables
@@ -38,6 +40,7 @@ class Basurero:
                 conector_2 = (self.cables_coordenadas[cable - 1])
                 self.cables_coordenadas.pop(cable)
                 self.cables_coordenadas.pop(cable - 1)
+                print("Cable eliminado con éxito")
                 break
         if conector_1 != None or conector_2 != None: # elimina la conexión entre conector_1 y conector_2
             conector_1.eliminar_conexion(conector_1, conector_2)
@@ -57,6 +60,7 @@ class Basurero:
                 conector_2 = (self.resistencias_coordenadas[resistencia - 1])
                 self.resistencias_coordenadas.pop(resistencia)
                 self.resistencias_coordenadas.pop(resistencia - 1)
+                print("Resistencia eliminada con éxito")
                 break
         if conector_1 != None or conector_2 != None: # elimina la conexión entre conector_1 y conector_2
             conector_1.eliminar_conexion(conector_1, conector_2)
