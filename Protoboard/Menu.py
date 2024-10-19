@@ -99,7 +99,8 @@ class Menu:
             screen.blit(self.font.render(texto_res, True, (0, 0, 0)), (self.x + 250, self.y + 50)) # Texto impreso en pantalla
 
         elif (self.chip_pulsado and self.editar_pulsado == False and self.borrar_pulsado == False):
-            pass    # Incluir texto de chip una vez puesto
+            chip = ("Selecciona una posición en la protoboard para colocar el chip")
+            screen.blit(self.font.render(chip, True, (0, 0, 0)), (self.x + 350, self.y + 50)) # Texto impreso en pantalla
         
         elif (self.motor_pulsado):
             texto_motor = ("Motor apagado")
