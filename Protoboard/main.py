@@ -317,8 +317,6 @@ while running:
                     print("editar switch")
 
                 elif mm.cable_pulsado:
-                    print("Primero selecciona las 2 posiciones del cable en la protoboard")
-                    print("Luego selecciona 2 posiciones nuevas donde deseas colocar el cable")
                     if c_1_editar is None:
                         print("buscando conector 1")
                         c_1_editar = punto_mas_cercano(mouse_pos, conectores)
@@ -360,8 +358,8 @@ while running:
                             print("conector 4 no válido, es igual a conector 1, 2 o 3")
 
                 elif mm.res_pulsado:
-                    print("Primero selecciona las 2 posiciones de la resistencia en la protoboard")
-                    print("Luego selecciona 2 posiciones nuevas donde deseas colocar la resistencia")
+                    #print("Primero selecciona las 2 posiciones de la resistencia en la protoboard")
+                    #print("Luego selecciona 2 posiciones nuevas donde deseas colocar la resistencia")
                     if c_1_editar is None:
                         print("buscando conector 1")
                         c_1_editar = punto_mas_cercano(mouse_pos, conectores)
@@ -402,8 +400,8 @@ while running:
                         else:
                             print("conector 4 no válido, es igual a conector 1, 2 o 3")
             elif mm.led_pulsado:
-                print("Botón LED encendido")
-                print("Elige dos puntos en la protoboard\n")
+                #print("Botón LED encendido")
+                #print("Elige dos puntos en la protoboard\n")
                 if conector_1_editar is None:
                     print("buscando conector 1")
                     conector_1_editar = punto_mas_cercano(mouse_pos, conectores)
@@ -427,8 +425,8 @@ while running:
 
             elif mm.switch_pulsado:
                 if mm.boton_switch16_pulsado:
-                    print("Botón SWITCH 16 pines encendido")
-                    print("Elige un punto en la protoboard para colocarlo (corresponde a la esquina superior izquierda)\n")
+                    #print("Botón SWITCH 16 pines encendido")
+                    #print("Elige un punto en la protoboard para colocarlo (corresponde a la esquina superior izquierda)\n")
                     if not conector_cercano:
                         pass
                     elif c16_1 == 0:
@@ -445,8 +443,8 @@ while running:
                             mm.color_switch16=(162, 206, 143)
 
                 if (mm.boton_switch2_pulsado):
-                    print("Botón switch encendido")
-                    print("Elige 4 puntos en la protoboard (De 2 espacios de distancia entre ellos)\n")
+                    #print("Botón switch encendido")
+                    #print("Elige 4 puntos en la protoboard (De 2 espacios de distancia entre ellos)\n")
                     if not conector_cercano:
                         pass
                     elif x1 == 0:
@@ -483,8 +481,8 @@ while running:
                             guardar_switch.append(switch_a)
 
             elif mm.cable_pulsado:
-                print("Botón cable encendido")
-                print("Elige 2 puntos en la protoboard para colocar el cable\n")
+                #print("Botón cable encendido")
+                #print("Elige 2 puntos en la protoboard para colocar el cable\n")
                 if c_1_editar is None:
                     c_1_editar = punto_mas_cercano(mouse_pos, conectores)
                 elif c_2_editar is None:
@@ -507,8 +505,8 @@ while running:
                     
 
             elif mm.res_pulsado:
-                print("Botón RESISTENCIA encendido")
-                print("Elige 2 puntos en la protoboard para colocar la resistencia (de dimensiones 2X1 o 1X2\n")
+                #print("Botón RESISTENCIA encendido")
+                #print("Elige 2 puntos en la protoboard para colocar la resistencia (de dimensiones 2X1 o 1X2\n")
                 if c_1_editar is None:
                     c_1_editar = punto_mas_cercano(mouse_pos, conectores)
                 elif c_2_editar is None:
@@ -530,7 +528,7 @@ while running:
                         print("conector 2 no válido, es igual al conector 1")
 
             elif mm.motor_pulsado:
-                print("Motor pulsado")
+                #print("Motor pulsado")
                 for c in conectores:
                     if not c.nombre.startswith("pila"):
                         c.fase=None
