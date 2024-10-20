@@ -25,7 +25,7 @@ class Menu:
         self.led_pulsado = False
         self.switch_pulsado = False
         self.res_pulsado = False
-        self.ship_pulsado = False
+        self.chip_pulsado = False
         self.motor_pulsado = False
         self.proto_pulsado = False
         self.editar_pulsado = False
@@ -243,11 +243,11 @@ class Menu:
 
             if boton_shp_x <= mouse_x <= boton_shp_x + boton_shp_ancho and boton_shp_y <= mouse_y <= boton_shp_y + boton_shp_alto:
                 # Cambiar el color del botón SHP
-                if (self.ship_pulsado == True):
-                    self.ship_pulsado = False
+                if (self.chip_pulsado == True):
+                    self.chip_pulsado = False
                     self.color_ship = self.color
                 else:
-                    self.ship_pulsado = True
+                    self.chip_pulsado = True
                     self.color_ship = self.color_pulsar
 
             # Coordenadas y dimensiones del área del botón MOTOR

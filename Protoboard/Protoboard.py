@@ -1,16 +1,14 @@
 import pygame
 from Conector import Conector
-
 class Protoboard:
     def __init__(self, x, y,conectores):
         self.x = x
         self.y = y
-        self.largo = 650
-        self.ancho = 400
+        self.largo = 940
+        self.ancho = 430
         self.color = (222, 222, 222)
         self.conectores_creados = False
         self.conectores=conectores
-
 
     def crear(self, screen):
         # Línea superior
@@ -27,13 +25,13 @@ class Protoboard:
 
         alto = 10
         pygame.draw.line(screen, (17, 17, 222), (self.x + alto, self.y + alto), (self.x + self.largo - 10, self.y + alto),1)
-        pygame.draw.line(screen, (222, 17, 17), (self.x + alto, self.y + 53), (self.x + self.largo - 10, self.y + 53),1)
+        pygame.draw.line(screen, (222, 17, 17), (self.x + alto, self.y + 56), (self.x + self.largo - 10, self.y + 56),1)
         pygame.draw.line(screen, (222, 17, 17), (self.x + alto, self.y + self.ancho-10), (self.x + self.largo - 10, self.y + self.ancho-10),1)
-        pygame.draw.line(screen, (17, 17, 222), (self.x + alto, self.y + self.ancho - 53),(self.x + self.largo - 10, self.y + self.ancho - 53), 1)
+        pygame.draw.line(screen, (17, 17, 222), (self.x + alto, self.y + self.ancho - 55),(self.x + self.largo - 10, self.y + self.ancho - 55), 1)
 
         # crear CANAL Central
         mitad_largo = self.ancho // 2
-        pygame.draw.line(screen, (207, 207, 207), (self.x, self.y + mitad_largo),(self.x + self.largo, self.y + mitad_largo), 30)
+        pygame.draw.line(screen, (207, 207, 207), (self.x, self.y + mitad_largo),(self.x + self.largo, self.y + mitad_largo), 10)
 
         # Llamar al metodo para dibujar conectores
         self.dibujar_conectores(screen)
@@ -43,76 +41,66 @@ class Protoboard:
         inicio_x = self.x + 35
         inicio_y = self.y + 20
 
-        dibujar_1(screen,inicio_x-3,inicio_y+45,10,(84,84,84))
-        dibujar_5(screen,inicio_x+77,inicio_y+45,10,(84,84,84))
-        dibujar_1(screen, inicio_x+175, inicio_y + 55, 10, (84, 84, 84))
-        dibujar_0(screen, inicio_x+175, inicio_y + 40, 10, (84, 84, 84))
-        dibujar_1(screen, inicio_x+275, inicio_y + 55, 10, (84, 84, 84))
-        dibujar_5(screen, inicio_x+275, inicio_y + 40, 10, (84, 84, 84))
-        dibujar_2(screen, inicio_x+375, inicio_y + 55, 10, (84, 84, 84))
-        dibujar_0(screen, inicio_x+375, inicio_y + 40, 10, (84, 84, 84))
-        dibujar_2(screen, inicio_x+475, inicio_y + 55, 10, (84, 84, 84))
-        dibujar_5(screen, inicio_x+475, inicio_y + 40, 10, (84, 84, 84))
-        dibujar_3(screen, inicio_x+575, inicio_y + 55, 10, (84, 84, 84))
-        dibujar_0(screen, inicio_x+575, inicio_y + 40, 10, (84, 84, 84))
+        separacion_columnas = 30  # Espacio entre las columnas de conectores (ajustar según tu diseño)
 
-        dibujar_1(screen, inicio_x - 3, inicio_y + self.ancho-95, 10, (84, 84, 84))
-        dibujar_5(screen, inicio_x + 77, inicio_y + self.ancho-95, 10, (84, 84, 84))
-        dibujar_1(screen, inicio_x + 175, inicio_y + self.ancho-85, 10, (84, 84, 84))
-        dibujar_0(screen, inicio_x + 175, inicio_y + self.ancho-100, 10, (84, 84, 84))
-        dibujar_1(screen, inicio_x + 275, inicio_y + self.ancho-85, 10, (84, 84, 84))
-        dibujar_5(screen, inicio_x + 275, inicio_y + self.ancho-100, 10, (84, 84, 84))
-        dibujar_2(screen, inicio_x + 375, inicio_y + self.ancho-85, 10, (84, 84, 84))
-        dibujar_0(screen, inicio_x + 375, inicio_y + self.ancho-100, 10, (84, 84, 84))
-        dibujar_2(screen, inicio_x + 475, inicio_y + self.ancho-85, 10, (84, 84, 84))
-        dibujar_5(screen, inicio_x + 475, inicio_y + self.ancho-100, 10, (84, 84, 84))
-        dibujar_3(screen, inicio_x + 575, inicio_y + self.ancho-85, 10, (84, 84, 84))
-        dibujar_0(screen, inicio_x + 575, inicio_y + self.ancho-100, 10, (84, 84, 84))
+        # Configurar la fuente para los números
+        fuente = pygame.font.SysFont(None, 22)
 
-        dibujar_mas(screen,inicio_x-20,inicio_y+357,10,(222,17,17))
-        dibujar_menos(screen,inicio_x-20,inicio_y+337,(17,17,222))
-        dibujar_a(screen,inicio_x-20,inicio_y+285,10,10,(84 , 84, 84))
-        dibujar_b(screen, inicio_x-20, inicio_y+265, 10,  (84, 84, 84))
-        dibujar_c(screen, inicio_x-20 , inicio_y+245, 10, 10, (84, 84, 84))
-        dibujar_d(screen, inicio_x-20 , inicio_y+225, 10, 10, (84, 84, 84))
+        # Dibujar números sobre las columnas (ejemplo: 12 columnas)
+        for i in range(30):
+            numero = str(i + 1)
+            texto = fuente.render(numero, True, (84, 84, 84))  # Color gris para los números
+            posicion_x = 205 + i * separacion_columnas  # Alinear el número con la columna correspondiente
+            screen.blit(texto, (posicion_x, 235))
+        for i in range(30):
+            numero = str(i + 1)
+            texto = fuente.render(numero, True, (84, 84, 84))  # Color gris para los números
+            posicion_x = 205 + i * separacion_columnas  # Alinear el número con la columna correspondiente
+            screen.blit(texto, (posicion_x, 535))
+
+        dibujar_mas(screen,inicio_x-20,inicio_y+390,10,(222,17,17))
+        dibujar_menos(screen,inicio_x-20,inicio_y+362,(17,17,222))
+        dibujar_a(screen,inicio_x-20,inicio_y+325,10,10,(84 , 84, 84))
+        dibujar_b(screen, inicio_x-20, inicio_y+295, 10,  (84, 84, 84))
+        dibujar_c(screen, inicio_x-20 , inicio_y+265, 10, 10, (84, 84, 84))
+        dibujar_d(screen, inicio_x-20 , inicio_y+235, 10, 10, (84, 84, 84))
         dibujar_e(screen, inicio_x-20 , inicio_y+205, 10, 10, (84, 84, 84))
-        dibujar_f(screen, inicio_x-20 , inicio_y+145, 10, 10, (84, 84, 84))
-        dibujar_g(screen, inicio_x-20 , inicio_y+125, 10, 10, (84, 84, 84))
-        dibujar_h(screen, inicio_x-20 , inicio_y+105, 10, 10, (84, 84, 84))
+        dibujar_f(screen, inicio_x-20 , inicio_y+175, 10, 10, (84, 84, 84))
+        dibujar_g(screen, inicio_x-20 , inicio_y+145, 10, 10, (84, 84, 84))
+        dibujar_h(screen, inicio_x-20 , inicio_y+115, 10, 10, (84, 84, 84))
         dibujar_i(screen, inicio_x-20 , inicio_y+85, 10, 10, (84, 84, 84))
-        dibujar_j(screen, inicio_x-20, inicio_y+65, 10, 10, (84, 84, 84))
-        dibujar_mas(screen, inicio_x - 20, inicio_y+20, 10, (222, 17, 17))
-        dibujar_menos(screen, inicio_x - 20, inicio_y+2 , (17, 17, 222))
+        dibujar_j(screen, inicio_x-20, inicio_y+55, 10, 10, (84, 84, 84))
+        dibujar_mas(screen, inicio_x - 20, inicio_y+30, 10, (222, 17, 17))
+        dibujar_menos(screen, inicio_x - 20, inicio_y , (17, 17, 222))
 
-        dibujar_mas(screen, inicio_x +self.largo-55, inicio_y + 357, 10, (222, 17, 17))
-        dibujar_menos(screen, inicio_x +self.largo-55, inicio_y + 337, (17, 17, 222))
-        dibujar_a(screen, inicio_x+self.largo-55, inicio_y + 285, 10, 10, (84, 84, 84))
-        dibujar_b(screen, inicio_x+self.largo-55, inicio_y + 265, 10, (84, 84, 84))
-        dibujar_c(screen, inicio_x +self.largo-55, inicio_y + 245, 10, 10, (84, 84, 84))
-        dibujar_d(screen, inicio_x +self.largo-55, inicio_y + 225, 10, 10, (84, 84, 84))
+        dibujar_mas(screen, inicio_x +self.largo-55, inicio_y + 390, 10, (222, 17, 17))
+        dibujar_menos(screen, inicio_x +self.largo-55, inicio_y + 362, (17, 17, 222))
+        dibujar_a(screen, inicio_x+self.largo-55, inicio_y + 325, 10, 10, (84, 84, 84))
+        dibujar_b(screen, inicio_x+self.largo-55, inicio_y + 295, 10, (84, 84, 84))
+        dibujar_c(screen, inicio_x +self.largo-55, inicio_y + 265, 10, 10, (84, 84, 84))
+        dibujar_d(screen, inicio_x +self.largo-55, inicio_y + 235, 10, 10, (84, 84, 84))
         dibujar_e(screen, inicio_x +self.largo-55, inicio_y + 205, 10, 10, (84, 84, 84))
-        dibujar_f(screen, inicio_x +self.largo-55, inicio_y + 145, 10, 10, (84, 84, 84))
-        dibujar_g(screen, inicio_x +self.largo-55, inicio_y + 125, 10, 10, (84, 84, 84))
-        dibujar_h(screen, inicio_x +self.largo-55, inicio_y + 105, 10, 10, (84, 84, 84))
+        dibujar_f(screen, inicio_x +self.largo-55, inicio_y + 175, 10, 10, (84, 84, 84))
+        dibujar_g(screen, inicio_x +self.largo-55, inicio_y + 145, 10, 10, (84, 84, 84))
+        dibujar_h(screen, inicio_x +self.largo-55, inicio_y + 115, 10, 10, (84, 84, 84))
         dibujar_i(screen, inicio_x +self.largo-55, inicio_y + 85, 10, 10, (84, 84, 84))
-        dibujar_j(screen, inicio_x +self.largo-55, inicio_y + 65, 10, 10, (84, 84, 84))
-        dibujar_mas(screen, inicio_x + self.largo - 55, inicio_y + 20, 10, (222, 17, 17))
-        dibujar_menos(screen, inicio_x + self.largo - 55, inicio_y + 2, (17, 17, 222))
+        dibujar_j(screen, inicio_x +self.largo-55, inicio_y + 55, 10, 10, (84, 84, 84))
+        dibujar_mas(screen, inicio_x + self.largo - 55, inicio_y + 30, 10, (222, 17, 17))
+        dibujar_menos(screen, inicio_x + self.largo - 55, inicio_y , (17, 17, 222))
         #fors
 
         if not self.conectores_creados:
             for i in range(2):
                 primer_conector_fila = None  # guarda el primer conector de cada fila
                 for j in range(30):
-                    x_pos = inicio_x + j * 20
-                    y_pos = inicio_y + i * 20
+                    x_pos = inicio_x + j * 30
+                    y_pos = inicio_y + i * 30
                     nombre_c1 = f"conector1_{i}_{j}"
                     conector_existente = None
                     for conector in self.conectores:
                         if conector.nombre == nombre_c1:
                             conector_existente = conector
                             break
-
                     if conector_existente:
                         conector_existente.x = x_pos
                         conector_existente.y = y_pos
@@ -120,60 +108,52 @@ class Protoboard:
                     else:
                         conector = Conector(nombre_c1, x_pos, y_pos, self.conectores)
                         self.conectores.append(conector)
-
                     if j == 0:
                         primer_conector_fila = conector
                     else:
                         if conector not in primer_conector_fila.conexiones:
                             primer_conector_fila.agregar_conexion(conector)  # si no existe, la agrega
-
             for i in range(2):
                 primer_conector_fila = None
                 for j in range(30):
-                    x_pos = inicio_x + j * 20
-                    y_pos = inicio_y + i * 20
+                    x_pos = inicio_x + j * 30
+                    y_pos = inicio_y + i * 30
                     nombre_c2 = f"conector2_{i}_{j}"
                     conector_existente = None
-
                     for conector in self.conectores:
                         if conector.nombre == nombre_c2:
                             conector_existente = conector
                             break
                     if conector_existente:
                         conector_existente.x = x_pos
-                        conector_existente.y = y_pos + self.ancho - 64
+                        conector_existente.y = y_pos + 360
                         conector = conector_existente
                     else:
-                        conector = Conector(nombre_c2, x_pos, y_pos + self.ancho - 64, self.conectores)
+                        conector = Conector(nombre_c2, x_pos, y_pos + 360, self.conectores)
                         self.conectores.append(conector)
                     if j == 0:
                         primer_conector_fila = conector
                     else:
                         if conector not in primer_conector_fila.conexiones:
                             primer_conector_fila.agregar_conexion(conector)
-
             for j in range(30):
                 primer_conector_columna = None  # guarda el primer nodo de cada columna
                 for i in range(5):
-                    y_pos = inicio_y + i * 20
-                    x_pos = inicio_x + j * 20
+                    y_pos = inicio_y + i * 30
+                    x_pos = inicio_x + j * 30
                     nombre_c3 = f"conector3_{i}_{j}"
-
                     conector_existente = None
                     for conector in self.conectores:
                         if conector.nombre == nombre_c3:
                             conector_existente = conector
                             break
-
                     if conector_existente:
                         conector_existente.x = x_pos
-                        conector_existente.y = y_pos + 70
+                        conector_existente.y = y_pos + 60
                         conector = conector_existente
                     else:
-                        conector = Conector(nombre_c3, x_pos, y_pos + 70,self.conectores)
+                        conector = Conector(nombre_c3, x_pos, y_pos + 60,self.conectores)
                         self.conectores.append(conector)
-
-
                     # asigna el primer conector de la columna
                     if i == 0:
                         primer_conector_columna = conector
@@ -186,16 +166,14 @@ class Protoboard:
             for j in range(30):
                 primer_conector_columna = None
                 for i in range(5):
-                    x_pos = inicio_x + j * 20
-                    y_pos = inicio_y + i * 20
+                    x_pos = inicio_x + j * 30
+                    y_pos = inicio_y + i * 30
                     nombre_c4 = f"conector4_{i}_{j}"
-
                     conector_existente = None
                     for conector in self.conectores:
                         if conector.nombre == nombre_c4:
                             conector_existente = conector
                             break
-
                     if conector_existente:
                         conector_existente.x = x_pos
                         conector_existente.y = y_pos + 210
@@ -203,14 +181,12 @@ class Protoboard:
                     else:
                         conector = Conector(nombre_c4, x_pos, y_pos + 210,self.conectores)
                         self.conectores.append(conector)
-
                     if i == 0:
                         primer_conector_columna = conector
                     else:
                         if conector not in primer_conector_columna.conexiones:
                             primer_conector_columna.agregar_conexion(conector)
             self.conectores_creados = True
-
 
 def dibujar_a(screen, x, y,ancho,alto,color):
     pygame.draw.line(screen, color, (x, y + alto), (x + ancho // 2, y), 2)  # Línea diagonal izquierda
