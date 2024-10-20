@@ -15,6 +15,7 @@ class Switch:
         self.pin2 = None
         self.pin3 = None
         self.pin4 = None
+        self.bandera = 1
 
     def switch_proto(self, screen):
 
@@ -63,12 +64,17 @@ class Switch:
                 self.color_circulo = self.color_encendido  # Cambiar al color encendido
                 a, b = self.pines2(0)  # Llama a pines2 con el índice 0
                 if a is not None and b is not None:
+                    if a.fase or a.neutro:
+                        self.bandera = 2
                     a.agregar_conexion(b)
             else:
                 self.color_circulo = (91, 91, 91)  # Volver al color apagado
                 a, b = self.pines2(0)  # Llama a pines2 para desconectar
                 if a is not None and b is not None:
-                    a.eliminar_conexion(a,b)
+                    if self.bandera == 2:
+                        b.eliminar_conexion(b, a)
+                    else:
+                        a.eliminar_conexion(a, b)
 
     def pines2(self,i):
         if i==0:

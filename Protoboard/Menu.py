@@ -32,7 +32,6 @@ class Menu:
         self.borrar_pulsado = False
         self.boton_switch2_pulsado = False
         self.boton_switch16_pulsado=False
-
         self.contador_click = 0
 
     def div_boton(self, screen, x, y, color):

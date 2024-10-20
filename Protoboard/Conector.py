@@ -34,36 +34,28 @@ class Conector:
                     pygame.draw.line(screen, conector.color, (conector.x, conector.y),
                                      (conector.x + conector.largo, conector.y),6)
     def agregar_conexion(self, nodo):
-        #preguntar corto
-        if (self.fase or self.neutro) and (nodo.fase or nodo.neutro):
-            nodo.block = True
-            conec_nodo = nodo.conexiones[0]
-            conec_nodo.block=True
-            for c in conec_nodo.conexiones:
-                c.block = True
-                c.eliminar_conexion(c,nodo)
-        else:
-            self.conexiones.append(nodo) # conexion bidireccional A->B | B->A
-            nodo.conexiones.append(self)
-            self.actualizarbosque(self, nodo)
+        self.conexiones.append(nodo) # conexion bidireccional A->B | B->A
+        nodo.conexiones.append(self)
+        self.actualizarbosque(self, nodo)
 
-        #la corrienbte la fase
+
     def eliminar_conexion(self,nodo, nodo_objetivo):
         if (nodo_objetivo in self.conexiones) : # ve que no se haya eliminado ya la conexion con ese nodo
             nodo.conexiones.remove(nodo_objetivo)
             nodo_objetivo.conexiones.remove(nodo)
             self.buscar_conexiones(nodo, nodo_objetivo)
 
-
     def actualizarbosque(self, origen, destino):
         if origen.padre != destino.padre:
-            if origen.nombre.startswith("pila"):
+            if origen.padre.nombre.startswith("pila"):
                 nuevo_padre = origen.padre
                 viejo_padre = destino.padre
-            elif destino.nombre.startswith("pila"):
+            elif destino.padre.nombre.startswith("pila"):
                 nuevo_padre = destino.padre
                 viejo_padre = origen.padre
+                print(origen.nombre, destino.nombre)
             else:
+
                 coincidencia_origen = 0
                 for nodo in self.conectores:
                     if nodo.padre == origen.padre:
@@ -81,6 +73,7 @@ class Conector:
                     nuevo_padre = destino.padre
                     viejo_padre = origen.padre
             self.actualizar_padre_subarbol(viejo_padre, nuevo_padre)
+
 
     def actualizar_padre_subarbol(self, viejo_padre, nuevo_padre):
         for nodo in self.conectores:
@@ -103,10 +96,10 @@ class Conector:
             visitados.append(actual)
             if nodo_objetivo in nodo.conexiones:
                 existe_conexion_alternativa = True
-
         if existe_conexion_alternativa:
             for i in visitados:
                 i.padre = nodo_objetivo
+
         else:
             nodo.padre = nodo
             nodo.fase = None
@@ -115,4 +108,5 @@ class Conector:
                 i.padre = nodo
                 i.fase = None
                 i.neutro = None
+
 
