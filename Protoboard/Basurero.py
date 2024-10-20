@@ -8,13 +8,14 @@ class Basurero:
         self.cables_coordenadas=cables_coordenadas
         self.resistencias_coordenadas=resistencias_coordenadas
     
-    def eliminar_led(self,x,y):
-        rango_click = 10
+    def eliminar_led(self,conector_cercano):
         #Buscador de led en la lista de los leds
         for led in self.guardar_led:
-            #si se clickea en el rango correspondiente, se borra de la lista led
-            if led.x - rango_click <= x <= led.x + rango_click and led.y - rango_click <= y <= led.y + rango_click:
+            conector_inicio = led.conector1
+            conector_fin = led.conector2
+            if conector_cercano == conector_inicio or conector_cercano == conector_fin:
                 self.guardar_led.remove(led)
+
     def eliminar_switch(self,x,y):
         rango_click = 20
         #Buscador de led en la lista de los switchs
@@ -25,38 +26,41 @@ class Basurero:
 
     def eliminar_cable(self,conector_cercano):
         #Buscador de cable en la lista de los cables
-        conector_1 = None
-        conector_2 = None
-        for cable in range (len(self.cables_coordenadas)):
-            if conector_cercano == self.cables_coordenadas[cable]:
-                if cable % 2 == 0:
-                    indice = cable // 2
+        for cable in self.cables:
+            # ahora el extremo del nodo que presionas es donde se elimina
+            conector_inicio = cable.conector_inicio
+            conector_fin = cable.conector_fin
+
+            if conector_cercano == conector_inicio:
+                if conector_inicio.nombre.startswith("pila"):
+                    conector_fin.eliminar_conexion(conector_fin, conector_inicio)
                 else:
-                    indice = (cable - 1) // 2
-                self.cables.pop(indice)
-                conector_1 = (self.cables_coordenadas[cable])
-                conector_2 = (self.cables_coordenadas[cable - 1])
-                self.cables_coordenadas.pop(cable)
-                self.cables_coordenadas.pop(cable - 1)
-                break
-        if conector_1 != None or conector_2 != None: # elimina la conexión entre conector_1 y conector_2
-            conector_1.eliminar_conexion(conector_1, conector_2)
+                    conector_inicio.eliminar_conexion(conector_inicio,conector_fin)
+                self.cables.remove(cable)
+
+            elif conector_cercano == conector_fin:
+                if conector_fin.nombre.startswith("pila"):
+                    conector_inicio.eliminar_conexion(conector_inicio, conector_fin)
+                else:
+                    conector_fin.eliminar_conexion(conector_fin,conector_inicio)
+                self.cables.remove(cable)
+
+
 
     def eliminar_resistencia(self,conector_cercano):
-        #Buscador de cable en la lista de las resistencias
-        conector_1 = None
-        conector_2 = None
-        for resistencia in range (len(self.resistencias_coordenadas)):
-            if conector_cercano == self.resistencias_coordenadas[resistencia]:
-                if resistencia % 2 == 0:
-                    indice = resistencia // 2
+        # la resistencia sigue la misma logica
+        for resistencia in self.resistencias:
+            conector_inicio = resistencia.conector_inicio
+            conector_fin = resistencia.conector_fin
+            if conector_cercano == conector_inicio:
+                if conector_inicio.nombre.startswith("pila"):
+                    conector_fin.eliminar_conexion(conector_fin, conector_inicio)
                 else:
-                    indice = (resistencia - 1) // 2
-                self.resistencias.pop(indice)
-                conector_1 = (self.resistencias_coordenadas[resistencia])
-                conector_2 = (self.resistencias_coordenadas[resistencia - 1])
-                self.resistencias_coordenadas.pop(resistencia)
-                self.resistencias_coordenadas.pop(resistencia - 1)
-                break
-        if conector_1 != None or conector_2 != None: # elimina la conexión entre conector_1 y conector_2
-            conector_1.eliminar_conexion(conector_1, conector_2)
+                    conector_inicio.eliminar_conexion(conector_inicio, conector_fin)
+                self.resistencias.remove(resistencia)
+            elif conector_cercano == conector_fin:
+                if conector_fin.nombre.startswith("pila"):
+                    conector_inicio.eliminar_conexion(conector_inicio, conector_fin)
+                else:
+                    conector_fin.eliminar_conexion(conector_fin, conector_inicio)
+                self.resistencias.remove(resistencia)

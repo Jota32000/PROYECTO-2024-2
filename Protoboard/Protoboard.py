@@ -101,7 +101,6 @@ class Protoboard:
         #fors
 
         if not self.conectores_creados:
-
             for i in range(2):
                 primer_conector_fila = None  # guarda el primer conector de cada fila
                 for j in range(30):

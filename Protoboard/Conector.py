@@ -33,15 +33,26 @@ class Conector:
                     pygame.draw.line(screen, conector.color, (conector.x, conector.y),
                                      (conector.x + conector.largo, conector.y),6)
     def agregar_conexion(self, nodo):
-        self.conexiones.append(nodo) # conexion bidireccional A->B | B->A
-        nodo.conexiones.append(self)
-        self.actualizarbosque(self, nodo)
+        #preguntar corto
+        if (self.fase or self.neutro) and (nodo.fase or nodo.neutro):
+            nodo.block = True
+            conec_nodo = nodo.conexiones[0]
+            conec_nodo.block=True
+            for c in conec_nodo.conexiones:
+                c.block = True
+                c.eliminar_conexion(c,nodo)
+        else:
+            self.conexiones.append(nodo) # conexion bidireccional A->B | B->A
+            nodo.conexiones.append(self)
+            self.actualizarbosque(self, nodo)
+
         #la corrienbte la fase
     def eliminar_conexion(self,nodo, nodo_objetivo):
         if (nodo_objetivo in self.conexiones) : # ve que no se haya eliminado ya la conexion con ese nodo
             nodo.conexiones.remove(nodo_objetivo)
             nodo_objetivo.conexiones.remove(nodo)
             self.buscar_conexiones(nodo, nodo_objetivo)
+
 
     def actualizarbosque(self, origen, destino):
         if origen.padre != destino.padre:
@@ -74,8 +85,9 @@ class Conector:
         for nodo in self.conectores:
             if nodo.padre == viejo_padre:
                 nodo.padre = nuevo_padre
-                nodo.fase = nuevo_padre.fase
-                nodo.neutro = nuevo_padre.neutro
+                if not nodo.block:
+                    nodo.fase = nuevo_padre.fase
+                    nodo.neutro = nuevo_padre.neutro
 
     def buscar_conexiones(self,nodo, nodo_objetivo):
         visitados = []

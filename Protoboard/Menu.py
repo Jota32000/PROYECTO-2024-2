@@ -63,7 +63,7 @@ class Menu:
         separacion_vertical = ancho_pantalla // numero_divisiones
 
         # Lista de textos para cada división
-        textos = ["CABLE", "LED", "SWITCH", "RESISTENCIA", "SHIP", "MOTOR", "PROTOBOARD", "EDITAR", "BORRAR"]
+        textos = ["CABLE", "LED", "SWITCH", "RESISTENCIA", "CHIP", "MOTOR", "PROTOBOARD", "EDITAR", "BORRAR"]
 
         # Crear superficie para el botón LED (semi-transparente)
         boton_cable_surface = pygame.Surface((self.ancho_boton, 39), pygame.SRCALPHA)  # Botón CABLE

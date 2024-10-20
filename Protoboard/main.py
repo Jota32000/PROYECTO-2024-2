@@ -228,7 +228,7 @@ while running:
             x, y = event.pos
             if mm.borrar_pulsado: # Opciones para eliminar componentes
                 if mm.led_pulsado:
-                    basurero.eliminar_led(x, y)
+                    basurero.eliminar_led(conector_cercano)
                 elif mm.switch_pulsado:
                     basurero.eliminar_switch(x, y)
                 elif mm.cable_pulsado:
@@ -412,10 +412,8 @@ while running:
                     if conector_2_aux is not None and conector_2_aux != conector_1_editar:
                         print("conector 2 valido")
                         conector_2_editar = conector_2_aux
-
                         led_a = Led("green", conector_1_editar, conector_2_editar)
                         guardar_led.append(led_a)
-                        
                         print("led editado")
                         conector_1_editar = None
                         conector_2_editar = None
@@ -542,4 +540,5 @@ while running:
     pygame.display.flip()
     mainClock.tick(30)
 pygame.quit()
-
+print("Preguntar por el corto")
+print("En agregar conexion")
