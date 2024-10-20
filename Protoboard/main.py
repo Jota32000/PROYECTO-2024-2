@@ -90,7 +90,6 @@ def buscar_pin(x,y,cantidad,lado_x,lado_y):
 
 # Main
 pygame.init()
-# --------- esto lo tengo que trabajar para fullscreen ----------------
 # Obtener el tamaño de la pantalla
 screen_info = pygame.display.Info()
 screen_width = screen_info.current_w
@@ -101,7 +100,6 @@ screen = pygame.display.set_mode((1000, 650), pygame.RESIZABLE)
 
 pygame.display.set_caption("Protoboard")
 mainClock = pygame.time.Clock()
-# ---------- fin a trabajar ----------
 # Crear el cableado
 cableado = Cableado(conectores,cables)
 
@@ -123,6 +121,7 @@ mm = Menu()
 led_a_editar = None
 conector_1_editar = None
 conector_2_editar = None
+
 # editar switch
 switch_editar=None
 c_1_editar=None
@@ -233,10 +232,11 @@ while running:
             elif mm.editar_pulsado: # Opciones para editar componentes
                 if mm.led_pulsado:
                     if led_a_editar is None:
-                        print("buscando led")
+                        print("Escoge la led a editar (Clickea sobre ella)")
+                        print("Luego clickea dos posiciones de la protoboard donde colocarla")
                         led_a_editar = buscar_led(x, y)
                     elif conector_1_editar is None:
-                        print("buscando conector 1")
+                        #print("buscando conector 1")
                         conector_1_editar = punto_mas_cercano(mouse_pos, conectores)
                     elif conector_2_editar is None:
                         print("buscando conector 2")
@@ -251,7 +251,7 @@ while running:
                             led_a_editar = None
                             conector_1_editar = None
                             conector_2_editar = None
-                            print("led editado")
+                            print("led editado con éxito")
                     else:
                         print("error al editar led")
                     # busca el led que se quiere editar
@@ -301,6 +301,8 @@ while running:
                             print("conector 4 no válido, es igual a conector 1, 2 o 3")
 
                 elif mm.res_pulsado:
+                    #print("Primero selecciona las 2 posiciones de la resistencia en la protoboard")
+                    #print("Luego selecciona 2 posiciones nuevas donde deseas colocar la resistencia")
                     if c_1_editar is None:
                         print("buscando conector 1")
                         c_1_editar = punto_mas_cercano(mouse_pos, conectores)
@@ -430,6 +432,8 @@ while running:
                                 conector_2_editar = None
 
             elif mm.led_pulsado:
+                #print("Botón LED encendido")
+                #print("Elige dos puntos en la protoboard\n")
                 if conector_1_editar is None:
                     print("buscando conector 1")
                     conector_1_editar = punto_mas_cercano(mouse_pos, conectores)
@@ -452,7 +456,8 @@ while running:
                     print("editar led")
             elif mm.switch_pulsado:
                 if mm.boton_switch16_pulsado:
-                    print("boton switch 16 pines")
+                    #print("Botón SWITCH 16 pines encendido")
+                    #print("Elige un punto en la protoboard para colocarlo (corresponde a la esquina superior izquierda)\n")
                     if not conector_cercano:
                         pass
                     elif c16_1 == 0:
@@ -519,6 +524,8 @@ while running:
                         mm.color_ship = (162, 206, 143)
 
             elif mm.cable_pulsado:
+                #print("Botón cable encendido")
+                #print("Elige 2 puntos en la protoboard para colocar el cable\n")
                 if c_1_editar is None:
                     c_1_editar = punto_mas_cercano(mouse_pos, conectores)
                 elif c_2_editar is None:
@@ -538,8 +545,11 @@ while running:
                         c_2_editar = None
                     else:
                         print("conector 2 no válido, es igual al conector 1")
+                    
 
             elif mm.res_pulsado:
+                #print("Botón RESISTENCIA encendido")
+                #print("Elige 2 puntos en la protoboard para colocar la resistencia (de dimensiones 2X1 o 1X2\n")
                 if c_1_editar is None:
                     c_1_editar = punto_mas_cercano(mouse_pos, conectores)
                 elif c_2_editar is None:
@@ -561,7 +571,7 @@ while running:
                         print("conector 2 no válido, es igual al conector 1")
 
             elif mm.motor_pulsado:
-                print("motor pulsado")
+                #print("Motor pulsado")
                 for c in conectores:
                     if not c.nombre.startswith("pila"):
                         c.fase=None
@@ -578,6 +588,3 @@ while running:
     pygame.display.flip()
     mainClock.tick(30)
 pygame.quit()
-
-
-

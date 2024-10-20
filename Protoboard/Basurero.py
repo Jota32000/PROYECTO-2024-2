@@ -29,6 +29,7 @@ class Basurero:
                     else:
                         a.eliminar_conexion(a, b)
                 self.guardar_switch.remove(switch)
+                print("Switch removida con éxito")
 
     def eliminar_cable(self,conector_cercano):
         #Buscador de cable en la lista de los cables
