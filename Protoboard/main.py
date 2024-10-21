@@ -550,7 +550,6 @@ while running:
                     else:
                         print("conector 2 no válido, es igual al conector 1")
                     
-
             elif mm.res_pulsado:
                 #print("Botón RESISTENCIA encendido")
                 #print("Elige 2 puntos en la protoboard para colocar la resistencia (de dimensiones 2X1 o 1X2\n")

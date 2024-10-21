@@ -85,15 +85,15 @@ class Menu:
         
         elif (self.switch_pulsado and self.editar_pulsado == False and self.borrar_pulsado == False):
             texto_switch = ("Por favor, selecciona una opción de switch")
-            screen.blit(self.font.render(texto_switch, True, (0, 0, 0)), (self.x + 350, self.y + 50)) # Texto impreso en pantalla
+            screen.blit(self.font.render(texto_switch, True, (0, 0, 0)), (self.x + 350, self.y + 90)) # Texto impreso en pantalla
 
             if (self.boton_switch2_pulsado):
                 switch_2 = ("Selecciona un punto en la protoboard para colocar un switch")
-                screen.blit(self.font.render(switch_2, True, (0, 0, 0)), (self.x + 350, self.y + 70)) # Texto impreso en pantalla
+                screen.blit(self.font.render(switch_2, True, (0, 0, 0)), (self.x + 350, self.y + 110)) # Texto impreso en pantalla
             
             elif (self.boton_switch16_pulsado):
                 switch_16 = ("Selecciona un punto en la protoboard para colocar un switch")
-                screen.blit(self.font.render(switch_16, True, (0, 0, 0)), (self.x + 350, self.y + 70)) # Texto impreso en pantalla
+                screen.blit(self.font.render(switch_16, True, (0, 0, 0)), (self.x + 350, self.y + 110)) # Texto impreso en pantalla
                 
         elif (self.res_pulsado and self.editar_pulsado == False and self.borrar_pulsado == False):
             texto_res = ("Selecciona 2 posiciones en la protoboard para colocar la resistencia")
@@ -129,14 +129,14 @@ class Menu:
             elif (self.switch_pulsado and self.boton_switch2_pulsado):
                 edicion_switch_1 = ("Primero selecciona la parte superior izquierda del switch a editar")
                 edicion_switch_2 = ("Luego selecciona un punto en la protoboard para colocar el switch de 4")
-                screen.blit(self.font.render(edicion_switch_1, True, (0, 0, 0)), (self.x + 380, self.y + 70)) # Texto impreso en pantalla
-                screen.blit(self.font.render(edicion_switch_2, True, (0, 0, 0)), (self.x + 380, self.y + 90)) # Texto impreso en pantalla
+                screen.blit(self.font.render(edicion_switch_1, True, (0, 0, 0)), (self.x + 380, self.y + 90)) # Texto impreso en pantalla
+                screen.blit(self.font.render(edicion_switch_2, True, (0, 0, 0)), (self.x + 380, self.y + 110)) # Texto impreso en pantalla
 
             elif (self.switch_pulsado and self.boton_switch16_pulsado):
                 edicion_switch_1 = ("Primero selecciona la parte superior izquierda del switch a editar")
                 edicion_switch_2 = ("Luego selecciona un punto en la protoboard para colocar el switch de 16")
-                screen.blit(self.font.render(edicion_switch_1, True, (0, 0, 0)), (self.x + 380, self.y + 70)) # Texto impreso en pantalla
-                screen.blit(self.font.render(edicion_switch_2, True, (0, 0, 0)), (self.x + 380, self.y + 90)) # Texto impreso en pantalla
+                screen.blit(self.font.render(edicion_switch_1, True, (0, 0, 0)), (self.x + 380, self.y + 90)) # Texto impreso en pantalla
+                screen.blit(self.font.render(edicion_switch_2, True, (0, 0, 0)), (self.x + 380, self.y + 110)) # Texto impreso en pantalla
 
             elif (self.res_pulsado):
                 edicion_res_1 = ("Primero selecciona los dos extremos de la resistencia a editar")
@@ -152,8 +152,6 @@ class Menu:
                 screen.blit(self.font.render(chip2, True, (0, 0, 0)),
                             (self.x + 350, self.y + 90))
 
-
-
         elif (self.borrar_pulsado):
             texto_borrar = ("Elige el componente a borrar")
             screen.blit(self.font.render(texto_borrar, True, (0, 0, 0)), (self.x + 380, self.y + 50)) # Texto impreso en pantalla
@@ -168,15 +166,15 @@ class Menu:
 
             elif (self.switch_pulsado):
                 borrar_switch = ("Selecciona que tipo de switch desea borrar")
-                screen.blit(self.font.render(borrar_switch, True, (0, 0, 0)), (self.x + 380, self.y + 70)) # Texto impreso en pantalla
+                screen.blit(self.font.render(borrar_switch, True, (0, 0, 0)), (self.x + 380, self.y + 90)) # Texto impreso en pantalla
                 
                 if (self.boton_switch2_pulsado):
                     borrar_switch_2 = ("Selecciona la parte izquierda superior del switch 4 para borrarlo")
-                    screen.blit(self.font.render(borrar_switch_2, True, (0, 0, 0)), (self.x + 380, self.y + 90)) # Texto impreso en pantalla
+                    screen.blit(self.font.render(borrar_switch_2, True, (0, 0, 0)), (self.x + 380, self.y + 110)) # Texto impreso en pantalla
                 
                 elif (self.boton_switch16_pulsado):
                     borrar_switch_16 = ("Selecciona la parte izquierda superior del switch 16 para borrarlo")
-                    screen.blit(self.font.render(borrar_switch_16, True, (0, 0, 0)), (self.x + 380, self.y + 90)) # Texto impreso en pantalla
+                    screen.blit(self.font.render(borrar_switch_16, True, (0, 0, 0)), (self.x + 380, self.y + 110)) # Texto impreso en pantalla
             
             elif (self.res_pulsado):
                 borrar_res_1 = ("Selecciona algún extremo donde quieras quitar la energia de una resistencia para borrarla")
@@ -184,7 +182,6 @@ class Menu:
             
             elif (self.chip_pulsado):
                 pass    # Falta añadirlo todavía
-
 
         boton_resistencia_surface = pygame.Surface((self.ancho_boton, 39), pygame.SRCALPHA)  # Botón resistencia
         boton_resistencia_surface.fill((0, 0, 0, 0))  # Rellenar la superficie con transparencia
