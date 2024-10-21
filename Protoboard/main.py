@@ -1,3 +1,5 @@
+# python 3.9 2024-2.3
+#pycharm de jetbrains
 import pygame
 import math
 from pygame.locals import *
