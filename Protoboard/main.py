@@ -229,6 +229,10 @@ while running:
                     basurero.eliminar_chip(conector_cercano)
                 else:
                     print("No se ha seleccionado un elemento para borrar")
+                conectores[0].padre = conectores[0]
+                conectores[0].fase = True
+                conectores[1].padre = conectores[1]
+                conectores[1].neutro = True
             elif mm.editar_pulsado: # Opciones para editar componentes
                 if mm.led_pulsado:
                     if led_a_editar is None:
@@ -588,3 +592,4 @@ while running:
     pygame.display.flip()
     mainClock.tick(30)
 pygame.quit()
+

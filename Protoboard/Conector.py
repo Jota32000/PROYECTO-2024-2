@@ -34,9 +34,45 @@ class Conector:
                     pygame.draw.line(screen, conector.color, (conector.x, conector.y),
                                      (conector.x + conector.largo, conector.y),6)
     def agregar_conexion(self, nodo):
-        self.conexiones.append(nodo) # conexion bidireccional A->B | B->A
-        nodo.conexiones.append(self)
-        self.actualizarbosque(self, nodo)
+        if (self.fase or self.neutro) and (nodo.fase or nodo.neutro):
+            end = nodo
+            if end.nombre.startswith(("1_", "2_")):
+                for nodo in self.conectores:
+                    if nodo.y == end.y:
+                        nodo.block = True
+                        nodo.eliminar_conexion(nodo, end)
+                        for i in end.conexiones:
+                            end.eliminar_conexion(end, i)
+                self.conectores[0].padre = self.conectores[0]
+                self.conectores[0].fase = True
+                self.conectores[1].padre = self.conectores[1]
+                self.conectores[1].neutro = True
+            # -------------------- elimina columnas ------------------------
+            else:
+                for nodo in self.conectores:
+                    if nodo.x == end.x:
+                        if end.nombre.startswith("3_"):
+                            if nodo.nombre.startswith("3_"):
+                                nodo.block = True
+                                nodo.eliminar_conexion(nodo, end)
+                                for i in end.conexiones:
+                                    if i.nombre.startswith("3_"):
+                                        end.eliminar_conexion(end, i)
+                        elif end.nombre.startswith("4_"):
+                            if nodo.nombre.startswith("4_"):
+                                nodo.block = True
+                                nodo.eliminar_conexion(nodo, end)
+                                for i in end.conexiones:
+                                    if i.nombre.startswith("4_"):
+                                        end.eliminar_conexion(end, i)
+                self.conectores[0].padre = self.conectores[0]
+                self.conectores[0].fase = True
+                self.conectores[1].padre = self.conectores[1]
+                self.conectores[1].neutro = True
+        else:
+            self.conexiones.append(nodo)  # conexion bidireccional A->B | B->A
+            nodo.conexiones.append(self)
+            self.actualizarbosque(self, nodo)
 
 
     def eliminar_conexion(self,nodo, nodo_objetivo):

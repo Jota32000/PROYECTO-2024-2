@@ -95,7 +95,7 @@ class Protoboard:
                 for j in range(30):
                     x_pos = inicio_x + j * 30
                     y_pos = inicio_y + i * 30
-                    nombre_c1 = f"conector1_{i}_{j}"
+                    nombre_c1 = f"1_{i}_{j}"
                     conector_existente = None
                     for conector in self.conectores:
                         if conector.nombre == nombre_c1:
@@ -118,7 +118,7 @@ class Protoboard:
                 for j in range(30):
                     x_pos = inicio_x + j * 30
                     y_pos = inicio_y + i * 30
-                    nombre_c2 = f"conector2_{i}_{j}"
+                    nombre_c2 = f"2_{i}_{j}"
                     conector_existente = None
                     for conector in self.conectores:
                         if conector.nombre == nombre_c2:
@@ -141,7 +141,7 @@ class Protoboard:
                 for i in range(5):
                     y_pos = inicio_y + i * 30
                     x_pos = inicio_x + j * 30
-                    nombre_c3 = f"conector3_{i}_{j}"
+                    nombre_c3 = f"3_{i}_{j}"
                     conector_existente = None
                     for conector in self.conectores:
                         if conector.nombre == nombre_c3:
@@ -168,7 +168,7 @@ class Protoboard:
                 for i in range(5):
                     x_pos = inicio_x + j * 30
                     y_pos = inicio_y + i * 30
-                    nombre_c4 = f"conector4_{i}_{j}"
+                    nombre_c4 = f"4_{i}_{j}"
                     conector_existente = None
                     for conector in self.conectores:
                         if conector.nombre == nombre_c4:
