@@ -1,7 +1,6 @@
 import pygame
 import math
 
-
 class Switch:
     def __init__(self, conector):
         self.x = conector.x
