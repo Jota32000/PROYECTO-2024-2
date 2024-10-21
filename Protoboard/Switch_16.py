@@ -31,6 +31,8 @@ class Switch_16:
         self.pin14 = None
         self.pin15 = None
         self.pin16 = None
+        self.bandera = 1
+
     def crear_botones(self):
         for i in range(8):
             surface = pygame.Surface((8, 25))  # Tamaño del botón
@@ -68,12 +70,18 @@ class Switch_16:
                     self.boton_colores[i] = self.cEncendido  # Cambiar a encendido}
                     a,b=self.pines2(i)
                     if a!=None and b!=None:
+                        if a.fase or a.neutro:
+                            self.bandera = 2
                         a.agregar_conexion(b)
                 else:
                     self.boton_colores[i] = self.cApagado  # Cambiar a apagado
                     a, b = self.pines2(i)
                     if a != None and b != None:
-                        a.eliminar_conexion(a,b)
+                        if self.bandera==2:
+                            b.eliminar_conexion(b,a)
+                        else:
+                            a.eliminar_conexion(a, b)
+
                 # Actualizar la superficie del botón
                 self.boton_surfaces[i].fill(self.boton_colores[i])
 

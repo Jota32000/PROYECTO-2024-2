@@ -37,7 +37,8 @@ class Conector:
         self.conexiones.append(nodo) # conexion bidireccional A->B | B->A
         nodo.conexiones.append(self)
         self.actualizarbosque(self, nodo)
-        #la corrienbte la fase
+
+
     def eliminar_conexion(self,nodo, nodo_objetivo):
         if (nodo_objetivo in self.conexiones) : # ve que no se haya eliminado ya la conexion con ese nodo
             nodo.conexiones.remove(nodo_objetivo)
@@ -46,13 +47,15 @@ class Conector:
 
     def actualizarbosque(self, origen, destino):
         if origen.padre != destino.padre:
-            if origen.nombre.startswith("pila"):
+            if origen.padre.nombre.startswith("pila"):
                 nuevo_padre = origen.padre
                 viejo_padre = destino.padre
-            elif destino.nombre.startswith("pila"):
+            elif destino.padre.nombre.startswith("pila"):
                 nuevo_padre = destino.padre
                 viejo_padre = origen.padre
+                print(origen.nombre, destino.nombre)
             else:
+
                 coincidencia_origen = 0
                 for nodo in self.conectores:
                     if nodo.padre == origen.padre:
@@ -71,12 +74,14 @@ class Conector:
                     viejo_padre = origen.padre
             self.actualizar_padre_subarbol(viejo_padre, nuevo_padre)
 
+
     def actualizar_padre_subarbol(self, viejo_padre, nuevo_padre):
         for nodo in self.conectores:
             if nodo.padre == viejo_padre:
                 nodo.padre = nuevo_padre
-                nodo.fase = nuevo_padre.fase
-                nodo.neutro = nuevo_padre.neutro
+                if not nodo.block:
+                    nodo.fase = nuevo_padre.fase
+                    nodo.neutro = nuevo_padre.neutro
 
     def buscar_conexiones(self,nodo, nodo_objetivo):
         visitados = []
@@ -91,10 +96,10 @@ class Conector:
             visitados.append(actual)
             if nodo_objetivo in nodo.conexiones:
                 existe_conexion_alternativa = True
-
         if existe_conexion_alternativa:
             for i in visitados:
                 i.padre = nodo_objetivo
+
         else:
             nodo.padre = nodo
             nodo.fase = None
@@ -103,4 +108,5 @@ class Conector:
                 i.padre = nodo
                 i.fase = None
                 i.neutro = None
+
 
