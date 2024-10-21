@@ -1,5 +1,6 @@
 import pygame
 from Conector import *
+
 class Cableado:
     def __init__(self,conector1, conector2):
         self.conector_inicio = conector1
