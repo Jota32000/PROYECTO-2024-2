@@ -1,5 +1,5 @@
 import pygame
-from Datos import *
+
 class Menu:
     def __init__(self):
         self.x = 0
