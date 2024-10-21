@@ -1,62 +1,91 @@
 class Basurero:
-    def __init__(self,guardar_led,guardar_switch,conectores,cables,resistencias,cables_coordenadas,resistencias_coordenadas):
+    def __init__(self,guardar_led,guardar_switch,conectores,cables,resistencias,guardar_switch16,guardar_chip):
         self.guardar_led=guardar_led
         self.guardar_switch=guardar_switch
         self.conectores=conectores
         self.cables=cables
         self.resistencias=resistencias
-        self.cables_coordenadas=cables_coordenadas
-        self.resistencias_coordenadas=resistencias_coordenadas
+        self.guardar_switch16=guardar_switch16
+        self.guardar_chip=guardar_chip
+
     
-    def eliminar_led(self,x,y):
-        rango_click = 10
+    def eliminar_led(self,conector_cercano):
         #Buscador de led en la lista de los leds
         for led in self.guardar_led:
-            #si se clickea en el rango correspondiente, se borra de la lista led
-            if led.x - rango_click <= x <= led.x + rango_click and led.y - rango_click <= y <= led.y + rango_click:
+            conector_inicio = led.conector1
+            conector_fin = led.conector2
+            if conector_cercano == conector_inicio or conector_cercano == conector_fin:
                 self.guardar_led.remove(led)
-    def eliminar_switch(self,x,y):
-        rango_click = 20
+
+    def eliminar_switch(self,conector):
         #Buscador de led en la lista de los switchs
         for switch in self.guardar_switch:
             #si se clickea en el rango correspondiente, se borra de la lista switch
-            if switch.x - rango_click <= x <= switch.x + rango_click and switch.y - rango_click <= y <= switch.y + rango_click:
+            if conector == switch.pin1:
+                a, b = switch.pines2(0)  # Llama a pines2 para desconectar
+                if a is not None and b is not None:
+                    if switch.bandera == 2:
+                        b.eliminar_conexion(b, a)
+                    else:
+                        a.eliminar_conexion(a, b)
                 self.guardar_switch.remove(switch)
+                print("Switch removida con éxito")
 
     def eliminar_cable(self,conector_cercano):
         #Buscador de cable en la lista de los cables
-        conector_1 = None
-        conector_2 = None
-        for cable in range (len(self.cables_coordenadas)):
-            if conector_cercano == self.cables_coordenadas[cable]:
-                if cable % 2 == 0:
-                    indice = cable // 2
+        for cable in self.cables:
+            # ahora el extremo del nodo que presionas es donde se elimina
+            conector_inicio = cable.conector_inicio
+            conector_fin = cable.conector_fin
+
+            if conector_cercano == conector_inicio:
+                if conector_inicio.nombre.startswith("pila"):
+                    conector_fin.eliminar_conexion(conector_fin, conector_inicio)
                 else:
-                    indice = (cable - 1) // 2
-                self.cables.pop(indice)
-                conector_1 = (self.cables_coordenadas[cable])
-                conector_2 = (self.cables_coordenadas[cable - 1])
-                self.cables_coordenadas.pop(cable)
-                self.cables_coordenadas.pop(cable - 1)
-                break
-        if conector_1 != None or conector_2 != None: # elimina la conexión entre conector_1 y conector_2
-            conector_1.eliminar_conexion(conector_1, conector_2)
+                    conector_inicio.eliminar_conexion(conector_inicio,conector_fin)
+                self.cables.remove(cable)
+
+            elif conector_cercano == conector_fin:
+                if conector_fin.nombre.startswith("pila"):
+                    conector_inicio.eliminar_conexion(conector_inicio, conector_fin)
+                else:
+                    conector_fin.eliminar_conexion(conector_fin,conector_inicio)
+                self.cables.remove(cable)
+
+
 
     def eliminar_resistencia(self,conector_cercano):
-        #Buscador de cable en la lista de las resistencias
-        conector_1 = None
-        conector_2 = None
-        for resistencia in range (len(self.resistencias_coordenadas)):
-            if conector_cercano == self.resistencias_coordenadas[resistencia]:
-                if resistencia % 2 == 0:
-                    indice = resistencia // 2
+        # la resistencia sigue la misma logica
+        for resistencia in self.resistencias:
+            conector_inicio = resistencia.conector_inicio
+            conector_fin = resistencia.conector_fin
+            if conector_cercano == conector_inicio:
+                if conector_inicio.nombre.startswith("pila"):
+                    conector_fin.eliminar_conexion(conector_fin, conector_inicio)
                 else:
-                    indice = (resistencia - 1) // 2
-                self.resistencias.pop(indice)
-                conector_1 = (self.resistencias_coordenadas[resistencia])
-                conector_2 = (self.resistencias_coordenadas[resistencia - 1])
-                self.resistencias_coordenadas.pop(resistencia)
-                self.resistencias_coordenadas.pop(resistencia - 1)
-                break
-        if conector_1 != None or conector_2 != None: # elimina la conexión entre conector_1 y conector_2
-            conector_1.eliminar_conexion(conector_1, conector_2)
+                    conector_inicio.eliminar_conexion(conector_inicio, conector_fin)
+                self.resistencias.remove(resistencia)
+            elif conector_cercano == conector_fin:
+                if conector_fin.nombre.startswith("pila"):
+                    conector_inicio.eliminar_conexion(conector_inicio, conector_fin)
+                else:
+                    conector_fin.eliminar_conexion(conector_fin, conector_inicio)
+                self.resistencias.remove(resistencia)
+
+    def eliminar_switch16(self,conector):
+        #Buscador de led en la lista de los switchs 16
+        for switch in self.guardar_switch16:
+            #si se clickea en el rango correspondiente, se borra de la lista switch16
+            if conector == switch.pin1:
+                a, b = switch.pines2(0)  # Llama a pines2 para desconectar
+                if a is not None and b is not None:
+                    if switch.bandera == 2:
+                        b.eliminar_conexion(b, a)
+                    else:
+                        a.eliminar_conexion(a, b)
+                self.guardar_switch16.remove(switch)
+    def eliminar_chip(self,conector):
+        for chip in self.guardar_chip:
+            if conector is not None:
+               if (chip.x,chip.y) == (conector.x,conector.y):
+                   self.guardar_chip.remove(chip)
