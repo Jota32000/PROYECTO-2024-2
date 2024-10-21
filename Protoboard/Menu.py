@@ -29,6 +29,7 @@ class Menu:
         self.borrar_pulsado = False
         self.boton_switch2_pulsado = False
         self.boton_switch16_pulsado=False
+        self.contador_click = 0
 
     def div_boton(self, screen, x, y, color):
         self.ancho = self.ancho_boton
@@ -87,11 +88,11 @@ class Menu:
             screen.blit(self.font.render(texto_switch, True, (0, 0, 0)), (self.x + 350, self.y + 50)) # Texto impreso en pantalla
 
             if (self.boton_switch2_pulsado):
-                switch_2 = ("Selecciona cuatro puntos en la protoboard para colocar un switch")
+                switch_2 = ("Selecciona un punto en la protoboard para colocar un switch")
                 screen.blit(self.font.render(switch_2, True, (0, 0, 0)), (self.x + 350, self.y + 70)) # Texto impreso en pantalla
             
             elif (self.boton_switch16_pulsado):
-                switch_16 = ("Selecciona 16 puntos en la protoboard para colocar un switch")
+                switch_16 = ("Selecciona un punto en la protoboard para colocar un switch")
                 screen.blit(self.font.render(switch_16, True, (0, 0, 0)), (self.x + 350, self.y + 70)) # Texto impreso en pantalla
                 
         elif (self.res_pulsado and self.editar_pulsado == False and self.borrar_pulsado == False):
@@ -126,14 +127,14 @@ class Menu:
                 screen.blit(self.font.render(edicion_led_2, True, (0, 0, 0)), (self.x + 250, self.y + 90)) # Texto impreso en pantalla
 
             elif (self.switch_pulsado and self.boton_switch2_pulsado):
-                edicion_switch_1 = ("Primero selecciona la parte central del switch a editar")
-                edicion_switch_2 = ("Luego selecciona cuatro puntos en la protoboard para colocar el switch")
+                edicion_switch_1 = ("Primero selecciona la parte superior izquierda del switch a editar")
+                edicion_switch_2 = ("Luego selecciona un punto en la protoboard para colocar el switch de 4")
                 screen.blit(self.font.render(edicion_switch_1, True, (0, 0, 0)), (self.x + 380, self.y + 70)) # Texto impreso en pantalla
                 screen.blit(self.font.render(edicion_switch_2, True, (0, 0, 0)), (self.x + 380, self.y + 90)) # Texto impreso en pantalla
 
             elif (self.switch_pulsado and self.boton_switch16_pulsado):
-                edicion_switch_1 = ("Primero selecciona la parte central del switch a editar")
-                edicion_switch_2 = ("Luego selecciona ocho puntos en la protoboard para colocar el switch")
+                edicion_switch_1 = ("Primero selecciona la parte superior izquierda del switch a editar")
+                edicion_switch_2 = ("Luego selecciona un punto en la protoboard para colocar el switch de 16")
                 screen.blit(self.font.render(edicion_switch_1, True, (0, 0, 0)), (self.x + 380, self.y + 70)) # Texto impreso en pantalla
                 screen.blit(self.font.render(edicion_switch_2, True, (0, 0, 0)), (self.x + 380, self.y + 90)) # Texto impreso en pantalla
 
@@ -144,18 +145,25 @@ class Menu:
                 screen.blit(self.font.render(edicion_res_2, True, (0, 0, 0)), (self.x + 250, self.y + 90)) # Texto impreso en pantalla
             
             elif (self.chip_pulsado):
-                pass    # Falta añadirlo todavía
-        
+                chip = ("Primero selecciona el extremo superior izquierdo del chip")
+                chip2 = ("Luego selecciona el punto donde quieras dejar chip")
+                screen.blit(self.font.render(chip, True, (0, 0, 0)),
+                            (self.x + 350, self.y + 70))  # Texto impreso en pantalla
+                screen.blit(self.font.render(chip2, True, (0, 0, 0)),
+                            (self.x + 350, self.y + 90))
+
+
+
         elif (self.borrar_pulsado):
             texto_borrar = ("Elige el componente a borrar")
             screen.blit(self.font.render(texto_borrar, True, (0, 0, 0)), (self.x + 380, self.y + 50)) # Texto impreso en pantalla
 
             if (self.cable_pulsado):
-                borrar_cable_1 = ("Selecciona algún extremo de un cable para borrarlo")
+                borrar_cable_1 = ("Selecciona el extremo donde quieras quitar la energia del cable para borrarlo")
                 screen.blit(self.font.render(borrar_cable_1, True, (0, 0, 0)), (self.x + 320, self.y + 70)) # Texto impreso en pantalla
             
             elif (self.led_pulsado):
-                borrar_led_1 = ("Selecciona la parte central de una led para borrarla")
+                borrar_led_1 = ("Selecciona un extremo del led para borrarlo")
                 screen.blit(self.font.render(borrar_led_1, True, (0, 0, 0)), (self.x + 300, self.y + 70)) # Texto impreso en pantalla
 
             elif (self.switch_pulsado):
@@ -163,15 +171,15 @@ class Menu:
                 screen.blit(self.font.render(borrar_switch, True, (0, 0, 0)), (self.x + 380, self.y + 70)) # Texto impreso en pantalla
                 
                 if (self.boton_switch2_pulsado):
-                    borrar_switch_2 = ("Selecciona la parte central del switch para borrarlo")
+                    borrar_switch_2 = ("Selecciona la parte izquierda superior del switch 4 para borrarlo")
                     screen.blit(self.font.render(borrar_switch_2, True, (0, 0, 0)), (self.x + 380, self.y + 90)) # Texto impreso en pantalla
                 
                 elif (self.boton_switch16_pulsado):
-                    borrar_switch_16 = ("Selecciona la parte central del switch para borrarlo")
+                    borrar_switch_16 = ("Selecciona la parte izquierda superior del switch 16 para borrarlo")
                     screen.blit(self.font.render(borrar_switch_16, True, (0, 0, 0)), (self.x + 380, self.y + 90)) # Texto impreso en pantalla
             
             elif (self.res_pulsado):
-                borrar_res_1 = ("Selecciona algún extremo de una resistencia para borrarlo")
+                borrar_res_1 = ("Selecciona algún extremo donde quieras quitar la energia de una resistencia para borrarla")
                 screen.blit(self.font.render(borrar_res_1, True, (0, 0, 0)), (self.x + 300, self.y + 70)) # Texto impreso en pantalla
             
             elif (self.chip_pulsado):
