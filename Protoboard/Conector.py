@@ -144,5 +144,3 @@ class Conector:
                 i.padre = nodo
                 i.fase = None
                 i.neutro = None
-
-

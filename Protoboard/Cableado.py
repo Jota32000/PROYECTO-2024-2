@@ -22,7 +22,7 @@ class Cableado:
     def validar_cable(self, cables):
         for cable in cables:
            if (cable.conector_inicio == self.conector_inicio and cable.conector_fin == self.conector_fin) or (cable.conector_inicio == self.conector_fin and cable.conector_fin == self.conector_inicio):
-               return False        
+               return False
         return True
 
     def dibujar_cable_actual(self, screen, conector1):
