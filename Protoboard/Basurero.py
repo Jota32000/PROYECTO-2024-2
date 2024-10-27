@@ -9,7 +9,6 @@ class Basurero:
         self.guardar_chip_and=guardar_chip_and
         self.guardar_chip_or=guardar_chip_or
         self.guardar_chip_not=guardar_chip_not
-
     def eliminar_led(self,conector_cercano):
         #Buscador de led en la lista de los leds
         for led in self.guardar_led:
@@ -49,7 +48,6 @@ class Basurero:
                 else:
                     conector_fin.eliminar_conexion(conector_fin,conector_inicio)
                 self.cables.remove(cable)
-
     def eliminar_resistencia(self,conector_cercano):
         # la resistencia sigue la misma logica
         for resistencia in self.resistencias:
@@ -67,7 +65,6 @@ class Basurero:
                 else:
                     conector_fin.eliminar_conexion(conector_fin, conector_inicio)
                 self.resistencias.remove(resistencia)
-
     def eliminar_switch16(self, conector):
         # buscador de switch en la lista de switchs 16
         for switch in self.guardar_switch16:

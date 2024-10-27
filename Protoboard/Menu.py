@@ -162,9 +162,9 @@ class Menu:
                 chip = ("Primero selecciona el extremo superior izquierdo del chip")
                 chip2 = ("Luego selecciona el punto donde quieras dejar chip")
                 screen.blit(self.font.render(chip, True, (0, 0, 0)),
-                            (self.x + 350, self.y + 70))  # Texto impreso en pantalla
+                            (self.x + 200, self.y + 70))  # Texto impreso en pantalla
                 screen.blit(self.font.render(chip2, True, (0, 0, 0)),
-                            (self.x + 350, self.y + 90))
+                            (self.x + 200, self.y + 90))
 
         elif (self.borrar_pulsado):
             texto_borrar = ("Elige el componente a borrar")
@@ -196,7 +196,7 @@ class Menu:
             
             elif (self.chip_pulsado):
                 chip = ("Selecciona el extremo superior izquierdo del chip para quitarlo")
-                screen.blit(self.font.render(chip, True, (0, 0, 0)), (self.x + 380, self.y + 70))
+                screen.blit(self.font.render(chip, True, (0, 0, 0)), (self.x + 200, self.y + 70))
 
         boton_resistencia_surface = pygame.Surface((self.ancho_boton, 39), pygame.SRCALPHA)  # Botón resistencia
         boton_resistencia_surface.fill((0, 0, 0, 0))  # Rellenar la superficie con transparencia

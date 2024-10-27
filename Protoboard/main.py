@@ -376,7 +376,6 @@ while running:
                         else:
                             print("conector 4 no válido, es igual a conector 1, 2 o 3")
 
-
                 elif mm.boton_switch2_pulsado:
                     if conector_1_editar is None:
                         print("buscando conector 1")
@@ -412,7 +411,7 @@ while running:
                         print("buscando conector 2")
                         conector_2_aux = punto_mas_cercano(mouse_pos, conectores)
                         if conector_2_aux is not None and conector_2_aux != conector_1_editar:
-                            basurero.eliminar_chip(conector_1_editar)
+                            basurero.eliminar_chip_not(conector_1_editar)
                             c_x = conector_2_aux.x
                             c_y = conector_2_aux.y
                             if c_x != 0 and c_y != 0:
@@ -432,7 +431,7 @@ while running:
                         print("buscando conector 2")
                         conector_2_aux = punto_mas_cercano(mouse_pos, conectores)
                         if conector_2_aux is not None and conector_2_aux != conector_1_editar:
-                            basurero.eliminar_chip(conector_1_editar)
+                            basurero.eliminar_chip_or(conector_1_editar)
                             c_x = conector_2_aux.x
                             c_y = conector_2_aux.y
                             if c_x != 0 and c_y != 0:
@@ -452,7 +451,7 @@ while running:
                         print("buscando conector 2")
                         conector_2_aux = punto_mas_cercano(mouse_pos, conectores)
                         if conector_2_aux is not None and conector_2_aux != conector_1_editar:
-                            basurero.eliminar_chip(conector_1_editar)
+                            basurero.eliminar_chip_and(conector_1_editar)
                             c_x = conector_2_aux.x
                             c_y = conector_2_aux.y
                             if c_x != 0 and c_y != 0:

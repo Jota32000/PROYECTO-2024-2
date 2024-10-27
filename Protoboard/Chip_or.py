@@ -27,4 +27,4 @@ class Chip_or:
         pygame.draw.line(screen, (0, 0, 0), (self.x+(self.lado*5), self.y + 30), (self.x+(self.lado*5), self.y + 20), 2)#pin 6 abajo
         pygame.draw.line(screen, (0, 0, 0), (self.x+(self.lado*6), self.y + 30), (self.x+(self.lado*6), self.y + 20), 2)#pin 7 abajo
         
-        pygame.draw.line(screen, "red", (self.x - 5, self.y + 15), (self.x+(self.lado*6)+5,self.y + 15), 20) #Relleno de chip
+        pygame.draw.line(screen, "dark red", (self.x - 5, self.y + 15), (self.x+(self.lado*6)+5,self.y + 15), 20) #Relleno de chip
