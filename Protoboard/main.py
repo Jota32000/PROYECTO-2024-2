@@ -324,6 +324,7 @@ while running:
                             # quitar la conexion anterior
                             c_1_editar.eliminar_conexion(c_1_editar, c_2_editar)  # los antiguos
                             c_3_editar.agregar_conexion(c_4_editar)
+
                             # agregar la nuevas conexiones
                             # Reiniciar las variables de edicion
                             c_1_editar = None
@@ -619,6 +620,10 @@ while running:
                     if c_2_aux is not None and c_2_aux != c_1_editar:
                         c_2_editar = c_2_aux
                         nuevo_cable = Cableado(c_1_editar, c_2_editar)
+                        if c_1_editar.fase or c_1_editar.neutro:
+                            nuevo_cable.bandera=1
+                        else:
+                            nuevo_cable.bandera=2
                         if nuevo_cable.validar_cable(cables):
                             cables.append(nuevo_cable)
                             cables_coordenadas.append(c_1_editar)
@@ -640,6 +645,10 @@ while running:
                     if c_2_aux is not None and c_2_aux != c_1_editar:
                         c_2_editar = c_2_aux
                         nueva_resistencia = Resistencia(c_1_editar, c_2_editar)
+                        if c_1_editar.fase or c_1_editar.neutro:
+                            nueva_resistencia.bandera=1
+                        else:
+                            nueva_resistencia.bandera=2
                         if nueva_resistencia.validar_resistencia(resistencias):
                             resistencias.append(nueva_resistencia)
                             resistencias_coordenadas.append(c_1_editar)

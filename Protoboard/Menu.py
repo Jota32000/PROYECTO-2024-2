@@ -171,7 +171,7 @@ class Menu:
             screen.blit(self.font.render(texto_borrar, True, (0, 0, 0)), (self.x + 380, self.y + 50)) # Texto impreso en pantalla
 
             if (self.cable_pulsado):
-                borrar_cable_1 = ("Selecciona el extremo donde quieras quitar la energia del cable para borrarlo")
+                borrar_cable_1 = ("Selecciona un extremo del cable para borrarlo")
                 screen.blit(self.font.render(borrar_cable_1, True, (0, 0, 0)), (self.x + 320, self.y + 70)) # Texto impreso en pantalla
             
             elif (self.led_pulsado):
@@ -191,7 +191,7 @@ class Menu:
                     screen.blit(self.font.render(borrar_switch_16, True, (0, 0, 0)), (self.x + 380, self.y + 110)) # Texto impreso en pantalla
             
             elif (self.res_pulsado):
-                borrar_res_1 = ("Selecciona algún extremo donde quieras quitar la energia de una resistencia para borrarla")
+                borrar_res_1 = ("Selecciona algún extremo de la resistencia para borrarla")
                 screen.blit(self.font.render(borrar_res_1, True, (0, 0, 0)), (self.x + 300, self.y + 70)) # Texto impreso en pantalla
             
             elif (self.chip_pulsado):
