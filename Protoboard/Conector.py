@@ -73,14 +73,11 @@ class Conector:
             self.conexiones.append(nodo)  # conexion bidireccional A->B | B->A
             nodo.conexiones.append(self)
             self.actualizarbosque(self, nodo)
-
-
     def eliminar_conexion(self,nodo, nodo_objetivo):
         if (nodo_objetivo in self.conexiones) : # ve que no se haya eliminado ya la conexion con ese nodo
             nodo.conexiones.remove(nodo_objetivo)
             nodo_objetivo.conexiones.remove(nodo)
             self.buscar_conexiones(nodo, nodo_objetivo)
-
     def actualizarbosque(self, origen, destino):
         if origen.padre != destino.padre:
             if origen.padre.nombre.startswith("pila"):
@@ -109,8 +106,6 @@ class Conector:
                     nuevo_padre = destino.padre
                     viejo_padre = origen.padre
             self.actualizar_padre_subarbol(viejo_padre, nuevo_padre)
-
-
     def actualizar_padre_subarbol(self, viejo_padre, nuevo_padre):
         for nodo in self.conectores:
             if nodo.padre == viejo_padre:
@@ -118,7 +113,6 @@ class Conector:
                 if not nodo.block:
                     nodo.fase = nuevo_padre.fase
                     nodo.neutro = nuevo_padre.neutro
-
     def buscar_conexiones(self,nodo, nodo_objetivo):
         visitados = []
         conneciones = []
