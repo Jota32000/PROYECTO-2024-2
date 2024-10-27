@@ -27,7 +27,7 @@ class Conector:
                 elif conector.block:
                     conector.padre = conector
 
-                    pygame.draw.line(screen, "green", (conector.x, conector.y),
+                    pygame.draw.line(screen, "orange", (conector.x, conector.y),
                                      (conector.x + conector.largo, conector.y), 6)
                 else:
                     # dibuja con el color normal del conector

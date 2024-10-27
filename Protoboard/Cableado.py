@@ -5,6 +5,7 @@ class Cableado:
     def __init__(self,conector1, conector2):
         self.conector_inicio = conector1
         self.conector_fin = conector2
+        self.bandera = 0
 
     def dibujar_cables(self,screen):
         # verificar fase y neutro sino da problemas

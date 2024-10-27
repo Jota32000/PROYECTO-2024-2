@@ -36,48 +36,52 @@ class Basurero:
             # ahora el extremo del nodo que presionas es donde se elimina
             conector_inicio = cable.conector_inicio
             conector_fin = cable.conector_fin
-
             if conector_cercano == conector_inicio:
-                if conector_inicio.nombre.startswith("pila"):
+                if cable.bandera == 1:
                     conector_fin.eliminar_conexion(conector_fin, conector_inicio)
                 else:
                     conector_inicio.eliminar_conexion(conector_inicio,conector_fin)
                 self.cables.remove(cable)
 
             elif conector_cercano == conector_fin:
-                if conector_fin.nombre.startswith("pila"):
+                if cable.bandera == 2:
                     conector_inicio.eliminar_conexion(conector_inicio, conector_fin)
                 else:
                     conector_fin.eliminar_conexion(conector_fin,conector_inicio)
                 self.cables.remove(cable)
+
     def eliminar_resistencia(self,conector_cercano):
         # la resistencia sigue la misma logica
         for resistencia in self.resistencias:
             conector_inicio = resistencia.conector_inicio
             conector_fin = resistencia.conector_fin
             if conector_cercano == conector_inicio:
-                if conector_inicio.nombre.startswith("pila"):
+                if resistencia.bandera==1:
                     conector_fin.eliminar_conexion(conector_fin, conector_inicio)
                 else:
                     conector_inicio.eliminar_conexion(conector_inicio, conector_fin)
                 self.resistencias.remove(resistencia)
             elif conector_cercano == conector_fin:
-                if conector_fin.nombre.startswith("pila"):
+                if resistencia.bandera==2:
                     conector_inicio.eliminar_conexion(conector_inicio, conector_fin)
                 else:
                     conector_fin.eliminar_conexion(conector_fin, conector_inicio)
                 self.resistencias.remove(resistencia)
-    def eliminar_switch16(self,conector):
-        #Buscador de led en la lista de los switchs 16
+
+    def eliminar_switch16(self, conector):
+        # buscador de switch en la lista de switchs 16
         for switch in self.guardar_switch16:
-            #si se clickea en el rango correspondiente, se borra de la lista switch16
+            # Si el conector coincide con el pin1 del switch se eliminan todas las conexiones
             if conector == switch.pin1:
-                a, b = switch.pines2(0)  # Llama a pines2 para desconectar
-                if a is not None and b is not None:
-                    if switch.bandera == 2:
-                        b.eliminar_conexion(b, a)
-                    else:
-                        a.eliminar_conexion(a, b)
+                for i in range(8):
+                    a, b = switch.pines2(i)  # obtener el par de pines correspondiente
+                    if a is not None and b is not None:
+                        # verifica el estado de bandera para eliminar la conexion adecuadamente
+                        if switch.bandera == 2:
+                            b.eliminar_conexion(b, a)
+                        else:
+                            a.eliminar_conexion(a, b)
+                # remover el switch de la lista despues de eliminar todas las conexiones
                 self.guardar_switch16.remove(switch)
     def eliminar_chip_and(self,conector):
         for chip in self.guardar_chip_and:
