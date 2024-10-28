@@ -28,6 +28,9 @@ class Menu:
         self.switch_pulsado = False
         self.res_pulsado = False
         self.chip_pulsado = False
+        self.chip_and_pulsado = False
+        self.chip_or_pulsado = False
+        self.chip_not_pulsado = False
         self.motor_pulsado = False
         self.proto_pulsado = False
         self.editar_pulsado = False
@@ -39,7 +42,6 @@ class Menu:
         self.or_pulsado=False
 
         self.contador_click = 0
-
     def div_boton(self, screen, x, y, color):
         self.ancho = self.ancho_boton
         self.alto = 60
@@ -52,7 +54,6 @@ class Menu:
         for i in range(y, y + self.alto):  # Recorre de arriba hacia abajo (en el eje y)
             pygame.draw.line(screen, color, (x, i),
                              (x + self.ancho, i))  # Dibuja una línea horizontal desde el borde izquierdo al derecho
-
     def dibujar(self, screen):
         ancho_pantalla, alto_pantalla = screen.get_size()
 
@@ -106,10 +107,18 @@ class Menu:
         self.div_boton(boton_cable_surface, x_inic, 3, self.color_cable)
         self.div_boton(boton_led_surface, 0, 3, self.color_led)
         self.div_boton(boton_switch_surface, 0, 3, self.color_switch)
+
         if(self.switch_pulsado):
             #este hace la separacion vertical del boton
             self.div_boton(boton_switch2_surface, 0, 35,self.color_switch4)
             self.div_boton(boton_switch16_surface,0,33,self.color_switch16)
+
+        if(self.chip_pulsado):
+            #este hace la separacion vertical del boton
+            self.div_boton(boton_chip_and_surface, 0, 35,self.color_chip_and)
+            self.div_boton(boton_chip_or_surface,0,33,self.color_chip_or)
+            self.div_boton(boton_chip_not_surface,0,33,self.color_chip_not)
+
         self.div_boton(boton_resistencia_surface, 0, 3, self.color_res)
         self.div_boton(boton_ship_surface, 0, 3, self.color_ship)
         if (self.chip_pulsado):
@@ -125,9 +134,16 @@ class Menu:
         screen.blit(boton_cable_surface, (0, 10))
         screen.blit(boton_led_surface, (x_inic + self.ancho_boton, 10))
         screen.blit(boton_switch_surface, (x_inic + (self.ancho_boton * 2), 10))
+
         if(self.switch_pulsado):
             screen.blit(boton_switch2_surface, (x_inic + (self.ancho_boton * 2), 20))
             screen.blit(boton_switch16_surface, (x_inic + (self.ancho_boton * 2), 60))
+
+        if(self.chip_pulsado):
+            screen.blit(boton_chip_and_surface, (x_inic + (self.ancho_boton * 4), 20))
+            screen.blit(boton_chip_or_surface, (x_inic + (self.ancho_boton * 4), 60))              
+            screen.blit(boton_chip_not_surface, (x_inic + (self.ancho_boton * 4), 100))
+
         screen.blit(boton_resistencia_surface, (x_inic + (self.ancho_boton * 3), 10))
         screen.blit(boton_ship_surface, (x_inic + (self.ancho_boton * 4), 10))
         if (self.chip_pulsado):

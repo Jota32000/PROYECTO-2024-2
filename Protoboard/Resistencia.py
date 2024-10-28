@@ -4,6 +4,7 @@ class Resistencia:
     def __init__(self,conector1, conector2):
         self.conector_inicio = conector1
         self.conector_fin = conector2
+        self.bandera = 0
 
     def dibujar_resistencia(self,screen):
             color = (251, 179, 92)

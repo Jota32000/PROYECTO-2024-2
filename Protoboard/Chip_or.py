@@ -1,6 +1,6 @@
 import pygame
 
-class Chip:
+class Chip_or:
     def __init__(self,x,y):
         self.x=x
         self.y=y
