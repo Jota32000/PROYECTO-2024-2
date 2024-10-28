@@ -38,7 +38,7 @@ class Switch_16:
             surface = pygame.Surface((8, 25))  # Tamaño del botón
             surface.fill(self.cApagado)  # Color inicial del botón
             self.boton_surfaces.append(surface)
-
+        
     def dibujar(self, screen):
         # Dibujar el cuerpo del switch
         pygame.draw.line(screen, (0, 0, 0), (self.x, self.y), (self.x, self.y + self.disA), 2)
@@ -67,7 +67,7 @@ class Switch_16:
             if boton_x <= pos[0] <= boton_x + 8 and boton_y <= pos[1] <= boton_y + 25:
                 # Cambiar el color del botón al ser presionado
                 if self.boton_colores[i] == self.cApagado:
-                    self.boton_colores[i] = self.cEncendido  # Cambiar a encendido}
+                    self.boton_colores[i] = self.cEncendido  # Cambiar a encendido
                     a,b=self.pines2(i)
                     if a!=None and b!=None:
                         if a.fase or a.neutro:
