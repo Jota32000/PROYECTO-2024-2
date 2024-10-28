@@ -4,6 +4,7 @@ class Menu:
     def __init__(self):
         self.x = 0
         self.y = 50
+        self.color_pulsar = (187, 143, 206)
         self.color = (162, 206, 143)
         self.color_cable = (162, 206, 143)
         self.color_led = (162, 206, 143)
@@ -11,11 +12,15 @@ class Menu:
         self.color_switch4 = (162, 206, 143)
         self.color_switch16 = (162, 206, 143)
         self.color_res = (162, 206, 143)
-        self.color_chip = (162, 206, 143)
+        self.color_ship = (162, 206, 143)
+        self.color_shipAND = (162, 206, 143)
+        self.color_shipNOT = (162, 206, 143)
+        self.color_shipOR = (162, 206, 143)
         self.color_motor = (162, 206, 143)
         self.color_proto = (162, 206, 143)
         self.color_editar = (162, 206, 143)
         self.color_borrar = (162, 206, 143)
+        self.color_switch_seleccionado = (162, 0, 0)
         self.ancho_boton = 0  # Atributo para almacenar el ancho
         self.font = pygame.font.Font(None, 22)
         self.cable_pulsado = False
@@ -29,6 +34,10 @@ class Menu:
         self.borrar_pulsado = False
         self.boton_switch2_pulsado = False
         self.boton_switch16_pulsado=False
+        self.and_pulsado=False
+        self.not_pulsado=False
+        self.or_pulsado=False
+
         self.contador_click = 0
 
     def div_boton(self, screen, x, y, color):
@@ -68,126 +77,22 @@ class Menu:
         boton_led_surface.fill((0, 0, 0, 0))  # Rellenar la superficie con transparencia
         boton_switch_surface = pygame.Surface((self.ancho_boton, 39), pygame.SRCALPHA)  # Botón Switch
         boton_switch_surface.fill((0, 0, 0, 0))  # Rellenar la superficie con transparencia
-
-        if (self.switch_pulsado):
+        if(self.switch_pulsado):
             boton_switch2_surface = pygame.Surface((self.ancho_boton, 70), pygame.SRCALPHA)  # Botón Switch 4 pines
             boton_switch2_surface.fill((0, 0, 0, 0))  # Rellenar la superficie con transparencia
             boton_switch16_surface=pygame.Surface((self.ancho_boton, 70), pygame.SRCALPHA)  # Botón Switch 4 pines
             boton_switch16_surface.fill((0, 0, 0, 0))  # Rellenar la superficie con transparencia
-
-        if (self.cable_pulsado and self.editar_pulsado == False and self.borrar_pulsado == False):
-            texto_cable_1 = ("Selecciona 2 posiciones en la protoboard para colocar el cable")
-            screen.blit(self.font.render(texto_cable_1, True, (0, 0, 0)), (self.x + 250, self.y + 50)) # Texto impreso en pantalla
-
-        elif (self.led_pulsado and self.editar_pulsado == False and self.borrar_pulsado == False):
-            texto_led = ("Selecciona 2 posiciones de la led en la protoboard")
-            screen.blit(self.font.render(texto_led, True, (0, 0, 0)), (self.x + 250, self.y + 50)) # Texto impreso en pantalla
-        
-        elif (self.switch_pulsado and self.editar_pulsado == False and self.borrar_pulsado == False):
-            texto_switch = ("Por favor, selecciona una opción de switch")
-            screen.blit(self.font.render(texto_switch, True, (0, 0, 0)), (self.x + 350, self.y + 90)) # Texto impreso en pantalla
-
-            if (self.boton_switch2_pulsado):
-                switch_2 = ("Selecciona un punto en la protoboard para colocar un switch")
-                screen.blit(self.font.render(switch_2, True, (0, 0, 0)), (self.x + 350, self.y + 110)) # Texto impreso en pantalla
-            
-            elif (self.boton_switch16_pulsado):
-                switch_16 = ("Selecciona un punto en la protoboard para colocar un switch")
-                screen.blit(self.font.render(switch_16, True, (0, 0, 0)), (self.x + 350, self.y + 110)) # Texto impreso en pantalla
-                
-        elif (self.res_pulsado and self.editar_pulsado == False and self.borrar_pulsado == False):
-            texto_res = ("Selecciona 2 posiciones en la protoboard para colocar la resistencia")
-            screen.blit(self.font.render(texto_res, True, (0, 0, 0)), (self.x + 250, self.y + 50)) # Texto impreso en pantalla
-
-        elif (self.chip_pulsado and self.editar_pulsado == False and self.borrar_pulsado == False):
-            chip = ("Selecciona una posición en la protoboard para colocar el chip")
-            screen.blit(self.font.render(chip, True, (0, 0, 0)), (self.x + 350, self.y + 50)) # Texto impreso en pantalla
-        
-        elif (self.motor_pulsado):
-            texto_motor = ("Motor apagado")
-            screen.blit(self.font.render(texto_motor, True, (0, 0, 0)), (self.x + 430, self.y + 50)) # Texto impreso en pantalla
-
-        elif (self.proto_pulsado and self.editar_pulsado == False and self.borrar_pulsado == False):
-            pass    # Por el momento, este botón se encuentra en caso de futuras modificaciones
-        
-        elif (self.editar_pulsado):
-            texto_edicion = ("Elige el componente a editar")
-            screen.blit(self.font.render(texto_edicion, True, (0, 0, 0)), (self.x + 380, self.y + 50)) # Texto impreso en pantalla
-
-            if (self.cable_pulsado):
-                edicion_cable_1 = ("Primero selecciona los dos extremos del cable a editar")
-                edicion_cable_2 = ("Luego selecciona dos nuevos puntos en la protoboard para colocar el cable")
-                screen.blit(self.font.render(edicion_cable_1, True, (0, 0, 0)), (self.x + 250, self.y + 70))
-                screen.blit(self.font.render(edicion_cable_2, True, (0, 0, 0)), (self.x + 250, self.y + 90)) # Texto impreso en pantalla
-
-            elif (self.led_pulsado):
-                edicion_led_1 = ("Primero selecciona la parte central del led a editar")
-                edicion_led_2 = ("Luego selecciona dos puntos en la protoboard para colocar la led")
-                screen.blit(self.font.render(edicion_led_1, True, (0, 0, 0)), (self.x + 250, self.y + 70))
-                screen.blit(self.font.render(edicion_led_2, True, (0, 0, 0)), (self.x + 250, self.y + 90)) # Texto impreso en pantalla
-
-            elif (self.switch_pulsado and self.boton_switch2_pulsado):
-                edicion_switch_1 = ("Primero selecciona la parte superior izquierda del switch a editar")
-                edicion_switch_2 = ("Luego selecciona un punto en la protoboard para colocar el switch de 4")
-                screen.blit(self.font.render(edicion_switch_1, True, (0, 0, 0)), (self.x + 380, self.y + 90)) # Texto impreso en pantalla
-                screen.blit(self.font.render(edicion_switch_2, True, (0, 0, 0)), (self.x + 380, self.y + 110)) # Texto impreso en pantalla
-
-            elif (self.switch_pulsado and self.boton_switch16_pulsado):
-                edicion_switch_1 = ("Primero selecciona la parte superior izquierda del switch a editar")
-                edicion_switch_2 = ("Luego selecciona un punto en la protoboard para colocar el switch de 16")
-                screen.blit(self.font.render(edicion_switch_1, True, (0, 0, 0)), (self.x + 380, self.y + 90)) # Texto impreso en pantalla
-                screen.blit(self.font.render(edicion_switch_2, True, (0, 0, 0)), (self.x + 380, self.y + 110)) # Texto impreso en pantalla
-
-            elif (self.res_pulsado):
-                edicion_res_1 = ("Primero selecciona los dos extremos de la resistencia a editar")
-                edicion_res_2 = ("Luego selecciona dos nuevos puntos en la protoboard para colocar la resistencia")
-                screen.blit(self.font.render(edicion_res_1, True, (0, 0, 0)), (self.x + 250, self.y + 70)) # Texto impreso en pantalla
-                screen.blit(self.font.render(edicion_res_2, True, (0, 0, 0)), (self.x + 250, self.y + 90)) # Texto impreso en pantalla
-            
-            elif (self.chip_pulsado):
-                chip = ("Primero selecciona el extremo superior izquierdo del chip")
-                chip2 = ("Luego selecciona el punto donde quieras dejar chip")
-                screen.blit(self.font.render(chip, True, (0, 0, 0)),
-                            (self.x + 350, self.y + 70))  # Texto impreso en pantalla
-                screen.blit(self.font.render(chip2, True, (0, 0, 0)),
-                            (self.x + 350, self.y + 90))
-
-        elif (self.borrar_pulsado):
-            texto_borrar = ("Elige el componente a borrar")
-            screen.blit(self.font.render(texto_borrar, True, (0, 0, 0)), (self.x + 380, self.y + 50)) # Texto impreso en pantalla
-
-            if (self.cable_pulsado):
-                borrar_cable_1 = ("Selecciona el extremo donde quieras quitar la energia del cable para borrarlo")
-                screen.blit(self.font.render(borrar_cable_1, True, (0, 0, 0)), (self.x + 320, self.y + 70)) # Texto impreso en pantalla
-            
-            elif (self.led_pulsado):
-                borrar_led_1 = ("Selecciona un extremo del led para borrarlo")
-                screen.blit(self.font.render(borrar_led_1, True, (0, 0, 0)), (self.x + 300, self.y + 70)) # Texto impreso en pantalla
-
-            elif (self.switch_pulsado):
-                borrar_switch = ("Selecciona que tipo de switch desea borrar")
-                screen.blit(self.font.render(borrar_switch, True, (0, 0, 0)), (self.x + 380, self.y + 90)) # Texto impreso en pantalla
-                
-                if (self.boton_switch2_pulsado):
-                    borrar_switch_2 = ("Selecciona la parte izquierda superior del switch 4 para borrarlo")
-                    screen.blit(self.font.render(borrar_switch_2, True, (0, 0, 0)), (self.x + 380, self.y + 110)) # Texto impreso en pantalla
-                
-                elif (self.boton_switch16_pulsado):
-                    borrar_switch_16 = ("Selecciona la parte izquierda superior del switch 16 para borrarlo")
-                    screen.blit(self.font.render(borrar_switch_16, True, (0, 0, 0)), (self.x + 380, self.y + 110)) # Texto impreso en pantalla
-            
-            elif (self.res_pulsado):
-                borrar_res_1 = ("Selecciona algún extremo donde quieras quitar la energia de una resistencia para borrarla")
-                screen.blit(self.font.render(borrar_res_1, True, (0, 0, 0)), (self.x + 300, self.y + 70)) # Texto impreso en pantalla
-            
-            elif (self.chip_pulsado):
-                chip = ("Selecciona el extremo superior izquierdo del chip para quitarlo")
-                screen.blit(self.font.render(chip, True, (0, 0, 0)), (self.x + 380, self.y + 70))
-
         boton_resistencia_surface = pygame.Surface((self.ancho_boton, 39), pygame.SRCALPHA)  # Botón resistencia
         boton_resistencia_surface.fill((0, 0, 0, 0))  # Rellenar la superficie con transparencia
-        boton_chip_surface = pygame.Surface((self.ancho_boton, 39), pygame.SRCALPHA)  # Botón chip
-        boton_chip_surface.fill((0, 0, 0, 0))  # Rellenar la superficie con transparencia
+        boton_ship_surface = pygame.Surface((self.ancho_boton, 39), pygame.SRCALPHA)  # Botón ship
+        boton_ship_surface.fill((0, 0, 0, 0))  # Rellenar la superficie con transparencia
+        if (self.chip_pulsado):
+            boton_and_surface = pygame.Surface((self.ancho_boton, 70), pygame.SRCALPHA)
+            boton_and_surface.fill((0, 0, 0, 0))
+            boton_or_surface = pygame.Surface((self.ancho_boton, 70), pygame.SRCALPHA)
+            boton_or_surface.fill((0, 0, 0, 0))
+            boton_not_surface = pygame.Surface((self.ancho_boton, 70), pygame.SRCALPHA)
+            boton_not_surface.fill((0, 0, 0, 0))
         boton_motor_surface = pygame.Surface((self.ancho_boton, 39), pygame.SRCALPHA)  # Botón motor
         boton_motor_surface.fill((0, 0, 0, 0))  # Rellenar la superficie con transparencia
         boton_proto_surface = pygame.Surface((self.ancho_boton, 39), pygame.SRCALPHA)  # Botón protoboart
@@ -206,7 +111,11 @@ class Menu:
             self.div_boton(boton_switch2_surface, 0, 35,self.color_switch4)
             self.div_boton(boton_switch16_surface,0,33,self.color_switch16)
         self.div_boton(boton_resistencia_surface, 0, 3, self.color_res)
-        self.div_boton(boton_chip_surface, 0, 3, self.color_chip)
+        self.div_boton(boton_ship_surface, 0, 3, self.color_ship)
+        if (self.chip_pulsado):
+            self.div_boton(boton_and_surface,0,35,self.color_shipAND)
+            self.div_boton(boton_or_surface,0,35,self.color_shipOR)
+            self.div_boton(boton_not_surface,0,35,self.color_shipNOT)
         self.div_boton(boton_motor_surface, 0, 3, self.color_motor)
         self.div_boton(boton_proto_surface, 0, 3, self.color_proto)
         self.div_boton(boton_edicion_surface, 0, 3, self.color_editar)
@@ -220,7 +129,11 @@ class Menu:
             screen.blit(boton_switch2_surface, (x_inic + (self.ancho_boton * 2), 20))
             screen.blit(boton_switch16_surface, (x_inic + (self.ancho_boton * 2), 60))
         screen.blit(boton_resistencia_surface, (x_inic + (self.ancho_boton * 3), 10))
-        screen.blit(boton_chip_surface, (x_inic + (self.ancho_boton * 4), 10))
+        screen.blit(boton_ship_surface, (x_inic + (self.ancho_boton * 4), 10))
+        if (self.chip_pulsado):
+            screen.blit(boton_and_surface,(x_inic + (self.ancho_boton * 4), 20))
+            screen.blit(boton_or_surface, (x_inic + (self.ancho_boton * 4), 58))
+            screen.blit(boton_not_surface, (x_inic + (self.ancho_boton * 4), 95))
         screen.blit(boton_motor_surface, (x_inic + (self.ancho_boton * 5), 10))
         screen.blit(boton_proto_surface, (x_inic + (self.ancho_boton * 6), 10))
         screen.blit(boton_edicion_surface, (x_inic + (self.ancho_boton * 7), 10))
@@ -230,6 +143,7 @@ class Menu:
         for i in range(9):  # 9 secciones
             x_pos = separacion_vertical * (i + 1)
             pygame.draw.line(screen, (0, 0, 0), (x_pos, 10), (x_pos, self.y), 3)
+
             # Renderizar el texto
             if textos[i] == "SWITCH" and self.switch_pulsado:
                 texto_renderizado2 = self.font.render("Switch 4 pines", True, (0, 0, 0))
@@ -242,14 +156,28 @@ class Menu:
                 texto_renderizado3= self.font.render("Switch 16 pines", True, (0, 0, 0))
                 texto_rect3 = texto_renderizado3.get_rect(center=(x_pos - self.ancho_boton // 2, 110))
                 screen.blit(texto_renderizado3, texto_rect3)
+            if textos[i]== "CHIP" and self.chip_pulsado:
+                texto_renderizado4=self.font.render("Chip AND",True,(0,0,0))
+                texto_rect4= texto_renderizado4.get_rect(center=(x_pos - self.ancho_boton // 2, 70))
+                screen.blit(texto_renderizado4,texto_rect4)
+                texto_renderizado5 = self.font.render("Chip OR", True, (0, 0, 0))
+                texto_rect5 = texto_renderizado5.get_rect(center=(x_pos - self.ancho_boton // 2, 110))
+                screen.blit(texto_renderizado5, texto_rect5)
+                texto_renderizado6 = self.font.render("Chip NOT", True, (0, 0, 0))
+                texto_rect6 = texto_renderizado6.get_rect(center=(x_pos - self.ancho_boton // 2, 150))
+                screen.blit(texto_renderizado6, texto_rect6)
+                pygame.draw.line(screen, (0, 0, 0), (x_pos, 50), (x_pos, 165), 3)
+                pygame.draw.line(screen, (0, 0, 0), (self.ancho_boton * 4, 50), (self.ancho_boton * 4, 165), 3)
+                pygame.draw.line(screen, (0, 0, 0), (self.ancho_boton * 4, 90), (x_pos, 90), 3)
+                pygame.draw.line(screen, (0, 0, 0), (self.ancho_boton * 4, 128), (x_pos, 128), 3)
+                pygame.draw.line(screen, (0, 0, 0), (self.ancho_boton * 4, 165), (x_pos, 165), 3)
+
             texto_renderizado = self.font.render(textos[i], True, (0, 0, 0))  # Color negro para el texto
             # Posicionar el texto en el centro de cada división
             texto_rect = texto_renderizado.get_rect(center=(x_pos - self.ancho_boton // 2, self.y - 20))
             screen.blit(texto_renderizado, texto_rect)
-                                
+
     def manejar_eventos(self, event):  # Agregar screen como argumento
-        color_pulsar = (187, 143, 206)
-        contador_click = 0
         if event.type == pygame.MOUSEBUTTONDOWN:
             pos = pygame.mouse.get_pos()
             mouse_x, mouse_y = pos
@@ -267,7 +195,7 @@ class Menu:
                     self.color_cable = self.color
                 else:
                     self.cable_pulsado = True
-                    self.color_cable = color_pulsar
+                    self.color_cable = self.color_pulsar
 
             # Coordenadas y dimensiones del área del botón led
             boton_led_x = self.ancho_boton
@@ -282,10 +210,10 @@ class Menu:
                     self.color_led = self.color
                 else:
                     self.led_pulsado = True
-                    self.color_led = color_pulsar
+                    self.color_led = self.color_pulsar
             # Coordenadas y dimensiones del área del botón SWITCH
             boton_switch_x = 2 * self.ancho_boton
-            boton_switch_y = 3
+            boton_switch_y = 2
             boton_switch_ancho = self.ancho_boton
             boton_switch_alto = 45
 
@@ -296,14 +224,14 @@ class Menu:
                     self.color_switch = self.color
                 else:
                     self.switch_pulsado = True
-                    self.color_switch = color_pulsar
-                    contador_click = 0
+                    self.color_switch = self.color_pulsar
+                    self.contador_click = 0
 
             # Coordenadas y dimensiones del área del botón SWITCH de 4 pines
             boton_switch4_x = 2 * self.ancho_boton
-            boton_switch4_y = 35  # Asumiendo que empieza a partir de esta coordenada vertical
+            boton_switch4_y = 47
             boton_switch4_ancho = self.ancho_boton
-            boton_switch4_alto = 45  # Ajusta la altura según el tamaño del botón
+            boton_switch4_alto = 43
 
             if boton_switch4_x <= mouse_x <= boton_switch4_x + boton_switch4_ancho and boton_switch4_y <= mouse_y <= boton_switch4_y + boton_switch4_alto:
                 # Cambiar el color del botón SWITCH de 4 pines
@@ -312,21 +240,21 @@ class Menu:
                     self.color_switch4 = self.color  # Regresar al color original
                 else:
                     self.boton_switch2_pulsado = True
-                    self.color_switch4 = color_pulsar  # Cambiar al color pulsado
+                    self.color_switch4 = self.color_pulsar  # Cambiar al color pulsado
 
             # Coordenadas y dimensiones del área del botón SWITCH 16
             switch16_x = 2 * self.ancho_boton
-            switch16_y = 100
+            switch16_y = 93
             switch16_ancho = self.ancho_boton
-            switch16_alto = 45
+            switch16_alto = 43
             if self.switch_pulsado and boton_switch_x <= mouse_x <= switch16_x + switch16_ancho and switch16_y <= mouse_y <= switch16_y +switch16_alto:
-                #print(f"{contador_click}")
+                print(f"{self.contador_click}")
                 if (self.boton_switch16_pulsado == True):
                     self.boton_switch16_pulsado = False
                     self.color_switch16 = self.color
                 else:
                     self.boton_switch16_pulsado = True
-                    self.color_switch16 = color_pulsar
+                    self.color_switch16 = self.color_pulsar
 
             # Coordenadas y dimensiones del área del botón RESISTENCIA
             boton_resistencia_x = 3 * self.ancho_boton
@@ -341,7 +269,7 @@ class Menu:
                     self.color_res = self.color
                 else:
                     self.res_pulsado = True
-                    self.color_res = color_pulsar
+                    self.color_res = self.color_pulsar
 
             # Coordenadas y dimensiones del área del botón CHiP
             boton_shp_x = 4 * self.ancho_boton
@@ -353,10 +281,52 @@ class Menu:
                 # Cambiar el color del botón SHP
                 if (self.chip_pulsado == True):
                     self.chip_pulsado = False
-                    self.color_chip = self.color
+                    self.color_ship = self.color
                 else:
                     self.chip_pulsado = True
-                    self.color_chip = color_pulsar
+                    self.color_ship = self.color_pulsar
+
+            # Coordenadas y dimensiones del área del botón chip AND
+            boton_and_x = 4 * self.ancho_boton
+            boton_and_y = 50
+            boton_and_ancho = self.ancho_boton
+            boton_and_alto = 40
+
+            if boton_and_x <= mouse_x <= boton_and_x + boton_and_ancho and boton_and_y <= mouse_y <= boton_and_y + boton_and_alto:
+                if self.and_pulsado:
+                    self.and_pulsado = False
+                    self.color_shipAND = self.color  # Regresar al color original
+                else:
+                    self.and_pulsado = True
+                    self.color_shipAND = self.color_pulsar  # Cambiar al color pulsado
+
+            # Coordenadas y dimensiones del área del botón chip OR
+            boton_or_x = 4 * self.ancho_boton
+            boton_or_y = 92
+            boton_or_ancho = self.ancho_boton
+            boton_or_alto = 35
+
+            if boton_or_x <= mouse_x <= boton_or_x + boton_or_ancho and boton_or_y <= mouse_y <= boton_or_y + boton_or_alto:
+                if self.or_pulsado:
+                    self.or_pulsado = False
+                    self.color_shipOR = self.color  # Regresar al color original
+                else:
+                    self.or_pulsado = True
+                    self.color_shipOR = self.color_pulsar  # Cambiar al color pulsado
+
+            # Coordenadas y dimensiones del área del botón chip NOT
+            boton_not_x = 4 * self.ancho_boton
+            boton_not_y = 129
+            boton_not_ancho = self.ancho_boton
+            boton_not_alto = 35
+
+            if boton_not_x <= mouse_x <= boton_not_x + boton_not_ancho and boton_not_y <= mouse_y <= boton_not_y + boton_not_alto:
+                if self.not_pulsado:
+                    self.not_pulsado = False
+                    self.color_shipNOT = self.color  # Regresar al color original
+                else:
+                    self.not_pulsado = True
+                    self.color_shipNOT = self.color_pulsar  # Cambiar al color pulsado
 
             # Coordenadas y dimensiones del área del botón MOTOR
             boton_motor_x = 5 * self.ancho_boton
@@ -371,7 +341,7 @@ class Menu:
                     self.color_motor = self.color
                 else:
                     self.motor_pulsado = True
-                    self.color_motor = color_pulsar
+                    self.color_motor = self.color_pulsar
 
             # Coordenadas y dimensiones del área del botón PROTO
             boton_proto_x = 6 * self.ancho_boton
@@ -386,7 +356,7 @@ class Menu:
                     self.color_proto = self.color
                 else:
                     self.proto_pulsado = True
-                    self.color_proto = color_pulsar
+                    self.color_proto = self.color_pulsar
 
             # Coordenadas y dimensiones del área del botón EDITAR
             boton_editar_x = 7 * self.ancho_boton
@@ -401,7 +371,7 @@ class Menu:
                     self.color_editar = self.color
                 else:
                     self.editar_pulsado = True
-                    self.color_editar = color_pulsar
+                    self.color_editar = self.color_pulsar
 
             # Coordenadas y dimensiones del área del botón BORRAR
             boton_borrar_x = 8 * self.ancho_boton
@@ -416,4 +386,4 @@ class Menu:
                     self.color_borrar = self.color
                 else:
                     self.borrar_pulsado = True
-                    self.color_borrar = color_pulsar
+                    self.color_borrar = self.color_pulsar

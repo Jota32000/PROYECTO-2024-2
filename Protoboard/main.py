@@ -25,6 +25,8 @@ guardar_switch = []
 switch_coordenadas = []
 guardar_switch16 = []
 guardar_chip = []
+guardar_chipNOT=[]
+guardar_chipOR=[]
 
 
 def buscar_led(x, y):
@@ -154,9 +156,16 @@ cable_editar = None
 # editar switch 16
 c16_1 = 0
 c16_2 = 0
-# chip datos
+# chip and datos
 c_x = 0
 c_y = 0
+#chip or datos
+c_or_x=0
+c_or_y=0
+#chip not datos
+c_not_x=0
+c_not_y=0
+
 # switch 4
 c4_x = 0
 c4_y = 0
@@ -179,6 +188,7 @@ conectores.append(pila_mas)
 conectores.append(pila_menos)
 pila = Pila(x_pila, y_pila)
 conector = Conector("1", 0, 0, conectores)
+font = pygame.font.Font(None, 24)  # Usa la fuente predeterminada con tamaño 24
 
 while running:
     screen.fill("white")  # directo el color sin variables extra
@@ -208,6 +218,22 @@ while running:
 
     for i in guardar_chip:
         i.dibujar(screen)
+        texto = font.render("AND", True, (225,225,225))
+        texto_escalado = pygame.transform.scale(texto, (texto.get_width() * 2, texto.get_height()))
+        texto_rect = texto.get_rect(center=(i.x + i.largo // 2.5, i.y + i.ancho//1.5))
+        screen.blit(texto_escalado, texto_rect)
+    for i in guardar_chipOR:
+        i.dibujar(screen)
+        texto = font.render("OR", True, (225, 225, 225))
+        texto_escalado = pygame.transform.scale(texto, (texto.get_width() * 2, texto.get_height()))
+        texto_rect = texto.get_rect(center=(i.x + i.largo // 2.5, i.y + i.ancho // 1.5))
+        screen.blit(texto_escalado, texto_rect)
+    for i in guardar_chipNOT:
+        i.dibujar(screen)
+        texto = font.render("NOT", True, (225, 225, 225))
+        texto_escalado = pygame.transform.scale(texto, (texto.get_width() * 2, texto.get_height()))
+        texto_rect = texto.get_rect(center=(i.x + i.largo // 2.5, i.y + i.ancho // 1.5))
+        screen.blit(texto_escalado, texto_rect)
 
     # Manejo de eventos de la pantalla
     for event in pygame.event.get():
@@ -368,7 +394,6 @@ while running:
                         else:
                             print("conector 4 no válido, es igual a conector 1, 2 o 3")
 
-
                 elif mm.boton_switch2_pulsado:
                     print("hola")
                     if conector_1_editar is None:
@@ -397,7 +422,7 @@ while running:
                                 conector_1_editar = None
                                 conector_2_editar = None
 
-                elif mm.chip_pulsado:
+                elif mm.and_pulsado:
                     if conector_1_editar is None:
                         print("buscando conector 1")
                         conector_1_editar = punto_mas_cercano(mouse_pos, conectores)
@@ -481,8 +506,6 @@ while running:
                     print("editar led")
             elif mm.switch_pulsado:
                 if mm.boton_switch16_pulsado:
-                    # print("Botón SWITCH 16 pines encendido")
-                    # print("Elige un punto en la protoboard para colocarlo (corresponde a la esquina superior izquierda)\n")
                     if not conector_cercano:
                         pass
                     elif c16_1 == 0:
@@ -528,25 +551,60 @@ while running:
                             switch4.pin3 = pines_inferior[0]
                             switch4.pin4 = pines_inferior[1]
                             guardar_switch.append(switch4)
+                            print(switch4.pin4.x,switch4.pin4.y)
+                            switch4.pin1.agregar_conexion(switch4.pin2)
+                            switch4.pin3.agregar_conexion(switch4.pin4)
                             c4_x, c4_y = 0, 0  # Resetear las coordenadas
                             mm.switch_pulsado = False
                             mm.color_switch = (162, 206, 143)
                             mm.boton_switch2_pulsado = False
                             mm.color_switch4 = (162, 206, 143)
+                            print(switch4.pin4)
 
             elif mm.chip_pulsado:
-                print("boton chip")
-                if not conector_cercano:
-                    pass
-                elif c_x == 0:
-                    c_x = conector_cercano.x
-                    c_y = conector_cercano.y
-                    if c_x != 0 and c_y != 0:
-                        chip = Chip(c_x, c_y)
-                        guardar_chip.append(chip)
-                        c_x, c_y = 0, 0  # Resetear las coordenadas
-                        mm.chip_pulsado = False
-                        mm.color_ship = (162, 206, 143)
+                if mm.and_pulsado:
+                    if not conector_cercano:
+                        pass
+                    elif c_x == 0:
+                        c_x = conector_cercano.x
+                        c_y = conector_cercano.y
+                        if c_x != 0 and c_y != 0:
+                            chip = Chip(c_x, c_y)
+                            guardar_chip.append(chip)
+                            c_x, c_y = 0, 0  # Resetear las coordenadas
+                            mm.chip_pulsado = False
+                            mm.color_ship = (162, 206, 143)
+                            mm.and_pulsado=False
+                            mm.color_shipAND=(162, 206, 143)
+                if mm.or_pulsado:
+                    if not conector_cercano:
+                        pass
+                    elif c_or_x == 0:
+                        c_or_x = conector_cercano.x
+                        c_or_y = conector_cercano.y
+                        if c_or_x != 0 and c_or_y != 0:
+                            chip = Chip(c_or_x, c_or_y)
+                            guardar_chipOR.append(chip)
+                            c_or_x, c_or_y = 0, 0  # Resetear las coordenadas
+                            mm.chip_pulsado = False
+                            mm.color_ship = (162, 206, 143)
+                            mm.or_pulsado=False
+                            mm.color_shipOR=(162, 206, 143)
+
+                if mm.not_pulsado:
+                    if not conector_cercano:
+                        pass
+                    elif c_not_x == 0:
+                        c_not_x = conector_cercano.x
+                        c_not_y = conector_cercano.y
+                        if c_not_x != 0 and c_not_y != 0:
+                            chip = Chip(c_not_x, c_not_y)
+                            guardar_chipNOT.append(chip)
+                            c_not_x, c_not_y = 0, 0  # Resetear las coordenadas
+                            mm.chip_pulsado = False
+                            mm.color_ship = (162, 206, 143)
+                            mm.not_pulsado=False
+                            mm.color_shipNOT=(162, 206, 143)
 
             elif mm.cable_pulsado:
                 # print("Botón cable encendido")
