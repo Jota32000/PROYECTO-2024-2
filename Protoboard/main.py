@@ -524,8 +524,8 @@ while running:
                             switch4.pin4 = pines_inferior[1]
                             guardar_switch.append(switch4)
                             print(switch4.pin4.x,switch4.pin4.y)
-                            switch4.pin1.agregar_conexion(switch4.pin2)
-                            switch4.pin3.agregar_conexion(switch4.pin4)
+                            #switch4.pin1.agregar_conexion(switch4.pin2)
+                            #switch4.pin3.agregar_conexion(switch4.pin4)
                             c4_x, c4_y = 0, 0  # Resetear las coordenadas
                             mm.switch_pulsado = False
                             mm.color_switch = (162, 206, 143)
