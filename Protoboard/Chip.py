@@ -1,15 +1,28 @@
 import pygame
 
 class Chip:
-    def __init__(self,x,y):
-        self.x=x
-        self.y=y
+    def __init__(self,conector):
+        self.x=conector.x
+        self.y=conector.y
         self.ancho=27
         self.largo=190
         self.color_cuerpo=(53, 46, 46 )
         self.dis=10
         self.lado=30
-
+        self.pin1 = conector
+        self.pin2 = None
+        self.pin3 = None
+        self.pin4 = None
+        self.pin5 = None
+        self.pin6 = None
+        self.pin7 = None
+        self.pin8 = None
+        self.pin9 = None
+        self.pin10 = None
+        self.pin11 = None
+        self.pin12 = None
+        self.pin13 = None
+        self.pin14 = None
     def dibujar(self, screen):
         # Patas superiores
         pygame.draw.line(screen, (0, 0, 0), (self.x, self.y), (self.x, self.y + self.dis), 2)  # pin 1 arriba
