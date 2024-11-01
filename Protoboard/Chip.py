@@ -57,3 +57,70 @@ class Chip:
         # Dibujo del cuerpo del objeto con líneas
         for i in range(self.y + 5, self.y + self.ancho):
             pygame.draw.line(screen, self.color_cuerpo, (self.x - 5, i), (self.x + self.largo, i))
+
+    def chip_not(self):
+        #dar energia a los pines 3,5,7,9,11 y13
+        if (self.pin1.fase==True) and (self.pin2.fase==None) and (self.pin14.neutro==True) and (self.pin3.fase==None):
+            self.pin1.agregar_conexion(self.pin3)
+        if (self.pin1.fase==True) and (self.pin4.fase==None) and (self.pin14.neutro==True) and (self.pin5.fase==None):
+            self.pin1.agregar_conexion(self.pin5)
+        if (self.pin1.fase==True) and (self.pin6.fase==None) and (self.pin14.neutro==True) and (self.pin7.fase==None):
+            self.pin1.agregar_conexion(self.pin7)
+        if (self.pin1.fase==True) and (self.pin8.fase==None ) and (self.pin14.neutro==True) and (self.pin9.fase==None):
+            self.pin1.agregar_conexion(self.pin9)
+        if (self.pin1.fase==True) and (self.pin10.fase==None ) and (self.pin14.neutro==True) and (self.pin11.fase==None):
+            self.pin1.agregar_conexion(self.pin11)
+        if (self.pin1.fase==True) and (self.pin12.fase==None ) and (self.pin14.neutro==True) and (self.pin13.fase==None):
+            self.pin1.agregar_conexion(self.pin13)
+        # quitar energia a los pines 3,5,7,9,11 y13
+        if (self.pin1.fase==True) and (self.pin2.fase==True) and (self.pin14.neutro==True) and (self.pin3.fase != None):
+            self.pin3.eliminar_conexion(self.pin3,self.pin1)
+        if (self.pin1.fase==True) and (self.pin4.fase==True) and (self.pin14.neutro==True) and (self.pin5.fase != None):
+            self.pin5.eliminar_conexion(self.pin5,self.pin1)
+        if (self.pin1.fase==True) and (self.pin6.fase==True) and (self.pin14.neutro==True) and (self.pin7.fase != None):
+            self.pin7.eliminar_conexion(self.pin7,self.pin1)
+        if (self.pin1.fase==True) and (self.pin8.fase==True ) and (self.pin14.neutro==True) and (self.pin9.fase != None):
+            self.pin9.eliminar_conexion(self.pin9,self.pin1)
+        if (self.pin1.fase==True) and (self.pin10.fase==True ) and (self.pin14.neutro==True) and (self.pin11.fase != None):
+            self.pin11.eliminar_conexion(self.pin11,self.pin1)
+        if (self.pin1.fase==True) and (self.pin12.fase==True ) and (self.pin14.neutro==True) and (self.pin13.fase != None):
+            self.pin13.eliminar_conexion(self.pin13,self.pin1)
+
+    def chip_and(self):
+        if (self.pin1.fase==True) and (self.pin2.fase==True and self.pin3.fase==True) and (self.pin14.neutro==True) and (self.pin4.fase==None):
+            self.pin1.agregar_conexion(self.pin4)
+        if (self.pin1.fase==True) and (self.pin5.fase==True and self.pin6.fase==True) and (self.pin14.neutro==True) and (self.pin7.fase==None):
+            self.pin1.agregar_conexion(self.pin7)
+        if (self.pin1.fase==True) and (self.pin8.fase==True and self.pin9.fase==True) and (self.pin14.neutro==True) and (self.pin10.fase==None):
+            self.pin1.agregar_conexion(self.pin10)
+        if (self.pin1.fase==True) and (self.pin11.fase==True and self.pin12.fase==True) and (self.pin14.neutro==True) and (self.pin13.fase==None):
+            self.pin1.agregar_conexion(self.pin13)
+        #eliminar coneccion
+        if (self.pin1.fase==True) and (self.pin2.fase==None or self.pin3.fase==None) and (self.pin14.neutro==True) :
+            self.pin4.eliminar_conexion(self.pin4, self.pin1)
+        if (self.pin1.fase==True) and (self.pin5.fase==None or self.pin6.fase==None) and (self.pin14.neutro==True) :
+            self.pin7.eliminar_conexion(self.pin7, self.pin1)
+        if (self.pin1.fase==True) and (self.pin8.fase==None or self.pin9.fase==None) and (self.pin14.neutro==True) :
+            self.pin10.eliminar_conexion(self.pin10, self.pin1)
+        if (self.pin1.fase==True) and (self.pin11.fase==None or self.pin12.fase==None) and (self.pin14.neutro==True) :
+            self.pin13.eliminar_conexion(self.pin13, self.pin1)
+
+    def chip_or(self):
+        if (self.pin1.fase==True) and (self.pin2.fase==True or self.pin3.fase==True) and (self.pin14.neutro==True) and (self.pin4.fase==None):
+            self.pin1.agregar_conexion(self.pin4)
+        if (self.pin1.fase==True) and (self.pin5.fase==True or self.pin6.fase==True) and (self.pin14.neutro==True) and (self.pin7.fase==None):
+            self.pin1.agregar_conexion(self.pin7)
+        if (self.pin1.fase==True) and (self.pin8.fase==True or self.pin9.fase==True) and (self.pin14.neutro==True) and (self.pin10.fase==None):
+            self.pin1.agregar_conexion(self.pin10)
+        if (self.pin1.fase==True) and (self.pin11.fase==True or self.pin12.fase==True) and (self.pin14.neutro==True) and (self.pin13.fase==None):
+            self.pin1.agregar_conexion(self.pin13)
+        # eliminar coneccion
+        if (self.pin1.fase==True) and (self.pin2.fase==None and self.pin3.fase==None) and (self.pin14.neutro==True) :
+            self.pin4.eliminar_conexion(self.pin4, self.pin1)
+        if (self.pin1.fase==True) and (self.pin5.fase==None and self.pin6.fase==None) and (self.pin14.neutro==True) :
+            self.pin7.eliminar_conexion(self.pin7, self.pin1)
+        if (self.pin1.fase==True) and (self.pin8.fase==None and self.pin9.fase==None) and (self.pin14.neutro==True) :
+            self.pin10.eliminar_conexion(self.pin10, self.pin1)
+        if (self.pin1.fase==True) and (self.pin11.fase==None and self.pin12.fase==None) and (self.pin14.neutro==True) :
+            self.pin13.eliminar_conexion(self.pin13, self.pin1)
+

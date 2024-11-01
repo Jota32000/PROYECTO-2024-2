@@ -214,22 +214,26 @@ while running:
 
     for i in guardar_chip:
         i.dibujar(screen)
+        i.chip_and()
         texto = font.render("AND", True, (225,225,225))
         texto_escalado = pygame.transform.scale(texto, (texto.get_width() * 2, texto.get_height()))
         texto_rect = texto.get_rect(center=(i.x + i.largo // 2.5, i.y + i.ancho//1.5))
         screen.blit(texto_escalado, texto_rect)
     for i in guardar_chipOR:
         i.dibujar(screen)
+        i.chip_or()
         texto = font.render("OR", True, (225, 225, 225))
         texto_escalado = pygame.transform.scale(texto, (texto.get_width() * 2, texto.get_height()))
         texto_rect = texto.get_rect(center=(i.x + i.largo // 2.5, i.y + i.ancho // 1.5))
         screen.blit(texto_escalado, texto_rect)
     for i in guardar_chipNOT:
         i.dibujar(screen)
+        i.chip_not()
         texto = font.render("NOT", True, (225, 225, 225))
         texto_escalado = pygame.transform.scale(texto, (texto.get_width() * 2, texto.get_height()))
         texto_rect = texto.get_rect(center=(i.x + i.largo // 2.5, i.y + i.ancho // 1.5))
         screen.blit(texto_escalado, texto_rect)
+
 
     # Manejo de eventos de la pantalla
     for event in pygame.event.get():
@@ -626,7 +630,7 @@ while running:
                             chip.pin6 = pines_superior[5]
                             chip.pin7 = pines_superior[6]
                             pines_inferior = buscar_pin(c_x, c_y + 30, 7, 30, 0)
-                            chip.pin8 = pines_superior[0]
+                            chip.pin8 = pines_inferior[0]
                             chip.pin9 = pines_inferior[1]
                             chip.pin10 = pines_inferior[2]
                             chip.pin11 = pines_inferior[3]
@@ -655,7 +659,7 @@ while running:
                             chip.pin6 = pines_superior[5]
                             chip.pin7 = pines_superior[6]
                             pines_inferior = buscar_pin(c_or_x, c_or_y + 30, 7, 30, 0)
-                            chip.pin8 = pines_superior[0]
+                            chip.pin8 = pines_inferior[0]
                             chip.pin9 = pines_inferior[1]
                             chip.pin10 = pines_inferior[2]
                             chip.pin11 = pines_inferior[3]
@@ -685,7 +689,7 @@ while running:
                             chip.pin6 = pines_superior[5]
                             chip.pin7 = pines_superior[6]
                             pines_inferior = buscar_pin(c_not_x, c_not_y + 30, 7, 30, 0)
-                            chip.pin8 = pines_superior[0]
+                            chip.pin8 = pines_inferior[0]
                             chip.pin9 = pines_inferior[1]
                             chip.pin10 = pines_inferior[2]
                             chip.pin11 = pines_inferior[3]
