@@ -38,8 +38,6 @@ class Menu:
         self.not_pulsado=False
         self.or_pulsado=False
 
-        self.contador_click = 0
-
     def div_boton(self, screen, x, y, color):
         self.ancho = self.ancho_boton
         self.alto = 60
@@ -225,7 +223,6 @@ class Menu:
                 else:
                     self.switch_pulsado = True
                     self.color_switch = self.color_pulsar
-                    self.contador_click = 0
 
             # Coordenadas y dimensiones del área del botón SWITCH de 4 pines
             boton_switch4_x = 2 * self.ancho_boton
@@ -248,7 +245,6 @@ class Menu:
             switch16_ancho = self.ancho_boton
             switch16_alto = 43
             if self.switch_pulsado and boton_switch_x <= mouse_x <= switch16_x + switch16_ancho and switch16_y <= mouse_y <= switch16_y +switch16_alto:
-                print(f"{self.contador_click}")
                 if (self.boton_switch16_pulsado == True):
                     self.boton_switch16_pulsado = False
                     self.color_switch16 = self.color

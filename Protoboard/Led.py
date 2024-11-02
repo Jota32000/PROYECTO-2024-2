@@ -27,12 +27,6 @@ class Led:
             self.color = (250, 0, 0)  # Color rojo para encendido
         else:
             self.color = (110, 0, 0)  # Color rojo oscuro para apagado
-        """""""""
-        print("conector1.fase: ", self.conector1.fase)
-        print("conector1.neutro: ", self.conector1.neutro)
-        print("conector2.fase: ", self.conector2.fase)
-        print("conector2.neutro: ", self.conector2.neutro)
-        """""""""
         x =  (self.conector1.x+self.conector2.x)//2
         y = (self.conector1.y+self.conector2.y)//2
         pygame.draw.line(screen, (0, 0, 0, 0), (self.conector1.x, self.conector1.y), (x, y), 2)
