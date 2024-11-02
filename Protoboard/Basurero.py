@@ -1,14 +1,16 @@
 class Basurero:
-    def __init__(self,guardar_led,guardar_switch,conectores,cables,resistencias,guardar_switch16,guardar_chip_and,guardar_chip_or,guardar_chip_not):
+    def __init__(self,guardar_led,guardar_switch,conectores,cables,resistencias,guardar_switch16):
         self.guardar_led=guardar_led
         self.guardar_switch=guardar_switch
         self.conectores=conectores
         self.cables=cables
         self.resistencias=resistencias
         self.guardar_switch16=guardar_switch16
+        """
         self.guardar_chip_and=guardar_chip_and
         self.guardar_chip_or=guardar_chip_or
         self.guardar_chip_not=guardar_chip_not
+        """
 
     def eliminar_led(self,conector_cercano):
         #Buscador de led en la lista de los leds
@@ -83,6 +85,7 @@ class Basurero:
                             a.eliminar_conexion(a, b)
                 # remover el switch de la lista despues de eliminar todas las conexiones
                 self.guardar_switch16.remove(switch)
+    """
     def eliminar_chip_and(self,conector):
         for chip in self.guardar_chip_and:
             if conector is not None:
@@ -98,4 +101,5 @@ class Basurero:
             if conector is not None:
                if (chip.x,chip.y) == (conector.x,conector.y):
                    self.guardar_chip_not.remove(chip)
+    """
     

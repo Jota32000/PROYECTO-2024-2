@@ -13,10 +13,7 @@ from Menu import Menu
 from Led import Led
 from Switch_16 import Switch_16
 from Conector import Conector
-from Chip_or import Chip_or
-from Chip_and import Chip_and
-from Chip_not import Chip_not
-
+from Chip import Chip
 
 conectores = []
 cables = []
@@ -27,9 +24,9 @@ guardar_led = []
 guardar_switch = []
 switch_coordenadas = []
 guardar_switch16 = []
-guardar_chip_or = []
-guardar_chip_and = []
-guardar_chip_not = []
+guardar_chip = []
+guardar_chipNOT=[]
+guardar_chipOR=[]
 
 def buscar_led(x, y):
     rango_click = 10
@@ -41,7 +38,6 @@ def buscar_led(x, y):
             mi_led = led
     return mi_led
 
-
 def buscar_switch(conector):
     rango_clik = 20
     mi_switch = None
@@ -52,7 +48,6 @@ def buscar_switch(conector):
             mi_switch = switch
             break
     return mi_switch
-
 
 def buscar_cable(conector1, conector2):
     for cable in cables:
@@ -95,7 +90,6 @@ def punto_mas_cercano(pos_mouse, lista_conectores):
             punto_cercano = conector
     return punto_cercano
 
-
 def buscar_pin(x, y, cantidad, lado_x, lado_y):
     pines = []
     i = 0
@@ -106,7 +100,6 @@ def buscar_pin(x, y, cantidad, lado_x, lado_y):
         pines.append(pin)
         i += 1
     return pines
-
 
 # Main
 pygame.init()
@@ -127,7 +120,7 @@ cableado = Cableado(conectores, cables)
 resistencia = Resistencia(conectores, resistencias)
 
 # Crear el basurero
-basurero = Basurero(guardar_led, guardar_switch, conectores, cables, resistencias, guardar_switch16, guardar_chip_and, guardar_chip_or, guardar_chip_not)
+basurero = Basurero(guardar_led, guardar_switch, conectores, cables, resistencias, guardar_switch16)
 
 fullscreen = False
 running = True
@@ -153,9 +146,16 @@ cable_editar = None
 # editar switch 16
 c16_1 = 0
 c16_2 = 0
-# chip datos
+# chip and datos
 c_x = 0
 c_y = 0
+#chip or datos
+c_or_x=0
+c_or_y=0
+#chip not datos
+c_not_x=0
+c_not_y=0
+
 # switch 4
 c4_x = 0
 c4_y = 0
@@ -178,6 +178,7 @@ conectores.append(pila_mas)
 conectores.append(pila_menos)
 pila = Pila(x_pila, y_pila)
 conector = Conector("1", 0, 0, conectores)
+font = pygame.font.Font(None, 24)  # Usa la fuente predeterminada con tamaño 24
 
 while running:
     screen.fill("white")  # directo el color sin variables extra
@@ -205,14 +206,24 @@ while running:
     for i in resistencias:
         i.dibujar_resistencia(screen)
 
-    for i in guardar_chip_and:
+    for i in guardar_chip:
         i.dibujar(screen)
-
-    for i in guardar_chip_or:
+        texto = font.render("AND", True, (225,225,225))
+        texto_escalado = pygame.transform.scale(texto, (texto.get_width() * 2, texto.get_height()))
+        texto_rect = texto.get_rect(center=(i.x + i.largo // 2.5, i.y + i.ancho//1.5))
+        screen.blit(texto_escalado, texto_rect)
+    for i in guardar_chipOR:
         i.dibujar(screen)
-
-    for i in guardar_chip_not:
+        texto = font.render("OR", True, (225, 225, 225))
+        texto_escalado = pygame.transform.scale(texto, (texto.get_width() * 2, texto.get_height()))
+        texto_rect = texto.get_rect(center=(i.x + i.largo // 2.5, i.y + i.ancho // 1.5))
+        screen.blit(texto_escalado, texto_rect)
+    for i in guardar_chipNOT:
         i.dibujar(screen)
+        texto = font.render("NOT", True, (225, 225, 225))
+        texto_escalado = pygame.transform.scale(texto, (texto.get_width() * 2, texto.get_height()))
+        texto_rect = texto.get_rect(center=(i.x + i.largo // 2.5, i.y + i.ancho // 1.5))
+        screen.blit(texto_escalado, texto_rect)
 
     # Manejo de eventos de la pantalla
     for event in pygame.event.get():
@@ -251,14 +262,17 @@ while running:
                     basurero.eliminar_cable(conector_cercano)
                 elif mm.res_pulsado:
                     basurero.eliminar_resistencia(conector_cercano)
-                elif mm.chip_pulsado and mm.chip_and_pulsado:
-                    basurero.eliminar_chip_and(conector_cercano)
-                elif mm.chip_pulsado and mm.chip_or_pulsado:
-                    basurero.eliminar_chip_or(conector_cercano)
-                elif mm.chip_pulsado and mm.chip_not_pulsado:
-                    basurero.eliminar_chip_not(conector_cercano)
+
                 else:
                     print("No se ha seleccionado un elemento para borrar")
+                """
+                                elif mm.chip_pulsado and mm.chip_and_pulsado:
+                                    basurero.eliminar_chip_and(conector_cercano)
+                                elif mm.chip_pulsado and mm.chip_or_pulsado:
+                                    basurero.eliminar_chip_or(conector_cercano)
+                                elif mm.chip_pulsado and mm.chip_not_pulsado:
+                                    basurero.eliminar_chip_not(conector_cercano)
+                                """
                 conectores[0].padre = conectores[0]
                 conectores[0].fase = True
                 conectores[1].padre = conectores[1]
@@ -376,7 +390,6 @@ while running:
                         else:
                             print("conector 4 no válido, es igual a conector 1, 2 o 3")
 
-
                 elif mm.boton_switch2_pulsado:
                     if conector_1_editar is None:
                         print("buscando conector 1")
@@ -401,66 +414,6 @@ while running:
                                 mm.color_switch = (162, 206, 143)
                                 mm.boton_switch2_pulsado = False
                                 mm.color_switch4 = (162, 206, 143)
-                                conector_1_editar = None
-                                conector_2_editar = None
-
-                elif mm.chip_pulsado and mm.chip_not_pulsado:
-                    if conector_1_editar is None:
-                        print("buscando conector 1")
-                        conector_1_editar = punto_mas_cercano(mouse_pos, conectores)
-                    elif conector_2_editar is None:
-                        print("buscando conector 2")
-                        conector_2_aux = punto_mas_cercano(mouse_pos, conectores)
-                        if conector_2_aux is not None and conector_2_aux != conector_1_editar:
-                            basurero.eliminar_chip(conector_1_editar)
-                            c_x = conector_2_aux.x
-                            c_y = conector_2_aux.y
-                            if c_x != 0 and c_y != 0:
-                                chip = Chip_not(c_x, c_y)
-                                guardar_chip_not.append(chip)
-                                c_x, c_y = 0, 0  # Resetear las coordenadas
-                                mm.chip_pulsado = False
-                                mm.color_chip = (162, 206, 143)
-                                conector_1_editar = None
-                                conector_2_editar = None
-
-                elif mm.chip_pulsado and mm.chip_or_pulsado:
-                    if conector_1_editar is None:
-                        print("buscando conector 1")
-                        conector_1_editar = punto_mas_cercano(mouse_pos, conectores)
-                    elif conector_2_editar is None:
-                        print("buscando conector 2")
-                        conector_2_aux = punto_mas_cercano(mouse_pos, conectores)
-                        if conector_2_aux is not None and conector_2_aux != conector_1_editar:
-                            basurero.eliminar_chip(conector_1_editar)
-                            c_x = conector_2_aux.x
-                            c_y = conector_2_aux.y
-                            if c_x != 0 and c_y != 0:
-                                chip = Chip_or(c_x, c_y)
-                                guardar_chip_or.append(chip)
-                                c_x, c_y = 0, 0  # Resetear las coordenadas
-                                mm.chip_pulsado = False
-                                mm.color_chip = (162, 206, 143)
-                                conector_1_editar = None
-                                conector_2_editar = None
-
-                elif mm.chip_pulsado and mm.chip_and_pulsado:
-                    if conector_1_editar is None:
-                        print("buscando conector 1")
-                        conector_1_editar = punto_mas_cercano(mouse_pos, conectores)
-                    elif conector_2_editar is None:
-                        print("buscando conector 2")
-                        conector_2_aux = punto_mas_cercano(mouse_pos, conectores)
-                        if conector_2_aux is not None and conector_2_aux != conector_1_editar:
-                            basurero.eliminar_chip(conector_1_editar)
-                            c_x = conector_2_aux.x
-                            c_y = conector_2_aux.y
-                            if c_x != 0 and c_y != 0:
-                                chip = Chip_and(c_x, c_y)
-                                guardar_chip_and.append(chip)
-                                c_x, c_y = 0, 0  # Resetear las coordenadas
-                                mm.chip_pulsado = False
-                                mm.color_chip = (162, 206, 143)
                                 conector_1_editar = None
                                 conector_2_editar = None
 
@@ -570,47 +523,60 @@ while running:
                             switch4.pin3 = pines_inferior[0]
                             switch4.pin4 = pines_inferior[1]
                             guardar_switch.append(switch4)
+                            print(switch4.pin4.x,switch4.pin4.y)
+                            #switch4.pin1.agregar_conexion(switch4.pin2)
+                            #switch4.pin3.agregar_conexion(switch4.pin4)
                             c4_x, c4_y = 0, 0  # Resetear las coordenadas
                             mm.switch_pulsado = False
                             mm.color_switch = (162, 206, 143)
                             mm.boton_switch2_pulsado = False
                             mm.color_switch4 = (162, 206, 143)
+                            print(switch4.pin4)
 
-            elif mm.chip_pulsado and mm.chip_and_pulsado:
-                if not conector_cercano:
-                    pass
-                elif c_x == 0:
-                    c_x = conector_cercano.x
-                    c_y = conector_cercano.y
-                    if c_x != 0 and c_y != 0:
-                        chip = Chip_and(c_x, c_y)
-                        guardar_chip_and.append(chip)
-                        c_x, c_y = 0, 0  # Resetear las coordenadas
-                        mm.color_chip = (162, 206, 143)
-            
-            elif mm.chip_pulsado and mm.chip_or_pulsado:
-                if not conector_cercano:
-                    pass
-                elif c_x == 0:
-                    c_x = conector_cercano.x
-                    c_y = conector_cercano.y
-                    if c_x != 0 and c_y != 0:
-                        chip = Chip_or(c_x, c_y)
-                        guardar_chip_or.append(chip)
-                        c_x, c_y = 0, 0  # Resetear las coordenadas
-                        mm.color_chip = (162, 206, 143)
-            
-            elif mm.chip_pulsado and mm.chip_not_pulsado:
-                if not conector_cercano:
-                    pass
-                elif c_x == 0:
-                    c_x = conector_cercano.x
-                    c_y = conector_cercano.y
-                    if c_x != 0 and c_y != 0:
-                        chip = Chip_not(c_x, c_y)
-                        guardar_chip_not.append(chip)
-                        c_x, c_y = 0, 0  # Resetear las coordenadas
-                        mm.color_chip = (162, 206, 143)
+            elif mm.chip_pulsado:
+                if mm.and_pulsado:
+                    if not conector_cercano:
+                        pass
+                    elif c_x == 0:
+                        c_x = conector_cercano.x
+                        c_y = conector_cercano.y
+                        if c_x != 0 and c_y != 0:
+                            chip = Chip(c_x, c_y)
+                            guardar_chip.append(chip)
+                            c_x, c_y = 0, 0  # Resetear las coordenadas
+                            mm.chip_pulsado = False
+                            mm.color_ship = (162, 206, 143)
+                            mm.and_pulsado = False
+                            mm.color_shipAND = (162, 206, 143)
+                if mm.or_pulsado:
+                    if not conector_cercano:
+                        pass
+                    elif c_or_x == 0:
+                        c_or_x = conector_cercano.x
+                        c_or_y = conector_cercano.y
+                        if c_or_x != 0 and c_or_y != 0:
+                            chip = Chip(c_or_x, c_or_y)
+                            guardar_chipOR.append(chip)
+                            c_or_x, c_or_y = 0, 0  # Resetear las coordenadas
+                            mm.chip_pulsado = False
+                            mm.color_ship = (162, 206, 143)
+                            mm.or_pulsado = False
+                            mm.color_shipOR = (162, 206, 143)
+
+                if mm.not_pulsado:
+                    if not conector_cercano:
+                        pass
+                    elif c_not_x == 0:
+                        c_not_x = conector_cercano.x
+                        c_not_y = conector_cercano.y
+                        if c_not_x != 0 and c_not_y != 0:
+                            chip = Chip(c_not_x, c_not_y)
+                            guardar_chipNOT.append(chip)
+                            c_not_x, c_not_y = 0, 0  # Resetear las coordenadas
+                            mm.chip_pulsado = False
+                            mm.color_ship = (162, 206, 143)
+                            mm.not_pulsado = False
+                            mm.color_shipNOT = (162, 206, 143)
 
             elif mm.cable_pulsado:
                 if c_1_editar is None:
