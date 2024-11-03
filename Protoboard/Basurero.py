@@ -10,7 +10,6 @@ class Basurero:
         self.guardar_chip_or=guardar_chipOR
         self.guardar_chip_not=guardar_chipNOT
 
-
     def eliminar_led(self,conector_cercano):
         #Buscador de led en la lista de los leds
         for led in self.guardar_led:
