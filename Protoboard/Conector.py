@@ -86,9 +86,7 @@ class Conector:
             elif destino.padre.nombre.startswith("pila"):
                 nuevo_padre = destino.padre
                 viejo_padre = origen.padre
-                print(origen.nombre, destino.nombre)
             else:
-
                 coincidencia_origen = 0
                 for nodo in self.conectores:
                     if nodo.padre == origen.padre:
@@ -106,11 +104,13 @@ class Conector:
                     nuevo_padre = destino.padre
                     viejo_padre = origen.padre
             self.actualizar_padre_subarbol(viejo_padre, nuevo_padre)
+
     def actualizar_padre_subarbol(self, viejo_padre, nuevo_padre):
         for nodo in self.conectores:
             if nodo.padre == viejo_padre:
                 nodo.padre = nuevo_padre
                 if not nodo.block:
+                    print(nodo.nombre)
                     nodo.fase = nuevo_padre.fase
                     nodo.neutro = nuevo_padre.neutro
     def buscar_conexiones(self,nodo, nodo_objetivo):
@@ -129,7 +129,6 @@ class Conector:
         if existe_conexion_alternativa:
             for i in visitados:
                 i.padre = nodo_objetivo
-
         else:
             nodo.padre = nodo
             nodo.fase = None

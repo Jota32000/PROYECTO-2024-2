@@ -386,19 +386,21 @@ while running:
                                 switch4 = Switch(conector_2_aux)
                                 pines_superior = buscar_pin(c4_x, c4_y, 2, 60, 0)
                                 switch4.pin2 = pines_superior[1]
-                                pines_inferior = buscar_pin(c4_x, c4_y, 2, 60, 0)
+                                pines_inferior = buscar_pin(c4_x, c4_y + 60, 2, 60, 0)
                                 switch4.pin3 = pines_inferior[0]
                                 switch4.pin4 = pines_inferior[1]
                                 guardar_switch.append(switch4)
+                                if (switch4.pin2.fase or switch4.pin2.neutro):
+                                    switch4.bandera = 21
+                                elif (switch4.pin4.fase or switch4.pin4.neutro):
+                                    switch4.bandera = 4
+                                switch4.pin1.agregar_conexion(switch4.pin2)
+                                switch4.pin3.agregar_conexion(switch4.pin4)
                                 c4_x, c4_y = 0, 0  # Resetear las coordenadas
                                 mm.switch_pulsado = False
                                 mm.color_switch = (162, 206, 143)
                                 mm.boton_switch2_pulsado = False
                                 mm.color_switch4 = (162, 206, 143)
-                                mm.editar_pulsado = False
-                                mm.color_editar = (162, 206, 143)
-                                conector_1_editar = None
-                                conector_2_editar = None
 
                 elif mm.boton_switch16_pulsado:
                     if conector_1_editar is None:
@@ -601,12 +603,17 @@ while running:
                             switch4 = Switch(conector_cercano)
                             pines_superior = buscar_pin(c4_x, c4_y, 2, 60, 0)
                             switch4.pin2 = pines_superior[1]
-                            pines_inferior = buscar_pin(c4_x, c4_y, 2, 60, 0)
+                            pines_inferior = buscar_pin(c4_x, c4_y+60, 2, 60, 0)
                             switch4.pin3 = pines_inferior[0]
                             switch4.pin4 = pines_inferior[1]
                             guardar_switch.append(switch4)
-                            #switch4.pin1.agregar_conexion(switch4.pin2)
-                            #switch4.pin3.agregar_conexion(switch4.pin4)
+                            if (switch4.pin2.fase or switch4.pin2.neutro):
+                                switch4.bandera=21
+                            elif (switch4.pin4.fase or switch4.pin4.neutro):
+                                switch4.bandera = 4
+                                print("si")
+                            switch4.pin1.agregar_conexion(switch4.pin2)
+                            switch4.pin3.agregar_conexion(switch4.pin4)
                             c4_x, c4_y = 0, 0  # Resetear las coordenadas
                             mm.switch_pulsado = False
                             mm.color_switch = (162, 206, 143)
