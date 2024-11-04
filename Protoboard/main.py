@@ -115,13 +115,10 @@ pygame.display.set_caption("Protoboard")
 mainClock = pygame.time.Clock()
 # Crear el cableado
 cableado = Cableado(conectores, cables)
-
 # Crear la resistencia
 resistencia = Resistencia(conectores, resistencias)
-
 # Crear el basurero
 basurero = Basurero(guardar_led, guardar_switch, conectores, cables, resistencias, guardar_switch16,guardar_chip,guardar_chipOR,guardar_chipNOT)
-
 fullscreen = False
 running = True
 x1, x2, x3, x4 = 0, 0, 0, 0
@@ -170,7 +167,7 @@ nueva_resistencia = None
 x_proto = (screen.get_width() - 650) // 2
 y_proto = (screen.get_height() - 300) // 2
 protoboard = Protoboard(x_proto, y_proto, conectores)
-
+pantalla_secundaria = True # Variable que permite intercalar entre la pantalla principal y secundaria
 # Crear y dibujar Pila
 x_pila = (screen.get_width() - 950) // 2
 y_pila = (screen.get_height() - 50) // 2
@@ -187,59 +184,53 @@ conector = Conector("1", 0, 0, conectores)
 font = pygame.font.Font(None, 24)  # Usa la fuente predeterminada con tamaño 24
 
 while running:
-    screen.fill("white")  # directo el color sin variables extra
-
-    protoboard.crear(screen)
-    conector.dibujar(screen)
-
-    pila.dibujarPila(screen)
-    # dibujar menu
-    mm.dibujar(screen)
-    clock = pygame.time.Clock()
-
-    for i in guardar_led:
-        i.led_apagada(screen)
-
-    for i in guardar_switch:
-        i.switch_proto(screen)
-
-    for i in cables:
-        i.dibujar_cables(screen)
-
-    for i in guardar_switch16:
-        i.dibujar(screen)
-
-    for i in resistencias:
-        i.dibujar_resistencia(screen)
-
-    for i in guardar_chip:
-        i.dibujar(screen)
-        i.chip_and()
-        texto = font.render("AND", True, (225,225,225))
-        texto_escalado = pygame.transform.scale(texto, (texto.get_width() * 2, texto.get_height()))
-        texto_rect = texto.get_rect(center=(i.x + i.largo // 2.5, i.y + i.ancho//1.5))
-        screen.blit(texto_escalado, texto_rect)
-    for i in guardar_chipOR:
-        i.dibujar(screen)
-        i.chip_or()
-        texto = font.render("OR", True, (225, 225, 225))
-        texto_escalado = pygame.transform.scale(texto, (texto.get_width() * 2, texto.get_height()))
-        texto_rect = texto.get_rect(center=(i.x + i.largo // 2.5, i.y + i.ancho // 1.5))
-        screen.blit(texto_escalado, texto_rect)
-    for i in guardar_chipNOT:
-        i.dibujar(screen)
-        i.chip_not()
-        texto = font.render("NOT", True, (225, 225, 225))
-        texto_escalado = pygame.transform.scale(texto, (texto.get_width() * 2, texto.get_height()))
-        texto_rect = texto.get_rect(center=(i.x + i.largo // 2.5, i.y + i.ancho // 1.5))
-        screen.blit(texto_escalado, texto_rect)
-
-
     # Manejo de eventos de la pantalla
     for event in pygame.event.get():
         if event.type == QUIT or event.type == K_ESCAPE or event.type == pygame.QUIT:
             running = False
         mm.manejar_eventos(event)
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+            pantalla_secundaria = not pantalla_secundaria # cambio de estado de la variable continuamente    
+        if not pantalla_secundaria:
+            mm.pantalla_secundaria(event,screen)
+        else:
+            screen.fill("white")  # directo el color sin variables extra
+            protoboard.crear(screen) # crear protoboard
+            conector.dibujar(screen) # crear conectores de la protoboard
+            pila.dibujarPila(screen) # dibujo de pila
+            mm.dibujar(screen) # dibujar menu
+            for i in guardar_led:
+                i.led_apagada(screen)
+            for i in guardar_switch:
+                i.switch_proto(screen)
+            for i in cables:
+                i.dibujar_cables(screen)
+            for i in guardar_switch16:
+                i.dibujar(screen)
+            for i in resistencias:
+                i.dibujar_resistencia(screen)
+            for i in guardar_chip:
+                i.dibujar(screen)
+                i.chip_and()
+                texto = font.render("AND", True, (225,225,225))
+                texto_escalado = pygame.transform.scale(texto, (texto.get_width() * 2, texto.get_height()))
+                texto_rect = texto.get_rect(center=(i.x + i.largo // 2.5, i.y + i.ancho//1.5))
+                screen.blit(texto_escalado, texto_rect)
+            for i in guardar_chipOR:
+                i.dibujar(screen)
+                i.chip_or()
+                texto = font.render("OR", True, (225, 225, 225))
+                texto_escalado = pygame.transform.scale(texto, (texto.get_width() * 2, texto.get_height()))
+                texto_rect = texto.get_rect(center=(i.x + i.largo // 2.5, i.y + i.ancho // 1.5))
+                screen.blit(texto_escalado, texto_rect)
+            for i in guardar_chipNOT:
+                i.dibujar(screen)
+                i.chip_not()
+                texto = font.render("NOT", True, (225, 225, 225))
+                texto_escalado = pygame.transform.scale(texto, (texto.get_width() * 2, texto.get_height()))
+                texto_rect = texto.get_rect(center=(i.x + i.largo // 2.5, i.y + i.ancho // 1.5))
+                screen.blit(texto_escalado, texto_rect)
+
         if event.type == VIDEORESIZE:
             if not fullscreen:
                 if event.w > 1000 or event.h > 650:
@@ -247,7 +238,7 @@ while running:
                 else:
                     screen = pygame.display.set_mode((1000, 650), pygame.RESIZABLE)
 
-        elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             mouse_pos = pygame.mouse.get_pos()  # Obtén la posición del mouse
             for switch4 in guardar_switch:
                 switch4.detectar_click(mouse_pos)
@@ -300,7 +291,6 @@ while running:
                             mm.color_led = (162, 206, 143)
                             mm.editar_pulsado = False
                             mm.color_editar = (162, 206, 143)
-
                     else:
                         print("error al editar led")
                 elif mm.cable_pulsado:
