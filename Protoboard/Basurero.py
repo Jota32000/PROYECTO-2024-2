@@ -17,18 +17,35 @@ class Basurero:
             conector_fin = led.conector2
             if conector_cercano == conector_inicio or conector_cercano == conector_fin:
                 self.guardar_led.remove(led)
+
     def eliminar_switch(self,conector):
         #Buscador de led en la lista de los switchs
         for switch in self.guardar_switch:
             #si se clickea en el rango correspondiente, se borra de la lista switch
             if conector == switch.pin1:
-                a, b = switch.pines2(0)  # Llama a pines2 para desconectar
-                if a is not None and b is not None:
-                    if switch.bandera == 2:
-                        b.eliminar_conexion(b, a)
-                    else:
-                        a.eliminar_conexion(a, b)
+                if switch.bandera == 2:
+                    #corriente desde abajo
+                    switch.pin2.eliminar_conexion(switch.pin2, switch.pin1)
+                    switch.pin1.eliminar_conexion(switch.pin1, switch.pin3)
+                    switch.pin4.eliminar_conexion(switch.pin4, switch.pin3)
+                elif switch.bandera == 21:
+                    #arriba derecha
+                    switch.pin3.eliminar_conexion(switch.pin3, switch.pin1)
+                    switch.pin4.eliminar_conexion(switch.pin4, switch.pin3)
+                    switch.pin1.eliminar_conexion(switch.pin1, switch.pin2)
+
+                elif switch.bandera == 4:
+                    #abajo derecha
+                    switch.pin1.eliminar_conexion(switch.pin1, switch.pin3)  # borra los pines 1 --> 3
+                    switch.pin2.eliminar_conexion(switch.pin2, switch.pin1)
+                    switch.pin3.eliminar_conexion(switch.pin3, switch.pin4)
+                else:
+                    # corriente desde arriba
+                    switch.pin4.eliminar_conexion(switch.pin4, switch.pin3) # borra los pines 4 --> 3
+                    switch.pin3.eliminar_conexion(switch.pin3, switch.pin1)
+                    switch.pin2.eliminar_conexion(switch.pin2, switch.pin1)
                 self.guardar_switch.remove(switch)
+
     def eliminar_cable(self,conector_cercano):
         #Buscador de cable en la lista de los cables
         for cable in self.cables:

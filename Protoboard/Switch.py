@@ -61,19 +61,16 @@ class Switch:
             # Cambiar el color del círculo cuando el estado cambia
             if self.estado:
                 self.color_circulo = self.color_encendido  # Cambiar al color encendido
-                a, b = self.pines2(0)  # Llama a pines2 con el índice 0
-                if a is not None and b is not None:
-                    if a.fase or a.neutro:
+                if self.pin3.fase or self.pin3.neutro:
+                    if self.bandera != 21 and self.bandera != 4:
                         self.bandera = 2
-                    a.agregar_conexion(b)
+                self.pin1.agregar_conexion(self.pin3)
             else:
                 self.color_circulo = (91, 91, 91)  # Volver al color apagado
-                a, b = self.pines2(0)  # Llama a pines2 para desconectar
-                if a is not None and b is not None:
-                    if self.bandera == 2:
-                        b.eliminar_conexion(b, a)
-                    else:
-                        a.eliminar_conexion(a, b)
+                if self.bandera == 2 or self.bandera == 4:
+                    self.pin1.eliminar_conexion(self.pin1, self.pin3)
+                else:
+                    self.pin3.eliminar_conexion(self.pin3,self.pin1)
 
     def pines2(self,i):
         if i==0:
