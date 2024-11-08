@@ -18,7 +18,6 @@ class Basurero:
             if conector_cercano == conector_inicio or conector_cercano == conector_fin:
                 self.guardar_led.remove(led)
 
-
     def eliminar_switch(self,conector):
         #Buscador de led en la lista de los switchs
         for switch in self.guardar_switch:
