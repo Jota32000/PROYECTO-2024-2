@@ -13,7 +13,6 @@ class Conector:
         self.padre = self
         self.conectores=conectores
         self.ocupado=False
-
     def dibujar(self,screen):
         #dibuja los puntos de la protoboard
         for conector in self.conectores:
@@ -104,13 +103,12 @@ class Conector:
                     nuevo_padre = destino.padre
                     viejo_padre = origen.padre
             self.actualizar_padre_subarbol(viejo_padre, nuevo_padre)
-
     def actualizar_padre_subarbol(self, viejo_padre, nuevo_padre):
         for nodo in self.conectores:
             if nodo.padre == viejo_padre:
                 nodo.padre = nuevo_padre
                 if not nodo.block:
-                    print(nodo.nombre)
+                    #print(nodo.nombre)
                     nodo.fase = nuevo_padre.fase
                     nodo.neutro = nuevo_padre.neutro
     def buscar_conexiones(self,nodo, nodo_objetivo):

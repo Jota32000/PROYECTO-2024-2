@@ -1,5 +1,4 @@
 import pygame
-
 class Menu:
     def __init__(self):
         self.x = 0
@@ -51,8 +50,8 @@ class Menu:
             pygame.draw.line(screen, color, (x, i),
                              (x + self.ancho, i))  # Dibuja una línea horizontal desde el borde izquierdo al derecho
 
-    def dibujar(self, screen):
-        ancho_pantalla, alto_pantalla = screen.get_size()
+    def dibujar(self, screen,screen2):
+        ancho_pantalla, alto_pantalla = screen2.get_size()
 
         # Calcular el ancho de la primera división
         numero_divisiones = 9
@@ -67,7 +66,6 @@ class Menu:
 
         # Lista de textos para cada división
         textos = ["CABLE", "LED", "SWITCH", "RESISTENCIA", "CHIP", "DISPLAY", "PROTOBOARD", "EDITAR", "BORRAR"]
-
         # Crear superficie para el botón LED (semi-transparente)
         boton_cable_surface = pygame.Surface((self.ancho_boton, 39), pygame.SRCALPHA)  # Botón CABLE
         boton_cable_surface.fill((0, 0, 0, 0))  # Rellenar la superficie con transparencia
@@ -126,21 +124,25 @@ class Menu:
         if(self.switch_pulsado):
             screen.blit(boton_switch2_surface, (x_inic + (self.ancho_boton * 2), 20))
             screen.blit(boton_switch16_surface, (x_inic + (self.ancho_boton * 2), 60))
+        else:
+            pygame.draw.line(screen, "white", (x_inic + (self.ancho_boton * 2) - 10, 100), (x_inic + (self.ancho_boton * 2) + 200, 100), 97) # Linea en blanco para cubrir los tipos de switchs cuando no se requieran
         screen.blit(boton_resistencia_surface, (x_inic + (self.ancho_boton * 3), 10))
         screen.blit(boton_ship_surface, (x_inic + (self.ancho_boton * 4), 10))
         if (self.chip_pulsado):
             screen.blit(boton_and_surface,(x_inic + (self.ancho_boton * 4), 20))
             screen.blit(boton_or_surface, (x_inic + (self.ancho_boton * 4), 58))
             screen.blit(boton_not_surface, (x_inic + (self.ancho_boton * 4), 95))
+        else:
+            pygame.draw.line(screen, "white", (x_inic + (self.ancho_boton * 4) - 10, 110), (x_inic + (self.ancho_boton * 4) + 200, 110), 118) # Linea en blanco para cubrir los tipos de chips cuando no se requieran
         screen.blit(boton_motor_surface, (x_inic + (self.ancho_boton * 5), 10))
         screen.blit(boton_proto_surface, (x_inic + (self.ancho_boton * 6), 10))
         screen.blit(boton_edicion_surface, (x_inic + (self.ancho_boton * 7), 10))
         screen.blit(boton_basurero_surface, (x_inic + (self.ancho_boton * 8), 10))
 
-        texto = "Presiona la barra espaciadora para mostrar instrucciones"
+        texto = "Presiona la barra espaciadora para ver instrucciones"
         font = pygame.font.Font(None, 24)
         texto_surface = font.render(texto,True,"black") # Renderizado del texto
-        texto_rect = texto_surface.get_rect(center=(self.x + 400 ,self.y + 100)) # Obtener la superficie en la pantalla del texto 
+        texto_rect = texto_surface.get_rect(center=(self.x + 220 ,self.y + 100)) # Obtener la superficie en la pantalla del texto 
         screen.blit(texto_surface,texto_rect) # Dibujar el texto en la pantalla en la posición deseada
 
         # Dibujar líneas verticales en las posiciones correspondientes y agregar texto

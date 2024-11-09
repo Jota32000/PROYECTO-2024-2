@@ -114,6 +114,17 @@ screen_height = screen_info.current_h
 # Crear la ventana con el tamaño ajustado
 screen = pygame.display.set_mode((1000, 650), pygame.RESIZABLE)
 
+################################################################################
+content_width, content_height = 2000, 1300  # Tamaño de la región de contenido
+content_surface = pygame.Surface((content_width, content_height))
+content_surface.fill("WHITE")
+
+scroll_x, scroll_y = 0, 0
+
+# Velocidad de desplazamiento
+scroll_speed = 50
+
+################################################################################
 pygame.display.set_caption("Protoboard")
 mainClock = pygame.time.Clock()
 # Crear el cableado
@@ -203,45 +214,58 @@ while running:
             mm.pantalla_secundaria(event,screen)
         else:
             screen.fill("white")  # directo el color sin variables extra
-            protoboard.crear(screen) # crear protoboard
-            conector.dibujar(screen) # crear conectores de la protoboard
-            pila.dibujarPila(screen) # dibujo de pila
-            motor.div_boton(screen)
-            mm.dibujar(screen) # dibujar menu
+            protoboard.crear(content_surface) # crear protoboard
+            conector.dibujar(content_surface) # crear conectores de la protoboard
+            pila.dibujarPila(content_surface) # dibujo de pila
+            motor.div_boton(content_surface)
+            mm.dibujar(content_surface,screen) # dibujar menu
             for i in guardar_led:
-                i.led_apagada(screen)
+                i.led_apagada(content_surface)
             for i in guardar_switch:
-                i.switch_proto(screen)
+                i.switch_proto(content_surface)
             for i in cables:
-                i.dibujar_cables(screen)
+                i.dibujar_cables(content_surface)
             for i in guardar_switch16:
-                i.dibujar(screen)
+                i.dibujar(content_surface)
             for i in resistencias:
-                i.dibujar_resistencia(screen)
+                i.dibujar_resistencia(content_surface)
             for i in guardar_chip:
-                i.dibujar(screen)
+                i.dibujar(content_surface)
                 i.chip_and()
                 texto = font.render("AND", True, (225,225,225))
                 texto_escalado = pygame.transform.scale(texto, (texto.get_width() * 2, texto.get_height()))
                 texto_rect = texto.get_rect(center=(i.x + i.largo // 2.5, i.y + i.ancho//1.5))
-                screen.blit(texto_escalado, texto_rect)
+                content_surface.blit(texto_escalado, texto_rect)
             for i in guardar_chipOR:
-                i.dibujar(screen)
+                i.dibujar(content_surface)
                 i.chip_or()
                 texto = font.render("OR", True, (225, 225, 225))
                 texto_escalado = pygame.transform.scale(texto, (texto.get_width() * 2, texto.get_height()))
                 texto_rect = texto.get_rect(center=(i.x + i.largo // 2.5, i.y + i.ancho // 1.5))
-                screen.blit(texto_escalado, texto_rect)
+                content_surface.blit(texto_escalado, texto_rect)
             for i in guardar_chipNOT:
-                i.dibujar(screen)
+                i.dibujar(content_surface)
                 i.chip_not()
                 texto = font.render("NOT", True, (225, 225, 225))
                 texto_escalado = pygame.transform.scale(texto, (texto.get_width() * 2, texto.get_height()))
                 texto_rect = texto.get_rect(center=(i.x + i.largo // 2.5, i.y + i.ancho // 1.5))
-                screen.blit(texto_escalado, texto_rect)
+                content_surface.blit(texto_escalado, texto_rect)
             for i in guardar_display:
-                i.dibujar(screen)
-
+                i.dibujar(content_surface)
+            
+            keys = pygame.key.get_pressed()
+    
+            # Desplazamiento en ambas direcciones con límites
+            if keys[pygame.K_UP] and scroll_y > 0:
+                scroll_y -= scroll_speed
+            if keys[pygame.K_DOWN] and scroll_y < content_height - screen_height:
+                scroll_y += scroll_speed
+            if keys[pygame.K_LEFT] and scroll_x > 0:
+                scroll_x -= scroll_speed
+            if keys[pygame.K_RIGHT] and scroll_x < content_width - screen_width:
+                scroll_x += scroll_speed
+            screen.blit(content_surface, (-scroll_x, -scroll_y))
+            
         if event.type == VIDEORESIZE:
             if not fullscreen:
                 if event.w > 1000 or event.h > 650:
@@ -608,7 +632,6 @@ while running:
                                 switch4.bandera=21
                             elif (switch4.pin4.fase or switch4.pin4.neutro):
                                 switch4.bandera = 4
-                                print("si")
                             switch4.pin1.agregar_conexion(switch4.pin2)
                             switch4.pin3.agregar_conexion(switch4.pin4)
                             c4_x, c4_y = 0, 0  # Resetear las coordenadas
@@ -773,7 +796,6 @@ while running:
                         display.pin10 = pines_inferior[4]
                         guardar_display.append(display)
                         dis_x, dis_y = 0, 0  # Resetear las coordenadas
-
 
             elif motor.verificar_click(event.pos):
                 print("Botón presionado, el color cambió.")
