@@ -26,7 +26,6 @@ class Conector:
                                      (conector.x + conector.largo, conector.y), 6)
                 elif conector.block:
                     conector.padre = conector
-
                     pygame.draw.line(screen, "orange", (conector.x, conector.y),
                                      (conector.x + conector.largo, conector.y), 6)
                 else:
@@ -110,7 +109,6 @@ class Conector:
             if nodo.padre == viejo_padre:
                 nodo.padre = nuevo_padre
                 if not nodo.block:
-                    print(nodo.nombre)
                     nodo.fase = nuevo_padre.fase
                     nodo.neutro = nuevo_padre.neutro
     def buscar_conexiones(self,nodo, nodo_objetivo):
