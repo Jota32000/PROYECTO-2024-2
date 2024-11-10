@@ -114,17 +114,12 @@ screen_height = screen_info.current_h
 # Crear la ventana con el tamaño ajustado
 screen = pygame.display.set_mode((1000, 650), pygame.RESIZABLE)
 
-################################################################################
-content_width, content_height = 2000, 1300  # Tamaño de la región de contenido
-content_surface = pygame.Surface((content_width, content_height))
+extension_x, extension_y = 2000, 1300  # Tamaño de la región de contenido
+content_surface = pygame.Surface((extension_x, extension_y))
 content_surface.fill("WHITE")
-
 scroll_x, scroll_y = 0, 0
+scroll_speed = 50 # Velocidad de desplazamiento
 
-# Velocidad de desplazamiento
-scroll_speed = 50
-
-################################################################################
 pygame.display.set_caption("Protoboard")
 mainClock = pygame.time.Clock()
 # Crear el cableado
@@ -211,7 +206,7 @@ while running:
         if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
             pantalla_secundaria = not pantalla_secundaria # cambio de estado de la variable continuamente    
         if not pantalla_secundaria:
-            mm.pantalla_secundaria(event,screen)
+            mm.pantalla_secundaria(screen)
         else:
             screen.fill("white")  # directo el color sin variables extra
             protoboard.crear(content_surface) # crear protoboard
@@ -258,11 +253,11 @@ while running:
             # Desplazamiento en ambas direcciones con límites
             if keys[pygame.K_UP] and scroll_y > 0:
                 scroll_y -= scroll_speed
-            if keys[pygame.K_DOWN] and scroll_y < content_height - screen_height:
+            if keys[pygame.K_DOWN] and scroll_y < extension_y - screen_height:
                 scroll_y += scroll_speed
             if keys[pygame.K_LEFT] and scroll_x > 0:
                 scroll_x -= scroll_speed
-            if keys[pygame.K_RIGHT] and scroll_x < content_width - screen_width:
+            if keys[pygame.K_RIGHT] and scroll_x < extension_x - screen_width:
                 scroll_x += scroll_speed
             screen.blit(content_surface, (-scroll_x, -scroll_y))
             
