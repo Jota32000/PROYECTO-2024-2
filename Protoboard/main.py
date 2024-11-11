@@ -476,7 +476,7 @@ while running:
                                 chip.pin6 = pines_superior[5]
                                 chip.pin7 = pines_superior[6]
                                 pines_inferior = buscar_pin(c_x, c_y + 30, 7, 30, 0)
-                                chip.pin8 = pines_superior[0]
+                                chip.pin8 = pines_inferior[0]
                                 chip.pin9 = pines_inferior[1]
                                 chip.pin10 = pines_inferior[2]
                                 chip.pin11 = pines_inferior[3]
@@ -486,13 +486,11 @@ while running:
                                 guardar_chip.append(chip)
                                 c_x, c_y = 0, 0  # Resetear las coordenadas
                                 mm.chip_pulsado = False
-                                mm.color_ship= (162, 206, 143)
+                                mm.color_ship = (162, 206, 143)
                                 mm.and_pulsado = False
                                 mm.color_shipAND = (162, 206, 143)
-                                mm.editar_pulsado = False
-                                mm.color_editar = (162, 206, 143)
-                                editar_andx = None
-                                editar_andY = None
+                                editar_orX = None
+                                editar_orY = None
                 elif mm.or_pulsado:
                     if editar_orX is None:
                         editar_orX=punto_mas_cercano(mouse_pos,conectores)
@@ -512,7 +510,7 @@ while running:
                                 chip.pin6 = pines_superior[5]
                                 chip.pin7 = pines_superior[6]
                                 pines_inferior = buscar_pin(c_or_x, c_or_y + 30, 7, 30, 0)
-                                chip.pin8 = pines_superior[0]
+                                chip.pin8 = pines_inferior[0]
                                 chip.pin9 = pines_inferior[1]
                                 chip.pin10 = pines_inferior[2]
                                 chip.pin11 = pines_inferior[3]
@@ -525,8 +523,6 @@ while running:
                                 mm.color_ship = (162, 206, 143)
                                 mm.or_pulsado = False
                                 mm.color_shipOR = (162, 206, 143)
-                                mm.editar_pulsado = False
-                                mm.color_editar = (162, 206, 143)
                                 editar_orX = None
                                 editar_orY = None
                 elif mm.not_pulsado:
@@ -548,7 +544,7 @@ while running:
                                 chip.pin6 = pines_superior[5]
                                 chip.pin7 = pines_superior[6]
                                 pines_inferior = buscar_pin(c_not_x, c_not_y + 30, 7, 30, 0)
-                                chip.pin8 = pines_superior[0]
+                                chip.pin8 = pines_inferior[0]
                                 chip.pin9 = pines_inferior[1]
                                 chip.pin10 = pines_inferior[2]
                                 chip.pin11 = pines_inferior[3]
@@ -561,8 +557,6 @@ while running:
                                 mm.color_ship = (162, 206, 143)
                                 mm.not_pulsado = False
                                 mm.color_shipNOT = (162, 206, 143)
-                                mm.editar_pulsado = False
-                                mm.color_editar = (162, 206, 143)
                                 editar_notX = None
                                 editar_notY = None
 
