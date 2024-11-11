@@ -14,6 +14,8 @@ from Led import Led
 from Switch_16 import Switch_16
 from Conector import Conector
 from Chip import Chip
+from Motor import Motor
+from Display import Display
 
 conectores = []
 cables = []
@@ -27,6 +29,7 @@ guardar_switch16 = []
 guardar_chip = []
 guardar_chipNOT=[]
 guardar_chipOR=[]
+guardar_display=[]
 
 def buscar_led(x, y):
     rango_click = 10
@@ -111,6 +114,12 @@ screen_height = screen_info.current_h
 # Crear la ventana con el tamaño ajustado
 screen = pygame.display.set_mode((1000, 650), pygame.RESIZABLE)
 
+extension_x, extension_y = 2000, 1300  # Tamaño de la región de contenido
+content_surface = pygame.Surface((extension_x, extension_y))
+content_surface.fill("WHITE")
+scroll_x, scroll_y = 0, 0
+scroll_speed = 50 # Velocidad de desplazamiento
+
 pygame.display.set_caption("Protoboard")
 mainClock = pygame.time.Clock()
 # Crear el cableado
@@ -163,6 +172,9 @@ c_not_y=0
 c4_x = 0
 c4_y = 0
 nueva_resistencia = None
+#display
+dis_x=0
+dis_y=0
 
 x_proto = (screen.get_width() - 650) // 2
 y_proto = (screen.get_height() - 300) // 2
@@ -180,6 +192,8 @@ pila_menos.neutro = True
 conectores.append(pila_mas)
 conectores.append(pila_menos)
 pila = Pila(x_pila, y_pila)
+motor=Motor(x_pila,y_pila+50)
+
 conector = Conector("1", 0, 0, conectores)
 font = pygame.font.Font(None, 24)  # Usa la fuente predeterminada con tamaño 24
 
@@ -192,45 +206,61 @@ while running:
         if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
             pantalla_secundaria = not pantalla_secundaria # cambio de estado de la variable continuamente    
         if not pantalla_secundaria:
-            mm.pantalla_secundaria(event,screen)
+            mm.pantalla_secundaria(screen)
         else:
             screen.fill("white")  # directo el color sin variables extra
-            protoboard.crear(screen) # crear protoboard
-            conector.dibujar(screen) # crear conectores de la protoboard
-            pila.dibujarPila(screen) # dibujo de pila
-            mm.dibujar(screen) # dibujar menu
+            protoboard.crear(content_surface) # crear protoboard
+            conector.dibujar(content_surface) # crear conectores de la protoboard
+            pila.dibujarPila(content_surface) # dibujo de pila
+            motor.div_boton(content_surface)
+            mm.dibujar(content_surface,screen) # dibujar menu
             for i in guardar_led:
-                i.led_apagada(screen)
+                i.led_apagada(content_surface)
             for i in guardar_switch:
-                i.switch_proto(screen)
+                i.switch_proto(content_surface)
             for i in cables:
-                i.dibujar_cables(screen)
+                i.dibujar_cables(content_surface)
             for i in guardar_switch16:
-                i.dibujar(screen)
+                i.dibujar(content_surface)
             for i in resistencias:
-                i.dibujar_resistencia(screen)
+                i.dibujar_resistencia(content_surface)
             for i in guardar_chip:
-                i.dibujar(screen)
+                i.dibujar(content_surface)
                 i.chip_and()
                 texto = font.render("AND", True, (225,225,225))
                 texto_escalado = pygame.transform.scale(texto, (texto.get_width() * 2, texto.get_height()))
                 texto_rect = texto.get_rect(center=(i.x + i.largo // 2.5, i.y + i.ancho//1.5))
-                screen.blit(texto_escalado, texto_rect)
+                content_surface.blit(texto_escalado, texto_rect)
             for i in guardar_chipOR:
-                i.dibujar(screen)
+                i.dibujar(content_surface)
                 i.chip_or()
                 texto = font.render("OR", True, (225, 225, 225))
                 texto_escalado = pygame.transform.scale(texto, (texto.get_width() * 2, texto.get_height()))
                 texto_rect = texto.get_rect(center=(i.x + i.largo // 2.5, i.y + i.ancho // 1.5))
-                screen.blit(texto_escalado, texto_rect)
+                content_surface.blit(texto_escalado, texto_rect)
             for i in guardar_chipNOT:
-                i.dibujar(screen)
+                i.dibujar(content_surface)
                 i.chip_not()
                 texto = font.render("NOT", True, (225, 225, 225))
                 texto_escalado = pygame.transform.scale(texto, (texto.get_width() * 2, texto.get_height()))
                 texto_rect = texto.get_rect(center=(i.x + i.largo // 2.5, i.y + i.ancho // 1.5))
-                screen.blit(texto_escalado, texto_rect)
-
+                content_surface.blit(texto_escalado, texto_rect)
+            for i in guardar_display:
+                i.dibujar(content_surface)
+            
+            keys = pygame.key.get_pressed()
+    
+            # Desplazamiento en ambas direcciones con límites
+            if keys[pygame.K_UP] and scroll_y > 0:
+                scroll_y -= scroll_speed
+            if keys[pygame.K_DOWN] and scroll_y < extension_y - screen_height:
+                scroll_y += scroll_speed
+            if keys[pygame.K_LEFT] and scroll_x > 0:
+                scroll_x -= scroll_speed
+            if keys[pygame.K_RIGHT] and scroll_x < extension_x - screen_width:
+                scroll_x += scroll_speed
+            screen.blit(content_surface, (-scroll_x, -scroll_y))
+            
         if event.type == VIDEORESIZE:
             if not fullscreen:
                 if event.w > 1000 or event.h > 650:
@@ -327,7 +357,6 @@ while running:
                             cable_editar = None
                         else:
                             print("conector 4 no válido, es igual a conector 1, 2 o 3")
-
                 elif mm.res_pulsado:
                     if c_1_editar is None:
                         c_1_editar = punto_mas_cercano(mouse_pos, conectores)
@@ -362,7 +391,6 @@ while running:
                             cable_editar = None
                         else:
                             print("conector 4 no válido, es igual a conector 1, 2 o 3")
-
                 elif mm.boton_switch2_pulsado:
                     if conector_1_editar is None:
                         conector_1_editar = punto_mas_cercano(mouse_pos, conectores)
@@ -391,7 +419,6 @@ while running:
                                 mm.color_switch = (162, 206, 143)
                                 mm.boton_switch2_pulsado = False
                                 mm.color_switch4 = (162, 206, 143)
-
                 elif mm.boton_switch16_pulsado:
                     if conector_1_editar is None:
                         conector_1_editar = punto_mas_cercano(mouse_pos, conectores)
@@ -430,7 +457,6 @@ while running:
                                 mm.color_editar = (162, 206, 143)
                                 conector_1_editar = None
                                 conector_2_editar = None
-
                 elif mm.and_pulsado:
                     if editar_andX is None:
                         editar_andX=punto_mas_cercano(mouse_pos,conectores)
@@ -450,7 +476,7 @@ while running:
                                 chip.pin6 = pines_superior[5]
                                 chip.pin7 = pines_superior[6]
                                 pines_inferior = buscar_pin(c_x, c_y + 30, 7, 30, 0)
-                                chip.pin8 = pines_superior[0]
+                                chip.pin8 = pines_inferior[0]
                                 chip.pin9 = pines_inferior[1]
                                 chip.pin10 = pines_inferior[2]
                                 chip.pin11 = pines_inferior[3]
@@ -460,13 +486,11 @@ while running:
                                 guardar_chip.append(chip)
                                 c_x, c_y = 0, 0  # Resetear las coordenadas
                                 mm.chip_pulsado = False
-                                mm.color_ship= (162, 206, 143)
+                                mm.color_ship = (162, 206, 143)
                                 mm.and_pulsado = False
                                 mm.color_shipAND = (162, 206, 143)
-                                mm.editar_pulsado = False
-                                mm.color_editar = (162, 206, 143)
-                                editar_andx = None
-                                editar_andY = None
+                                editar_orX = None
+                                editar_orY = None
                 elif mm.or_pulsado:
                     if editar_orX is None:
                         editar_orX=punto_mas_cercano(mouse_pos,conectores)
@@ -486,7 +510,7 @@ while running:
                                 chip.pin6 = pines_superior[5]
                                 chip.pin7 = pines_superior[6]
                                 pines_inferior = buscar_pin(c_or_x, c_or_y + 30, 7, 30, 0)
-                                chip.pin8 = pines_superior[0]
+                                chip.pin8 = pines_inferior[0]
                                 chip.pin9 = pines_inferior[1]
                                 chip.pin10 = pines_inferior[2]
                                 chip.pin11 = pines_inferior[3]
@@ -499,8 +523,6 @@ while running:
                                 mm.color_ship = (162, 206, 143)
                                 mm.or_pulsado = False
                                 mm.color_shipOR = (162, 206, 143)
-                                mm.editar_pulsado = False
-                                mm.color_editar = (162, 206, 143)
                                 editar_orX = None
                                 editar_orY = None
                 elif mm.not_pulsado:
@@ -522,7 +544,7 @@ while running:
                                 chip.pin6 = pines_superior[5]
                                 chip.pin7 = pines_superior[6]
                                 pines_inferior = buscar_pin(c_not_x, c_not_y + 30, 7, 30, 0)
-                                chip.pin8 = pines_superior[0]
+                                chip.pin8 = pines_inferior[0]
                                 chip.pin9 = pines_inferior[1]
                                 chip.pin10 = pines_inferior[2]
                                 chip.pin11 = pines_inferior[3]
@@ -535,8 +557,6 @@ while running:
                                 mm.color_ship = (162, 206, 143)
                                 mm.not_pulsado = False
                                 mm.color_shipNOT = (162, 206, 143)
-                                mm.editar_pulsado = False
-                                mm.color_editar = (162, 206, 143)
                                 editar_notX = None
                                 editar_notY = None
 
@@ -601,7 +621,6 @@ while running:
                                 switch4.bandera=21
                             elif (switch4.pin4.fase or switch4.pin4.neutro):
                                 switch4.bandera = 4
-                                print("si")
                             switch4.pin1.agregar_conexion(switch4.pin2)
                             switch4.pin3.agregar_conexion(switch4.pin4)
                             c4_x, c4_y = 0, 0  # Resetear las coordenadas
@@ -669,7 +688,6 @@ while running:
                             mm.color_ship = (162, 206, 143)
                             mm.or_pulsado = False
                             mm.color_shipOR = (162, 206, 143)
-
                 if mm.not_pulsado:
                     if not conector_cercano:
                         pass
@@ -747,14 +765,38 @@ while running:
                         print("conector 2 no válido, es igual al conector 1")
 
             elif mm.motor_pulsado:
-                for c in conectores:
-                    if not c.nombre.startswith("pila"):
-                        c.fase = None
-                        c.neutro = None
-            elif not mm.motor_pulsado:
-                for c in conectores:
-                    c.fase = c.padre.fase
-                    c.neutro = c.padre.neutro
+                if not conector_cercano:
+                    pass
+                elif dis_x == 0:
+                    dis_x = conector_cercano.x
+                    dis_y = conector_cercano.y
+                    if dis_x != 0 and dis_y != 0:
+                        display = Display(conector_cercano)
+                        pines_superior = buscar_pin(dis_x, dis_y, 5, 30, 0)
+                        display.pin2 = pines_superior[1]
+                        display.pin3 = pines_superior[2]
+                        display.pin4 = pines_superior[3]
+                        display.pin5 = pines_superior[4]
+                        pines_inferior = buscar_pin(dis_x, dis_y + (30*5), 5, 30, 0)
+                        display.pin6 = pines_inferior[0]
+                        display.pin7 = pines_inferior[1]
+                        display.pin8 = pines_inferior[2]
+                        display.pin9 = pines_inferior[3]
+                        display.pin10 = pines_inferior[4]
+                        guardar_display.append(display)
+                        dis_x, dis_y = 0, 0  # Resetear las coordenadas
+
+            elif motor.verificar_click(event.pos):
+                print("Botón presionado, el color cambió.")
+                if motor.estado_boton:
+                    for c in conectores:
+                        if not c.nombre.startswith("pila"):
+                            c.fase = None
+                            c.neutro = None
+                else:
+                    for c in conectores:
+                        c.fase = c.padre.fase
+                        c.neutro = c.padre.neutro
 
     if not mm.editar_pulsado and not mm.res_pulsado:
         cableado.dibujar_cable_actual(screen, c_1_editar)
