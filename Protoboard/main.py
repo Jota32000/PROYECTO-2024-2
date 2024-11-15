@@ -208,7 +208,7 @@ while running:
         if not pantalla_secundaria:
             mm.pantalla_secundaria(screen)
         else:
-            screen.fill("white")  # directo el color sin variables extra
+            content_surface.fill("white")  # directo el color sin variables extra
             protoboard.crear(content_surface) # crear protoboard
             conector.dibujar(content_surface) # crear conectores de la protoboard
             pila.dibujarPila(content_surface) # dibujo de pila
