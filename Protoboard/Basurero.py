@@ -102,14 +102,42 @@ class Basurero:
         for chip in self.guardar_chip_and:
             if conector is not None:
                if (chip.x,chip.y) == (conector.x,conector.y):
+
+                   if (chip.pin1.fase == True) and (chip.pin2.fase and chip.pin3.fase) and (chip.pin14.neutro == True):
+                       chip.pin4.eliminar_conexion(chip.pin4, chip.pin1)
+                   if (chip.pin1.fase == True) and (chip.pin5.fase and chip.pin6.fase) and (
+                           chip.pin14.neutro == True):
+                       chip.pin7.eliminar_conexion(chip.pin7, chip.pin1)
+                   if (chip.pin1.fase == True) and (chip.pin8.fase and chip.pin9.fase) and (
+                           chip.pin14.neutro == True):
+                       chip.pin10.eliminar_conexion(chip.pin10, chip.pin1)
+                   if (chip.pin1.fase == True) and (chip.pin11.fase and chip.pin12.fase) and (
+                           chip.pin14.neutro == True):
+                       chip.pin13.eliminar_conexion(chip.pin13, chip.pin1)
+
                    self.guardar_chip_and.remove(chip)
     def eliminar_chip_or(self,conector):
         for chip in self.guardar_chip_or:
             if conector is not None:
                if (chip.x,chip.y) == (conector.x,conector.y):
+                   if (chip.pin1.fase == True) and (chip.pin4.fase) and (chip.pin14.neutro == True):
+                       chip.pin4.eliminar_conexion(chip.pin4, chip.pin1)
+                   if (chip.pin1.fase == True) and (chip.pin7.fase) and (chip.pin14.neutro == True):
+                       chip.pin7.eliminar_conexion(chip.pin7, chip.pin1)
+                   if (chip.pin1.fase == True) and (chip.pin10.fase) and (chip.pin14.neutro == True):
+                       chip.pin10.eliminar_conexion(chip.pin10, chip.pin1)
+                   if (chip.pin1.fase == True) and (chip.pin13.fase) and (chip.pin14.neutro == True):
+                       chip.pin13.eliminar_conexion(chip.pin13, chip.pin1)
                    self.guardar_chip_or.remove(chip)
     def eliminar_chip_not(self,conector):
         for chip in self.guardar_chip_not:
             if conector is not None:
                if (chip.x,chip.y) == (conector.x,conector.y):
+                   if (chip.pin1.fase == True) and (chip.pin14.neutro == True):
+                       chip.pin3.eliminar_conexion(chip.pin3, chip.pin1)
+                       chip.pin5.eliminar_conexion(chip.pin5, chip.pin1)
+                       chip.pin7.eliminar_conexion(chip.pin7, chip.pin1)
+                       chip.pin9.eliminar_conexion(chip.pin9, chip.pin1)
+                       chip.pin11.eliminar_conexion(chip.pin11, chip.pin1)
+                       chip.pin13.eliminar_conexion(chip.pin13, chip.pin1)
                    self.guardar_chip_not.remove(chip)
