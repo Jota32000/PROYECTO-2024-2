@@ -2,8 +2,9 @@ import pygame
 import math
 
 class Led:
-    def __init__(self,color,conector1,conector2):
-        self.color=color
+    def __init__(self,color,color2,conector1,conector2):
+        self.color_p=color2
+        self.color_a=color
         self.conector1 = conector1
         self.conector2 = conector2
         self.x = (conector1.x + conector2.x) // 2
@@ -24,9 +25,9 @@ class Led:
             corriente_conector2 = False
         # Cambiar color del LED según si ambos conectores tienen corriente
         if corriente_conector1 and corriente_conector2:
-            self.color = (250, 0, 0)  # Color rojo para encendido
+            self.color= self.color_p
         else:
-            self.color = (110, 0, 0)  # Color rojo oscuro para apagado
+            self.color = self.color_a
         x =  (self.conector1.x+self.conector2.x)//2
         y = (self.conector1.y+self.conector2.y)//2
         pygame.draw.line(screen, (0, 0, 0, 0), (self.conector1.x, self.conector1.y), (x, y), 2)

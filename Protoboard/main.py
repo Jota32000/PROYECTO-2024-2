@@ -561,16 +561,81 @@ while running:
                                 editar_notY = None
 
             elif mm.led_pulsado:
-                if conector_1_editar is None:
-                    conector_1_editar = punto_mas_cercano(mouse_pos, conectores)
-                elif conector_2_editar is None:
-                    conector_2_aux = punto_mas_cercano(mouse_pos, conectores)
-                    if conector_2_aux is not None and conector_2_aux != conector_1_editar:
-                        conector_2_editar = conector_2_aux
-                        led_a = Led((0,0,0), conector_1_editar, conector_2_editar)
-                        guardar_led.append(led_a)
-                        conector_1_editar = None
-                        conector_2_editar = None
+                if mm.led1_pulsado:
+                    if conector_1_editar is None:
+                        conector_1_editar = punto_mas_cercano(mouse_pos, conectores)
+                    elif conector_2_editar is None:
+                        conector_2_aux = punto_mas_cercano(mouse_pos, conectores)
+                        if conector_2_aux is not None and conector_2_aux != conector_1_editar:
+                            conector_2_editar = conector_2_aux
+                            led_a = Led((165, 0, 0),(255, 0, 0), conector_1_editar, conector_2_editar)
+                            guardar_led.append(led_a)
+                            conector_1_editar = None
+                            conector_2_editar = None
+                            mm.led_pulsado = False
+                            mm.color_led = (162, 206, 143)
+                            mm.led1_pulsado = False
+                            mm.color_led1 = (162, 206, 143)
+                if mm.led2_pulsado:
+                    if conector_1_editar is None:
+                        conector_1_editar = punto_mas_cercano(mouse_pos, conectores)
+                    elif conector_2_editar is None:
+                        conector_2_aux = punto_mas_cercano(mouse_pos, conectores)
+                        if conector_2_aux is not None and conector_2_aux != conector_1_editar:
+                            conector_2_editar = conector_2_aux
+                            led_a = Led((39, 150, 44),(0, 255, 12), conector_1_editar, conector_2_editar)
+                            guardar_led.append(led_a)
+                            conector_1_editar = None
+                            conector_2_editar = None
+                            mm.led_pulsado = False
+                            mm.color_led = (162, 206, 143)
+                            mm.led2_pulsado = False
+                            mm.color_led2 = (162, 206, 143)
+                if mm.led3_pulsado:
+                    if conector_1_editar is None:
+                        conector_1_editar = punto_mas_cercano(mouse_pos, conectores)
+                    elif conector_2_editar is None:
+                        conector_2_aux = punto_mas_cercano(mouse_pos, conectores)
+                        if conector_2_aux is not None and conector_2_aux != conector_1_editar:
+                            conector_2_editar = conector_2_aux
+                            led_a = Led((236, 243, 91),(243, 255, 0 ), conector_1_editar, conector_2_editar)
+                            guardar_led.append(led_a)
+                            conector_1_editar = None
+                            conector_2_editar = None
+                            mm.led_pulsado = False
+                            mm.color_led = (162, 206, 143)
+                            mm.led3_pulsado = False
+                            mm.color_led3 = (162, 206, 143)
+                if mm.led4_pulsado:
+                    if conector_1_editar is None:
+                        conector_1_editar = punto_mas_cercano(mouse_pos, conectores)
+                    elif conector_2_editar is None:
+                        conector_2_aux = punto_mas_cercano(mouse_pos, conectores)
+                        if conector_2_aux is not None and conector_2_aux != conector_1_editar:
+                            conector_2_editar = conector_2_aux
+                            led_a = Led((42, 49, 126 ),(0, 19, 255  ), conector_1_editar, conector_2_editar)
+                            guardar_led.append(led_a)
+                            conector_1_editar = None
+                            conector_2_editar = None
+                            mm.led_pulsado = False
+                            mm.color_led = (162, 206, 143)
+                            mm.led4_pulsado = False
+                            mm.color_led4 = (162, 206, 143)
+                if mm.led5_pulsado:
+                    if conector_1_editar is None:
+                        conector_1_editar = punto_mas_cercano(mouse_pos, conectores)
+                    elif conector_2_editar is None:
+                        conector_2_aux = punto_mas_cercano(mouse_pos, conectores)
+                        if conector_2_aux is not None and conector_2_aux != conector_1_editar:
+                            conector_2_editar = conector_2_aux
+                            led_a = Led((134, 62, 156),(197, 0, 255), conector_1_editar, conector_2_editar)
+                            guardar_led.append(led_a)
+                            conector_1_editar = None
+                            conector_2_editar = None
+                            mm.led_pulsado = False
+                            mm.color_led = (162, 206, 143)
+                            mm.led5_pulsado = False
+                            mm.color_led5 = (162, 206, 143)
             elif mm.switch_pulsado:
                 if mm.boton_switch16_pulsado:
                     if not conector_cercano:
