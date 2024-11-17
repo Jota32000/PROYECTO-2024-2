@@ -1,4 +1,6 @@
 import pygame
+from Protoboard import Protoboard  
+from Conector import Conector
 class Menu:
     def __init__(self):
         self.x = 0
@@ -598,6 +600,9 @@ class Menu:
                 else:
                     self.proto_pulsado = True
                     self.color_proto = self.color_pulsar
+            #elif self.proto_pulsado and event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            #    x, y = event.pos
+            #    print(f"Clic en: ({x}, {y})")               
 
             # Coordenadas y dimensiones del área del botón EDITAR
             boton_editar_x = 7 * self.ancho_boton
@@ -626,3 +631,5 @@ class Menu:
                 else:
                     self.borrar_pulsado = True
                     self.color_borrar = self.color_pulsar
+
+            
