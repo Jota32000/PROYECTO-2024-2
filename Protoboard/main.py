@@ -128,7 +128,7 @@ cableado = Cableado(conectores, cables)
 # Crear la resistencia
 resistencia = Resistencia(conectores, resistencias)
 # Crear el basurero
-basurero = Basurero(guardar_led, guardar_switch, conectores, cables, resistencias, guardar_switch16,guardar_chip,guardar_chipOR,guardar_chipNOT)
+basurero = Basurero(guardar_led, guardar_switch, conectores, cables, resistencias, guardar_switch16,guardar_chip,guardar_chipOR,guardar_chipNOT,guardar_display)
 fullscreen = False
 running = True
 x1, x2, x3, x4 = 0, 0, 0, 0
@@ -274,6 +274,8 @@ while running:
                     basurero.eliminar_chip_or(conector_cercano)
                 elif mm.not_pulsado:
                     basurero.eliminar_chip_not(conector_cercano)
+                elif mm.motor_pulsado:
+                    basurero.eliminar_display(conector_cercano)
                 conectores[0].padre = conectores[0]
                 conectores[0].fase = True
                 conectores[1].padre = conectores[1]
@@ -469,6 +471,7 @@ while running:
                                 mm.color_shipAND = (162, 206, 143)
                                 editar_orX = None
                                 editar_orY = None
+                                aux_andY = None
                 elif mm.or_pulsado:
                     if editar_orX is None:
                         editar_orX=punto_mas_cercano(mouse_pos,conectores)
@@ -503,6 +506,7 @@ while running:
                                 mm.color_shipOR = (162, 206, 143)
                                 editar_orX = None
                                 editar_orY = None
+                                aux_or = None
                 elif mm.not_pulsado:
                     if editar_notX  is None:
                         editar_notX=punto_mas_cercano(mouse_pos,conectores)
@@ -537,6 +541,35 @@ while running:
                                 mm.color_shipNOT = (162, 206, 143)
                                 editar_notX = None
                                 editar_notY = None
+                                aux_not = None
+
+                elif mm.motor_pulsado:
+                    if editar_notX  is None:
+                        editar_notX=punto_mas_cercano(mouse_pos,conectores)
+                    elif editar_notY is None:
+                        aux_not = punto_mas_cercano(mouse_pos, conectores)
+                        if aux_not is not None and aux_not != editar_notX:
+                            basurero.eliminar_display(editar_notX)
+                            dis_x = aux_not.x
+                            dis_y = aux_not.y
+                            if dis_x != 0 and dis_y != 0:
+                                display = Display(conector_cercano)
+                                pines_superior = buscar_pin(dis_x, dis_y, 5, 30, 0)
+                                display.pin2 = pines_superior[1]
+                                display.pin3 = pines_superior[2]
+                                display.pin4 = pines_superior[3]
+                                display.pin5 = pines_superior[4]
+                                pines_inferior = buscar_pin(dis_x, dis_y + (30 * 5), 5, 30, 0)
+                                display.pin6 = pines_inferior[0]
+                                display.pin7 = pines_inferior[1]
+                                display.pin8 = pines_inferior[2]
+                                display.pin9 = pines_inferior[3]
+                                display.pin10 = pines_inferior[4]
+                                guardar_display.append(display)
+                                dis_x, dis_y = 0, 0  # Resetear las coordenadas
+                                editar_notX = None
+                                editar_notY = None
+                                aux_not = None
             elif mm.led_pulsado:
                 if mm.led1_pulsado:
                     if conector_1_editar is None:
