@@ -1,4 +1,6 @@
 import pygame
+from Protoboard import Protoboard  
+from Conector import Conector
 class Menu:
     def __init__(self):
         self.x = 0
@@ -7,6 +9,11 @@ class Menu:
         self.color = (162, 206, 143)
         self.color_cable = (162, 206, 143)
         self.color_led = (162, 206, 143)
+        self.color_led1 = (162, 206, 143)
+        self.color_led2 = (162, 206, 143)
+        self.color_led3 = (162, 206, 143)
+        self.color_led4 = (162, 206, 143)
+        self.color_led5 = (162, 206, 143)
         self.color_switch = (162, 206, 143)
         self.color_switch4 = (162, 206, 143)
         self.color_switch16 = (162, 206, 143)
@@ -24,6 +31,11 @@ class Menu:
         self.font = pygame.font.Font(None, 22)
         self.cable_pulsado = False
         self.led_pulsado = False
+        self.led1_pulsado = False
+        self.led2_pulsado = False
+        self.led3_pulsado = False
+        self.led4_pulsado = False
+        self.led5_pulsado = False
         self.switch_pulsado = False
         self.res_pulsado = False
         self.chip_pulsado = False
@@ -71,6 +83,17 @@ class Menu:
         boton_cable_surface.fill((0, 0, 0, 0))  # Rellenar la superficie con transparencia
         boton_led_surface = pygame.Surface((self.ancho_boton, 39), pygame.SRCALPHA)  # Botón LED
         boton_led_surface.fill((0, 0, 0, 0))  # Rellenar la superficie con transparencia
+        if (self.led_pulsado):
+            boton_led1_surface=pygame.Surface((self.ancho_boton, 60), pygame.SRCALPHA)
+            boton_led1_surface.fill((0, 0, 0, 0))  # Rellenar la superficie con transparencia
+            boton_led2_surface = pygame.Surface((self.ancho_boton, 60), pygame.SRCALPHA)
+            boton_led2_surface.fill((0, 0, 0, 0))  # Rellenar la superficie con transparencia
+            boton_led3_surface = pygame.Surface((self.ancho_boton, 60), pygame.SRCALPHA)
+            boton_led3_surface.fill((0, 0, 0, 0))  # Rellenar la superficie con transparencia
+            boton_led4_surface = pygame.Surface((self.ancho_boton, 60), pygame.SRCALPHA)
+            boton_led4_surface.fill((0, 0, 0, 0))  # Rellenar la superficie con transparencia
+            boton_led5_surface = pygame.Surface((self.ancho_boton, 60), pygame.SRCALPHA)
+            boton_led5_surface.fill((0, 0, 0, 0))  # Rellenar la superficie con transparencia
         boton_switch_surface = pygame.Surface((self.ancho_boton, 39), pygame.SRCALPHA)  # Botón Switch
         boton_switch_surface.fill((0, 0, 0, 0))  # Rellenar la superficie con transparencia
         if(self.switch_pulsado):
@@ -98,9 +121,15 @@ class Menu:
         boton_basurero_surface = pygame.Surface((self.ancho_boton, 39), pygame.SRCALPHA)  # Boton basurero
         boton_basurero_surface.fill((0, 0, 0, 0))  # Rellenar la superficie con transparencia
         x_inic = 0
-        # Dibujar el botón en la superficie del botón LED
+        # Dibujar el botón en la superficie del botón
         self.div_boton(boton_cable_surface, x_inic, 3, self.color_cable)
         self.div_boton(boton_led_surface, 0, 3, self.color_led)
+        if self.led_pulsado:
+            self.div_boton(boton_led1_surface,0,35,self.color_led1)
+            self.div_boton(boton_led2_surface, 0, 35, self.color_led2)
+            self.div_boton(boton_led3_surface, 0, 35, self.color_led3)
+            self.div_boton(boton_led4_surface, 0, 35, self.color_led4)
+            self.div_boton(boton_led5_surface, 0, 35, self.color_led5)
         self.div_boton(boton_switch_surface, 0, 3, self.color_switch)
         if(self.switch_pulsado):
             #este hace la separacion vertical del boton
@@ -120,12 +149,19 @@ class Menu:
         # Blitear la superficie del botón
         screen.blit(boton_cable_surface, (0, 10))
         screen.blit(boton_led_surface, (x_inic + self.ancho_boton, 10))
+        if self.led_pulsado:
+            screen.blit(boton_led1_surface, (x_inic + (self.ancho_boton), 20))
+            screen.blit(boton_led2_surface, (x_inic + (self.ancho_boton), 48))
+            screen.blit(boton_led3_surface, (x_inic + (self.ancho_boton), 76))
+            screen.blit(boton_led4_surface, (x_inic + (self.ancho_boton), 104))
+            screen.blit(boton_led5_surface, (x_inic + (self.ancho_boton), 132))
+        #else:pygame.draw.line(screen, "white", (x_inic + (self.ancho_boton) , 100), (x_inic + (self.ancho_boton) + 200, 100), 97)
         screen.blit(boton_switch_surface, (x_inic + (self.ancho_boton * 2), 10))
         if(self.switch_pulsado):
             screen.blit(boton_switch2_surface, (x_inic + (self.ancho_boton * 2), 20))
             screen.blit(boton_switch16_surface, (x_inic + (self.ancho_boton * 2), 60))
         else:
-            pygame.draw.line(screen, "white", (x_inic + (self.ancho_boton * 2) - 10, 100), (x_inic + (self.ancho_boton * 2) + 200, 100), 97) # Linea en blanco para cubrir los tipos de switchs cuando no se requieran
+            pygame.draw.line(screen, "white", (x_inic + (self.ancho_boton * 2) , 100), (x_inic + (self.ancho_boton * 2) + 200, 100), 97) # Linea en blanco para cubrir los tipos de switchs cuando no se requieran
         screen.blit(boton_resistencia_surface, (x_inic + (self.ancho_boton * 3), 10))
         screen.blit(boton_ship_surface, (x_inic + (self.ancho_boton * 4), 10))
         if (self.chip_pulsado):
@@ -133,7 +169,7 @@ class Menu:
             screen.blit(boton_or_surface, (x_inic + (self.ancho_boton * 4), 58))
             screen.blit(boton_not_surface, (x_inic + (self.ancho_boton * 4), 95))
         else:
-            pygame.draw.line(screen, "white", (x_inic + (self.ancho_boton * 4) - 10, 110), (x_inic + (self.ancho_boton * 4) + 200, 110), 118) # Linea en blanco para cubrir los tipos de chips cuando no se requieran
+            pygame.draw.line(screen, "white", (x_inic + (self.ancho_boton * 4), 110), (x_inic + (self.ancho_boton * 4) + 200, 110), 118) # Linea en blanco para cubrir los tipos de chips cuando no se requieran
         screen.blit(boton_motor_surface, (x_inic + (self.ancho_boton * 5), 10))
         screen.blit(boton_proto_surface, (x_inic + (self.ancho_boton * 6), 10))
         screen.blit(boton_edicion_surface, (x_inic + (self.ancho_boton * 7), 10))
@@ -177,6 +213,22 @@ class Menu:
                 pygame.draw.line(screen, (0, 0, 0), (self.ancho_boton * 4, 90), (x_pos, 90), 3)
                 pygame.draw.line(screen, (0, 0, 0), (self.ancho_boton * 4, 128), (x_pos, 128), 3)
                 pygame.draw.line(screen, (0, 0, 0), (self.ancho_boton * 4, 165), (x_pos, 165), 3)
+            if textos[i]=="LED" and self.led_pulsado:
+                texto_renderizado5 = self.font.render("ROJO", True, (0, 0, 0))
+                texto_rect5 = texto_renderizado5.get_rect(center=(x_pos - self.ancho_boton // 2, 67))
+                screen.blit(texto_renderizado5, texto_rect5)
+                texto_renderizado6 = self.font.render("VERDE", True, (0, 0, 0))
+                texto_rect6 = texto_renderizado6.get_rect(center=(x_pos - self.ancho_boton // 2, 97))
+                screen.blit(texto_renderizado6, texto_rect6)
+                texto_renderizado7 = self.font.render("AMARILLO", True, (0, 0, 0))
+                texto_rect7 = texto_renderizado7.get_rect(center=(x_pos - self.ancho_boton // 2, 125))
+                screen.blit(texto_renderizado7, texto_rect7)
+                texto_renderizado8 = self.font.render("AZUL", True, (0, 0, 0))
+                texto_rect8 = texto_renderizado8.get_rect(center=(x_pos - self.ancho_boton // 2, 153))
+                screen.blit(texto_renderizado8, texto_rect8)
+                texto_renderizado9 = self.font.render("MORADO", True, (0, 0, 0))
+                texto_rect9 = texto_renderizado9.get_rect(center=(x_pos - self.ancho_boton // 2, 180))
+                screen.blit(texto_renderizado9, texto_rect9)
 
             texto_renderizado = self.font.render(textos[i], True, (0, 0, 0))  # Color negro para el texto
             # Posicionar el texto en el centro de cada división
@@ -326,7 +378,6 @@ class Menu:
             boton_cable_y = 3
             boton_cable_ancho = self.ancho_boton
             boton_cable_alto = 45
-
             if boton_cable_x <= mouse_x <= boton_cable_x + boton_cable_ancho and boton_cable_y <= mouse_y <= boton_cable_y + boton_cable_alto:
                 # Cambiar el color del botón CABLE
                 if (self.cable_pulsado == True):
@@ -341,7 +392,6 @@ class Menu:
             boton_led_y = 3
             boton_led_ancho = self.ancho_boton
             boton_led_alto = 45
-
             if boton_led_x <= mouse_x <= boton_led_x + boton_led_ancho and boton_led_y <= mouse_y <= boton_led_y + boton_led_alto:
                 # Cambiar el color del botón led
                 if (self.led_pulsado == True):
@@ -350,12 +400,76 @@ class Menu:
                 else:
                     self.led_pulsado = True
                     self.color_led = self.color_pulsar
+
+            # Coordenadas y dimensiones del área del botón led1
+            boton_led1_x = self.ancho_boton
+            boton_led1_y = 35
+            boton_led1_ancho = self.ancho_boton
+            boton_led1_alto = 45
+            if boton_led1_x <= mouse_x <= boton_led1_x + boton_led1_ancho and boton_led1_y <= mouse_y <= boton_led1_y + boton_led1_alto:
+                if self.led1_pulsado:
+                    self.led1_pulsado = False
+                    self.color_led1 = self.color  # Regresar al color original
+                else:
+                    self.led1_pulsado = True
+                    self.color_led1= self.color_pulsar  # Cambiar al color pulsado
+
+            # Coordenadas y dimensiones del área del botón led2
+            boton_led2_x = self.ancho_boton
+            boton_led2_y = 81
+            boton_led2_ancho = self.ancho_boton
+            boton_led2_alto = 25
+            if boton_led2_x <= mouse_x <= boton_led2_x + boton_led2_ancho and boton_led2_y <= mouse_y <= boton_led2_y + boton_led2_alto:
+                if self.led2_pulsado:
+                    self.led2_pulsado = False
+                    self.color_led2 = self.color  # Regresar al color original
+                else:
+                    self.led2_pulsado = True
+                    self.color_led2 = self.color_pulsar  # Cambiar al color pulsado
+
+            # Coordenadas y dimensiones del área del botón led3
+            boton_led3_x = self.ancho_boton
+            boton_led3_y = 110
+            boton_led3_ancho = self.ancho_boton
+            boton_led3_alto = 25
+            if boton_led3_x <= mouse_x <= boton_led3_x + boton_led3_ancho and boton_led3_y <= mouse_y <= boton_led3_y + boton_led3_alto:
+                if self.led3_pulsado:
+                    self.led3_pulsado = False
+                    self.color_led3 = self.color  # Regresar al color original
+                else:
+                    self.led3_pulsado = True
+                    self.color_led3 = self.color_pulsar  # Cambiar al color pulsado
+
+            # Coordenadas y dimensiones del área del botón led4
+            boton_led4_x = self.ancho_boton
+            boton_led4_y = 137
+            boton_led4_ancho = self.ancho_boton
+            boton_led4_alto = 25
+            if boton_led4_x <= mouse_x <= boton_led4_x + boton_led4_ancho and boton_led4_y <= mouse_y <= boton_led4_y + boton_led4_alto:
+                if self.led4_pulsado:
+                    self.led4_pulsado = False
+                    self.color_led4 = self.color  # Regresar al color original
+                else:
+                    self.led4_pulsado = True
+                    self.color_led4 = self.color_pulsar  # Cambiar al color pulsado
+
+            # Coordenadas y dimensiones del área del botón led5
+            boton_led5_x = self.ancho_boton
+            boton_led5_y = 164
+            boton_led5_ancho = self.ancho_boton
+            boton_led5_alto = 25
+            if boton_led5_x <= mouse_x <= boton_led5_x + boton_led5_ancho and boton_led5_y <= mouse_y <= boton_led5_y + boton_led5_alto:
+                if self.led5_pulsado:
+                    self.led5_pulsado = False
+                    self.color_led5 = self.color  # Regresar al color original
+                else:
+                    self.led5_pulsado = True
+                    self.color_led5 = self.color_pulsar  # Cambiar al color pulsado
             # Coordenadas y dimensiones del área del botón SWITCH
             boton_switch_x = 2 * self.ancho_boton
             boton_switch_y = 2
             boton_switch_ancho = self.ancho_boton
             boton_switch_alto = 45
-
             if boton_switch_x <= mouse_x <= boton_switch_x + boton_switch_ancho and boton_switch_y <= mouse_y <= boton_switch_y + boton_switch_alto:
                 # Cambiar el color del botón SWITCH
                 if (self.switch_pulsado == True):
@@ -370,7 +484,6 @@ class Menu:
             boton_switch4_y = 47
             boton_switch4_ancho = self.ancho_boton
             boton_switch4_alto = 43
-
             if boton_switch4_x <= mouse_x <= boton_switch4_x + boton_switch4_ancho and boton_switch4_y <= mouse_y <= boton_switch4_y + boton_switch4_alto:
                 # Cambiar el color del botón SWITCH de 4 pines
                 if self.boton_switch2_pulsado:
@@ -398,7 +511,6 @@ class Menu:
             boton_resistencia_y = 3
             boton_resistencia_ancho = self.ancho_boton
             boton_resistencia_alto = 45
-
             if boton_resistencia_x <= mouse_x <= boton_resistencia_x + boton_resistencia_ancho and boton_resistencia_y <= mouse_y <= boton_resistencia_y + boton_resistencia_alto:
                 # Cambiar el color del botón RESISTENCIA
                 if (self.res_pulsado == True):
@@ -413,7 +525,6 @@ class Menu:
             boton_shp_y = 3
             boton_shp_ancho = self.ancho_boton
             boton_shp_alto = 45
-
             if boton_shp_x <= mouse_x <= boton_shp_x + boton_shp_ancho and boton_shp_y <= mouse_y <= boton_shp_y + boton_shp_alto:
                 # Cambiar el color del botón SHP
                 if (self.chip_pulsado == True):
@@ -428,7 +539,6 @@ class Menu:
             boton_and_y = 50
             boton_and_ancho = self.ancho_boton
             boton_and_alto = 40
-
             if boton_and_x <= mouse_x <= boton_and_x + boton_and_ancho and boton_and_y <= mouse_y <= boton_and_y + boton_and_alto:
                 if self.and_pulsado:
                     self.and_pulsado = False
@@ -442,7 +552,6 @@ class Menu:
             boton_or_y = 92
             boton_or_ancho = self.ancho_boton
             boton_or_alto = 35
-
             if boton_or_x <= mouse_x <= boton_or_x + boton_or_ancho and boton_or_y <= mouse_y <= boton_or_y + boton_or_alto:
                 if self.or_pulsado:
                     self.or_pulsado = False
@@ -456,7 +565,6 @@ class Menu:
             boton_not_y = 129
             boton_not_ancho = self.ancho_boton
             boton_not_alto = 35
-
             if boton_not_x <= mouse_x <= boton_not_x + boton_not_ancho and boton_not_y <= mouse_y <= boton_not_y + boton_not_alto:
                 if self.not_pulsado:
                     self.not_pulsado = False
@@ -470,7 +578,6 @@ class Menu:
             boton_motor_y = 3
             boton_motor_ancho = self.ancho_boton
             boton_motor_alto = 45
-
             if boton_motor_x <= mouse_x <= boton_motor_x + boton_motor_ancho and boton_motor_y <= mouse_y <= boton_motor_y + boton_motor_alto:
                 # Cambiar el color del botón MOTOR
                 if (self.motor_pulsado == True):
@@ -485,7 +592,6 @@ class Menu:
             boton_proto_y = 3
             boton_proto_ancho = self.ancho_boton
             boton_proto_alto = 45
-
             if boton_proto_x <= mouse_x <= boton_proto_x + boton_proto_ancho and boton_proto_y <= mouse_y <= boton_proto_y + boton_proto_alto:
                 # Cambiar el color del botón PROTO
                 if (self.proto_pulsado == True):
@@ -494,13 +600,15 @@ class Menu:
                 else:
                     self.proto_pulsado = True
                     self.color_proto = self.color_pulsar
+            #elif self.proto_pulsado and event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            #    x, y = event.pos
+            #    print(f"Clic en: ({x}, {y})")               
 
             # Coordenadas y dimensiones del área del botón EDITAR
             boton_editar_x = 7 * self.ancho_boton
             boton_editar_y = 3
             boton_editar_ancho = self.ancho_boton
             boton_editar_alto = 45
-
             if boton_editar_x <= mouse_x <= boton_editar_x + boton_editar_ancho and boton_editar_y <= mouse_y <= boton_editar_y + boton_editar_alto:
                 # Cambiar el color del botón EDITAR
                 if (self.editar_pulsado == True):
@@ -515,7 +623,6 @@ class Menu:
             boton_borrar_y = 3
             boton_borrar_ancho = self.ancho_boton
             boton_borrar_alto = 45
-
             if boton_borrar_x <= mouse_x <= boton_borrar_x + boton_borrar_ancho and boton_borrar_y <= mouse_y <= boton_borrar_y + boton_borrar_alto:
                 # Cambiar el color del botón BORRAR
                 if (self.borrar_pulsado == True):
@@ -524,3 +631,5 @@ class Menu:
                 else:
                     self.borrar_pulsado = True
                     self.color_borrar = self.color_pulsar
+
+            

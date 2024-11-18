@@ -30,6 +30,7 @@ guardar_chip = []
 guardar_chipNOT=[]
 guardar_chipOR=[]
 guardar_display=[]
+guardar_protoboard = []
 
 def buscar_led(x, y):
     rango_click = 10
@@ -114,11 +115,11 @@ screen_height = screen_info.current_h
 # Crear la ventana con el tamaño ajustado
 screen = pygame.display.set_mode((1000, 650), pygame.RESIZABLE)
 
-extension_x, extension_y = 2000, 1300  # Tamaño de la región de contenido
+extension_x, extension_y = 3000, 1950  # Tamaño de la región de contenido
 content_surface = pygame.Surface((extension_x, extension_y))
 content_surface.fill("WHITE")
 scroll_x, scroll_y = 0, 0
-scroll_speed = 50 # Velocidad de desplazamiento
+scroll_speed = 100 # Velocidad de desplazamiento
 
 pygame.display.set_caption("Protoboard")
 mainClock = pygame.time.Clock()
@@ -127,7 +128,7 @@ cableado = Cableado(conectores, cables)
 # Crear la resistencia
 resistencia = Resistencia(conectores, resistencias)
 # Crear el basurero
-basurero = Basurero(guardar_led, guardar_switch, conectores, cables, resistencias, guardar_switch16,guardar_chip,guardar_chipOR,guardar_chipNOT)
+basurero = Basurero(guardar_led, guardar_switch, conectores, cables, resistencias, guardar_switch16,guardar_chip,guardar_chipOR,guardar_chipNOT,guardar_display)
 fullscreen = False
 running = True
 x1, x2, x3, x4 = 0, 0, 0, 0
@@ -137,49 +138,29 @@ ultimo_conector = None
 mm = Menu()
 
 # editar led
-led_a_editar = None
-conector_1_editar = None
-conector_2_editar = None
+led_a_editar, conector_1_editar, conector_2_editar = None, None, None
 
 # editar switch
-switch_editar = None
-c_1_editar = None
-c_2_editar = None
-c_3_editar = None
-c_4_editar = None
-nuevo_cable = None
-cable_editar = None
+switch_editar, c_1_editar, c_2_editar, c_3_editar, c_4_editar = None, None, None, None, None
+nuevo_cable, cable_editar = None, None
 # editar switch 16
-c16_1 = 0
-c16_2 = 0
+c16_1, c16_2 = 0, 0
 # chip and datos
-editar_andX=None
-editar_andY=None
-c_x = 0
-c_y = 0
+editar_andX, editar_andY = None, None
+c_x, c_y = 0, 0
 #chip or datos
-editar_orX=None
-editar_orY=None
-c_or_x=0
-c_or_y=0
+editar_orX, editar_orY = None, None
+c_or_x, c_or_y = 0, 0
 #chip not datos
-editar_notX=None
-editar_notY=None
-c_not_x=0
-c_not_y=0
-
+editar_notX, editar_notY = None, None
+c_not_x, c_not_y = 0 , 0
 # switch 4
-c4_x = 0
-c4_y = 0
+c4_x, c4_y  = 0, 0
 nueva_resistencia = None
 #display
-dis_x=0
-dis_y=0
-
-x_proto = (screen.get_width() - 650) // 2
-y_proto = (screen.get_height() - 300) // 2
-protoboard = Protoboard(x_proto, y_proto, conectores)
+dis_x, dis_y = 0, 0
 pantalla_secundaria = True # Variable que permite intercalar entre la pantalla principal y secundaria
+
 # Crear y dibujar Pila
 x_pila = (screen.get_width() - 950) // 2
 y_pila = (screen.get_height() - 50) // 2
@@ -194,7 +175,7 @@ conectores.append(pila_menos)
 pila = Pila(x_pila, y_pila)
 motor=Motor(x_pila,y_pila+50)
 
-conector = Conector("1", 0, 0, conectores)
+conector = Conector("1", 0, 0, conectores) # Declaración clase Conector
 font = pygame.font.Font(None, 24)  # Usa la fuente predeterminada con tamaño 24
 
 while running:
@@ -208,12 +189,11 @@ while running:
         if not pantalla_secundaria:
             mm.pantalla_secundaria(screen)
         else:
-            content_surface.fill("white")  # directo el color sin variables extra
-            protoboard.crear(content_surface) # crear protoboard
             conector.dibujar(content_surface) # crear conectores de la protoboard
             pila.dibujarPila(content_surface) # dibujo de pila
             motor.div_boton(content_surface)
             mm.dibujar(content_surface,screen) # dibujar menu
+            
             for i in guardar_led:
                 i.led_apagada(content_surface)
             for i in guardar_switch:
@@ -249,7 +229,6 @@ while running:
                 i.dibujar(content_surface)
             
             keys = pygame.key.get_pressed()
-    
             # Desplazamiento en ambas direcciones con límites
             if keys[pygame.K_UP] and scroll_y > 0:
                 scroll_y -= scroll_speed
@@ -276,7 +255,6 @@ while running:
                 switch16.detectar_click(mouse_pos)
             mouse_pos = event.pos
             conector_cercano = punto_mas_cercano(mouse_pos, conectores)
-
             x, y = event.pos
             if mm.borrar_pulsado:  # Opciones para eliminar componentes
                 if mm.led_pulsado:
@@ -296,6 +274,8 @@ while running:
                     basurero.eliminar_chip_or(conector_cercano)
                 elif mm.not_pulsado:
                     basurero.eliminar_chip_not(conector_cercano)
+                elif mm.motor_pulsado:
+                    basurero.eliminar_display(conector_cercano)
                 conectores[0].padre = conectores[0]
                 conectores[0].fase = True
                 conectores[1].padre = conectores[1]
@@ -491,6 +471,7 @@ while running:
                                 mm.color_shipAND = (162, 206, 143)
                                 editar_orX = None
                                 editar_orY = None
+                                aux_andY = None
                 elif mm.or_pulsado:
                     if editar_orX is None:
                         editar_orX=punto_mas_cercano(mouse_pos,conectores)
@@ -525,6 +506,7 @@ while running:
                                 mm.color_shipOR = (162, 206, 143)
                                 editar_orX = None
                                 editar_orY = None
+                                aux_or = None
                 elif mm.not_pulsado:
                     if editar_notX  is None:
                         editar_notX=punto_mas_cercano(mouse_pos,conectores)
@@ -559,18 +541,111 @@ while running:
                                 mm.color_shipNOT = (162, 206, 143)
                                 editar_notX = None
                                 editar_notY = None
+                                aux_not = None
 
+                elif mm.motor_pulsado:
+                    if editar_notX  is None:
+                        editar_notX=punto_mas_cercano(mouse_pos,conectores)
+                    elif editar_notY is None:
+                        aux_not = punto_mas_cercano(mouse_pos, conectores)
+                        if aux_not is not None and aux_not != editar_notX:
+                            basurero.eliminar_display(editar_notX)
+                            dis_x = aux_not.x
+                            dis_y = aux_not.y
+                            if dis_x != 0 and dis_y != 0:
+                                display = Display(conector_cercano)
+                                pines_superior = buscar_pin(dis_x, dis_y, 5, 30, 0)
+                                display.pin2 = pines_superior[1]
+                                display.pin3 = pines_superior[2]
+                                display.pin4 = pines_superior[3]
+                                display.pin5 = pines_superior[4]
+                                pines_inferior = buscar_pin(dis_x, dis_y + (30 * 5), 5, 30, 0)
+                                display.pin6 = pines_inferior[0]
+                                display.pin7 = pines_inferior[1]
+                                display.pin8 = pines_inferior[2]
+                                display.pin9 = pines_inferior[3]
+                                display.pin10 = pines_inferior[4]
+                                guardar_display.append(display)
+                                dis_x, dis_y = 0, 0  # Resetear las coordenadas
+                                editar_notX = None
+                                editar_notY = None
+                                aux_not = None
             elif mm.led_pulsado:
-                if conector_1_editar is None:
-                    conector_1_editar = punto_mas_cercano(mouse_pos, conectores)
-                elif conector_2_editar is None:
-                    conector_2_aux = punto_mas_cercano(mouse_pos, conectores)
-                    if conector_2_aux is not None and conector_2_aux != conector_1_editar:
-                        conector_2_editar = conector_2_aux
-                        led_a = Led((0,0,0), conector_1_editar, conector_2_editar)
-                        guardar_led.append(led_a)
-                        conector_1_editar = None
-                        conector_2_editar = None
+                if mm.led1_pulsado:
+                    if conector_1_editar is None:
+                        conector_1_editar = punto_mas_cercano(mouse_pos, conectores)
+                    elif conector_2_editar is None:
+                        conector_2_aux = punto_mas_cercano(mouse_pos, conectores)
+                        if conector_2_aux is not None and conector_2_aux != conector_1_editar:
+                            conector_2_editar = conector_2_aux
+                            led_a = Led((165, 0, 0),(255, 0, 0), conector_1_editar, conector_2_editar)
+                            guardar_led.append(led_a)
+                            conector_1_editar = None
+                            conector_2_editar = None
+                            mm.led_pulsado = False
+                            mm.color_led = (162, 206, 143)
+                            mm.led1_pulsado = False
+                            mm.color_led1 = (162, 206, 143)
+                if mm.led2_pulsado:
+                    if conector_1_editar is None:
+                        conector_1_editar = punto_mas_cercano(mouse_pos, conectores)
+                    elif conector_2_editar is None:
+                        conector_2_aux = punto_mas_cercano(mouse_pos, conectores)
+                        if conector_2_aux is not None and conector_2_aux != conector_1_editar:
+                            conector_2_editar = conector_2_aux
+                            led_a = Led((39, 150, 44),(0, 255, 12), conector_1_editar, conector_2_editar)
+                            guardar_led.append(led_a)
+                            conector_1_editar = None
+                            conector_2_editar = None
+                            mm.led_pulsado = False
+                            mm.color_led = (162, 206, 143)
+                            mm.led2_pulsado = False
+                            mm.color_led2 = (162, 206, 143)
+                if mm.led3_pulsado:
+                    if conector_1_editar is None:
+                        conector_1_editar = punto_mas_cercano(mouse_pos, conectores)
+                    elif conector_2_editar is None:
+                        conector_2_aux = punto_mas_cercano(mouse_pos, conectores)
+                        if conector_2_aux is not None and conector_2_aux != conector_1_editar:
+                            conector_2_editar = conector_2_aux
+                            led_a = Led((236, 243, 91),(243, 255, 0 ), conector_1_editar, conector_2_editar)
+                            guardar_led.append(led_a)
+                            conector_1_editar = None
+                            conector_2_editar = None
+                            mm.led_pulsado = False
+                            mm.color_led = (162, 206, 143)
+                            mm.led3_pulsado = False
+                            mm.color_led3 = (162, 206, 143)
+                if mm.led4_pulsado:
+                    if conector_1_editar is None:
+                        conector_1_editar = punto_mas_cercano(mouse_pos, conectores)
+                    elif conector_2_editar is None:
+                        conector_2_aux = punto_mas_cercano(mouse_pos, conectores)
+                        if conector_2_aux is not None and conector_2_aux != conector_1_editar:
+                            conector_2_editar = conector_2_aux
+                            led_a = Led((42, 49, 126 ),(0, 19, 255  ), conector_1_editar, conector_2_editar)
+                            guardar_led.append(led_a)
+                            conector_1_editar = None
+                            conector_2_editar = None
+                            mm.led_pulsado = False
+                            mm.color_led = (162, 206, 143)
+                            mm.led4_pulsado = False
+                            mm.color_led4 = (162, 206, 143)
+                if mm.led5_pulsado:
+                    if conector_1_editar is None:
+                        conector_1_editar = punto_mas_cercano(mouse_pos, conectores)
+                    elif conector_2_editar is None:
+                        conector_2_aux = punto_mas_cercano(mouse_pos, conectores)
+                        if conector_2_aux is not None and conector_2_aux != conector_1_editar:
+                            conector_2_editar = conector_2_aux
+                            led_a = Led((134, 62, 156),(197, 0, 255), conector_1_editar, conector_2_editar)
+                            guardar_led.append(led_a)
+                            conector_1_editar = None
+                            conector_2_editar = None
+                            mm.led_pulsado = False
+                            mm.color_led = (162, 206, 143)
+                            mm.led5_pulsado = False
+                            mm.color_led5 = (162, 206, 143)
             elif mm.switch_pulsado:
                 if mm.boton_switch16_pulsado:
                     if not conector_cercano:
@@ -628,7 +703,6 @@ while running:
                             mm.color_switch = (162, 206, 143)
                             mm.boton_switch2_pulsado = False
                             mm.color_switch4 = (162, 206, 143)
-
             elif mm.chip_pulsado:
                 if mm.and_pulsado:
                     if not conector_cercano:
@@ -717,7 +791,6 @@ while running:
                             mm.color_ship = (162, 206, 143)
                             mm.not_pulsado = False
                             mm.color_shipNOT = (162, 206, 143)
-
             elif mm.cable_pulsado:
                 if c_1_editar is None:
                     c_1_editar = punto_mas_cercano(mouse_pos, conectores)
@@ -740,7 +813,6 @@ while running:
                         c_2_editar = None
                     else:
                         print("conector 2 no válido, es igual al conector 1")
-
             elif mm.res_pulsado:
                 if c_1_editar is None:
                     c_1_editar = punto_mas_cercano(mouse_pos, conectores)
@@ -763,7 +835,6 @@ while running:
                         c_2_editar = None
                     else:
                         print("conector 2 no válido, es igual al conector 1")
-
             elif mm.motor_pulsado:
                 if not conector_cercano:
                     pass
@@ -785,7 +856,6 @@ while running:
                         display.pin10 = pines_inferior[4]
                         guardar_display.append(display)
                         dis_x, dis_y = 0, 0  # Resetear las coordenadas
-
             elif motor.verificar_click(event.pos):
                 print("Botón presionado, el color cambió.")
                 if motor.estado_boton:
@@ -797,7 +867,16 @@ while running:
                     for c in conectores:
                         c.fase = c.padre.fase
                         c.neutro = c.padre.neutro
-
+            if mm.proto_pulsado:
+                x, y = event.pos
+                if (x <= 660 or x >= 780) and (y <= 10 or y >= 50):
+                    content_surface.fill("white")
+                    protoboard = Protoboard(x,y, conectores,len(guardar_protoboard))
+                    guardar_protoboard.append(protoboard)
+                
+                    for protoboard in guardar_protoboard: # Ciclo para visualizar cada protoboard
+                        protoboard.crear(content_surface)
+                                                                   
     if not mm.editar_pulsado and not mm.res_pulsado:
         cableado.dibujar_cable_actual(screen, c_1_editar)
     elif not mm.editar_pulsado and not mm.cable_pulsado:

@@ -31,7 +31,7 @@ class Switch_16:
         self.pin14 = None
         self.pin15 = None
         self.pin16 = None
-        self.bandera = 1
+        self.bandera = [1] * 8 # hace eso: [1, 1, 1, 1, 1, 1, 1, 1] sino da out of range
 
     def crear_botones(self):
         for i in range(8):
@@ -71,13 +71,15 @@ class Switch_16:
                     a,b=self.pines2(i)
                     if a!=None and b!=None:
                         if a.fase or a.neutro:
-                            self.bandera = 2
+                            self.bandera[i] = 2 # ahora verifica por cada pareja no solo 1 vez
+                        else:
+                            self.bandera[i] = 1
                         a.agregar_conexion(b)
                 else:
                     self.boton_colores[i] = self.cApagado  # Cambiar a apagado
                     a, b = self.pines2(i)
                     if a != None and b != None:
-                        if self.bandera==2:
+                        if self.bandera[i] == 2:
                             b.eliminar_conexion(b,a)
                         else:
                             a.eliminar_conexion(a, b)
