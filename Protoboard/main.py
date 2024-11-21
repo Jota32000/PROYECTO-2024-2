@@ -630,7 +630,7 @@ while running:
                         conector_2_aux = punto_mas_cercano(mouse_pos, conectores)
                         if conector_2_aux is not None and conector_2_aux != conector_1_editar:
                             conector_2_editar = conector_2_aux
-                            led_a = Led((236, 243, 91),(243, 255, 0 ), conector_1_editar, conector_2_editar)
+                            led_a = Led((153, 162, 14),(243, 255, 0 ), conector_1_editar, conector_2_editar)
                             guardar_led.append(led_a)
                             conector_1_editar = None
                             conector_2_editar = None
@@ -645,7 +645,7 @@ while running:
                         conector_2_aux = punto_mas_cercano(mouse_pos, conectores)
                         if conector_2_aux is not None and conector_2_aux != conector_1_editar:
                             conector_2_editar = conector_2_aux
-                            led_a = Led((42, 49, 126 ),(0, 19, 255  ), conector_1_editar, conector_2_editar)
+                            led_a = Led((25, 29, 110),(0, 19, 255  ), conector_1_editar, conector_2_editar)
                             guardar_led.append(led_a)
                             conector_1_editar = None
                             conector_2_editar = None
@@ -660,7 +660,7 @@ while running:
                         conector_2_aux = punto_mas_cercano(mouse_pos, conectores)
                         if conector_2_aux is not None and conector_2_aux != conector_1_editar:
                             conector_2_editar = conector_2_aux
-                            led_a = Led((134, 62, 156),(197, 0, 255), conector_1_editar, conector_2_editar)
+                            led_a = Led((86, 26, 103),(197, 0, 255), conector_1_editar, conector_2_editar)
                             guardar_led.append(led_a)
                             conector_1_editar = None
                             conector_2_editar = None
