@@ -1,5 +1,5 @@
 # python 3.9 2024-2.3
-#pycharm de jetbrains
+# pycharm de jetbrains
 import pygame
 import math
 from pygame.locals import *
@@ -31,6 +31,7 @@ guardar_chipNOT=[]
 guardar_chipOR=[]
 guardar_display=[]
 guardar_protoboard = []
+coordenadas_pantalla = [0, 0]  # Desplazamiento de la cámara
 
 def buscar_led(x, y):
     rango_click = 10
@@ -105,6 +106,26 @@ def buscar_pin(x, y, cantidad, lado_x, lado_y):
         i += 1
     return pines
 
+def movimiento_camara(tecla):
+    global coordenadas_pantalla
+    if tecla[pygame.K_LEFT]:  # Mover cámara hacia la izquierda
+        opc=1
+        protoboard.actualizar_coordenadas_conectores(opc)
+        protoboard.actualizar_coordenadas_protoboard(opc)
+    if tecla[pygame.K_RIGHT]:  # Mover cámara hacia la derecha
+        opc=2
+        protoboard.actualizar_coordenadas_conectores(opc)
+        protoboard.actualizar_coordenadas_protoboard(opc)
+    if tecla[pygame.K_UP]:  # Mover cámara hacia arriba
+        opc=3
+        protoboard.actualizar_coordenadas_conectores(opc)
+        protoboard.actualizar_coordenadas_protoboard(opc)
+    if tecla[pygame.K_DOWN]:  # Mover cámara hacia abajo
+        opc=4
+        protoboard.actualizar_coordenadas_conectores(opc)
+        protoboard.actualizar_coordenadas_protoboard(opc)
+
+    
 # Main
 pygame.init()
 # Obtener el tamaño de la pantalla
@@ -167,7 +188,7 @@ pila_menos.neutro = True
 conectores.append(pila_mas)
 conectores.append(pila_menos)
 pila = Pila(x_pila, y_pila)
-motor=Motor(x_pila,y_pila+50)
+motor = Motor(x_pila,y_pila+50)
 
 conector = Conector("1", 0, 0, conectores) # Declaración clase Conector
 font = pygame.font.Font(None, 24)  # Usa la fuente predeterminada con tamaño 24
@@ -184,13 +205,16 @@ while running:
         if not pantalla_secundaria:
             mm.pantalla_secundaria(screen)
         else:
+            tecla = pygame.key.get_pressed()
+            movimiento_camara(tecla)
             screen.fill("white")
             pila.dibujarPila(screen) # dibujo de pila
             motor.div_boton(screen)
             mm.dibujar(screen) # dibujar menu
-            for protoboard in guardar_protoboard: # Ciclo para visualizar cada protoboard con sus componentes
-                protoboard.crear(screen)
-                conector.dibujar(screen)       
+            for protoboard in guardar_protoboard:
+                if len(guardar_protoboard) > 0:
+                    protoboard.crear(screen)
+                    conector.dibujar(screen)                  
             for i in guardar_led:
                 i.led_apagada(screen)
             for i in guardar_switch:
@@ -224,7 +248,7 @@ while running:
                 screen.blit(texto_escalado, texto_rect)
             for i in guardar_display:
                 i.dibujar(screen)
-            
+        
         if event.type == VIDEORESIZE:
             if not fullscreen:
                 if event.w > 1000 or event.h > 650:
@@ -855,9 +879,9 @@ while running:
             if mm.proto_pulsado:
                 x, y = event.pos
                 if (x <= 660 or x >= 780) and (y <= 10 or y >= 50):
-                    protoboard = Protoboard(x,y, conectores,len(guardar_protoboard))
-                    guardar_protoboard.append(protoboard)                   
-                                                             
+                    protoboard = Protoboard(x, y, conectores, len(guardar_protoboard),guardar_protoboard)
+                    guardar_protoboard.append(protoboard)
+                                                                        
     if not mm.editar_pulsado and not mm.res_pulsado:
         cableado.dibujar_cable_actual(screen, c_1_editar)
     elif not mm.editar_pulsado and not mm.cable_pulsado:

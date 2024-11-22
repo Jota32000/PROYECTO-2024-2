@@ -1,7 +1,7 @@
 import pygame
 from Conector import Conector
 class Protoboard:
-    def __init__(self, x, y,conectores,longitud):
+    def __init__(self, x, y,conectores,longitud,protoboard):
         self.x = x
         self.y = y
         self.largo = 940
@@ -10,6 +10,7 @@ class Protoboard:
         self.conectores_creados = False
         self.conectores=conectores
         self.longitud = longitud
+        self.protoboard = protoboard
 
     def crear(self, screen):
         # Línea superior
@@ -38,6 +39,7 @@ class Protoboard:
         self.dibujar_conectores(screen)
 
     def dibujar_conectores(self, screen):
+        
         # Coordenadas iniciales para conectores
         inicio_x = self.x + 35
         inicio_y = self.y + 20
@@ -85,6 +87,7 @@ class Protoboard:
         dibujar_mas(screen, inicio_x + self.largo - 55, inicio_y + 30, 10, (222, 17, 17))
         dibujar_menos(screen, inicio_x + self.largo - 55, inicio_y , (17, 17, 222))
         #fors
+        
         if not self.conectores_creados:
             for i in range(2):
                 primer_conector_fila = None  # guarda el primer conector de cada fila
@@ -132,6 +135,7 @@ class Protoboard:
                     else:
                         if conector not in primer_conector_fila.conexiones:
                             primer_conector_fila.agregar_conexion(conector)
+
             for j in range(30):
                 primer_conector_columna = None  # guarda el primer nodo de cada columna
                 for i in range(5):
@@ -182,9 +186,33 @@ class Protoboard:
                     else:
                         if conector not in primer_conector_columna.conexiones:
                             primer_conector_columna.agregar_conexion(conector)
-            
-            self.conectores_creados = True
 
+            self.conectores_creados = True
+             
+    def actualizar_coordenadas_conectores(self,opc):
+        for conector in self.conectores:
+            if (conector.x == 60 or conector.x == 90) and (conector.y == 285):
+                pass
+            else:  
+                if opc == 1:
+                    conector.x -= 20
+                elif opc == 2:
+                    conector.x += 20
+                elif opc == 3:
+                    conector.y -= 20
+                elif opc == 4:
+                    conector.y += 20
+    def actualizar_coordenadas_protoboard(self,opc):
+        for protoboard in self.protoboard:
+            if opc == 1:
+                protoboard.x -= 20
+            elif opc == 2:
+                protoboard.x += 20
+            elif opc == 3:
+                protoboard.y -= 20
+            elif opc == 4:
+                protoboard.y += 20
+            
 def dibujar_a(screen, x, y,ancho,alto,color):
     pygame.draw.line(screen, color, (x, y + alto), (x + ancho // 2, y), 2)  # Línea diagonal izquierda
     pygame.draw.line(screen, color, (x + ancho // 2, y), (x + ancho, y + alto), 2)  # Línea diagonal derecha
