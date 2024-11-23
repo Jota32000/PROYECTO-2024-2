@@ -1,4 +1,6 @@
 import pygame
+from Protoboard import Protoboard  
+from Conector import Conector
 class Menu:
     def __init__(self):
         self.x = 0
@@ -46,7 +48,6 @@ class Menu:
         self.and_pulsado=False
         self.not_pulsado=False
         self.or_pulsado=False
-
     def div_boton(self, screen, x, y, color):
         self.ancho = self.ancho_boton
         self.alto = 60
@@ -59,9 +60,8 @@ class Menu:
         for i in range(y, y + self.alto):  # Recorre de arriba hacia abajo (en el eje y)
             pygame.draw.line(screen, color, (x, i),
                              (x + self.ancho, i))  # Dibuja una línea horizontal desde el borde izquierdo al derecho
-
-    def dibujar(self, screen,screen2):
-        ancho_pantalla, alto_pantalla = screen2.get_size()
+    def dibujar(self, screen):
+        ancho_pantalla, alto_pantalla = screen.get_size()
 
         # Calcular el ancho de la primera división
         numero_divisiones = 9
@@ -153,21 +153,16 @@ class Menu:
             screen.blit(boton_led3_surface, (x_inic + (self.ancho_boton), 76))
             screen.blit(boton_led4_surface, (x_inic + (self.ancho_boton), 104))
             screen.blit(boton_led5_surface, (x_inic + (self.ancho_boton), 132))
-        #else:pygame.draw.line(screen, "white", (x_inic + (self.ancho_boton) , 100), (x_inic + (self.ancho_boton) + 200, 100), 97)
         screen.blit(boton_switch_surface, (x_inic + (self.ancho_boton * 2), 10))
         if(self.switch_pulsado):
             screen.blit(boton_switch2_surface, (x_inic + (self.ancho_boton * 2), 20))
             screen.blit(boton_switch16_surface, (x_inic + (self.ancho_boton * 2), 60))
-        else:
-            pygame.draw.line(screen, "white", (x_inic + (self.ancho_boton * 2) , 100), (x_inic + (self.ancho_boton * 2) + 200, 100), 97) # Linea en blanco para cubrir los tipos de switchs cuando no se requieran
         screen.blit(boton_resistencia_surface, (x_inic + (self.ancho_boton * 3), 10))
         screen.blit(boton_ship_surface, (x_inic + (self.ancho_boton * 4), 10))
         if (self.chip_pulsado):
             screen.blit(boton_and_surface,(x_inic + (self.ancho_boton * 4), 20))
             screen.blit(boton_or_surface, (x_inic + (self.ancho_boton * 4), 58))
             screen.blit(boton_not_surface, (x_inic + (self.ancho_boton * 4), 95))
-        else:
-            pygame.draw.line(screen, "white", (x_inic + (self.ancho_boton * 4), 110), (x_inic + (self.ancho_boton * 4) + 200, 110), 118) # Linea en blanco para cubrir los tipos de chips cuando no se requieran
         screen.blit(boton_motor_surface, (x_inic + (self.ancho_boton * 5), 10))
         screen.blit(boton_proto_surface, (x_inic + (self.ancho_boton * 6), 10))
         screen.blit(boton_edicion_surface, (x_inic + (self.ancho_boton * 7), 10))
@@ -176,7 +171,7 @@ class Menu:
         texto = "Presiona la barra espaciadora para ver instrucciones"
         font = pygame.font.Font(None, 24)
         texto_surface = font.render(texto,True,"black") # Renderizado del texto
-        texto_rect = texto_surface.get_rect(center=(self.x + 220 ,self.y + 100)) # Obtener la superficie en la pantalla del texto 
+        texto_rect = texto_surface.get_rect(center=(self.x + 220 ,self.y + 160)) # Obtener la superficie en la pantalla del texto 
         screen.blit(texto_surface,texto_rect) # Dibujar el texto en la pantalla en la posición deseada
 
         # Dibujar líneas verticales en las posiciones correspondientes y agregar texto
@@ -232,7 +227,6 @@ class Menu:
             # Posicionar el texto en el centro de cada división
             texto_rect = texto_renderizado.get_rect(center=(x_pos - self.ancho_boton // 2, self.y - 20))
             screen.blit(texto_renderizado, texto_rect)
-    
     def pantalla_secundaria(self,screen):
         screen.fill("white")
         texto_edicion = "Opción de edición"
@@ -365,7 +359,6 @@ class Menu:
         barra_espaciadora_surface = font.render(barra_espaciadora,True,"black") # Renderizado del texto
         barra_espaciadora_rect = barra_espaciadora_surface.get_rect(center=(500,500))
         screen.blit(barra_espaciadora_surface, barra_espaciadora_rect) # Dibujar el texto en la pantalla en la posición deseada
-
     def manejar_eventos(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
             pos = pygame.mouse.get_pos()
@@ -598,6 +591,9 @@ class Menu:
                 else:
                     self.proto_pulsado = True
                     self.color_proto = self.color_pulsar
+            #elif self.proto_pulsado and event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            #    x, y = event.pos
+            #    print(f"Clic en: ({x}, {y})")               
 
             # Coordenadas y dimensiones del área del botón EDITAR
             boton_editar_x = 7 * self.ancho_boton
@@ -626,3 +622,5 @@ class Menu:
                 else:
                     self.borrar_pulsado = True
                     self.color_borrar = self.color_pulsar
+
+            

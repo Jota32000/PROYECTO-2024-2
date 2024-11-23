@@ -1,5 +1,5 @@
 # python 3.9 2024-2.3
-#pycharm de jetbrains
+# pycharm de jetbrains
 import pygame
 import math
 from pygame.locals import *
@@ -30,6 +30,8 @@ guardar_chip = []
 guardar_chipNOT=[]
 guardar_chipOR=[]
 guardar_display=[]
+guardar_protoboard = []
+coordenadas_pantalla = [0, 0]  # Desplazamiento de la cámara
 
 def buscar_led(x, y):
     rango_click = 10
@@ -104,6 +106,26 @@ def buscar_pin(x, y, cantidad, lado_x, lado_y):
         i += 1
     return pines
 
+def movimiento_camara(tecla):
+    global coordenadas_pantalla
+    if tecla[pygame.K_LEFT]:  # Mover cámara hacia la izquierda
+        opc=1
+        protoboard.actualizar_coordenadas_conectores(opc)
+        protoboard.actualizar_coordenadas_protoboard(opc)
+    if tecla[pygame.K_RIGHT]:  # Mover cámara hacia la derecha
+        opc=2
+        protoboard.actualizar_coordenadas_conectores(opc)
+        protoboard.actualizar_coordenadas_protoboard(opc)
+    if tecla[pygame.K_UP]:  # Mover cámara hacia arriba
+        opc=3
+        protoboard.actualizar_coordenadas_conectores(opc)
+        protoboard.actualizar_coordenadas_protoboard(opc)
+    if tecla[pygame.K_DOWN]:  # Mover cámara hacia abajo
+        opc=4
+        protoboard.actualizar_coordenadas_conectores(opc)
+        protoboard.actualizar_coordenadas_protoboard(opc)
+
+    
 # Main
 pygame.init()
 # Obtener el tamaño de la pantalla
@@ -113,12 +135,6 @@ screen_height = screen_info.current_h
 
 # Crear la ventana con el tamaño ajustado
 screen = pygame.display.set_mode((1000, 650), pygame.RESIZABLE)
-
-extension_x, extension_y = 2000, 1300  # Tamaño de la región de contenido
-content_surface = pygame.Surface((extension_x, extension_y))
-content_surface.fill("WHITE")
-scroll_x, scroll_y = 0, 0
-scroll_speed = 50 # Velocidad de desplazamiento
 
 pygame.display.set_caption("Protoboard")
 mainClock = pygame.time.Clock()
@@ -137,49 +153,29 @@ ultimo_conector = None
 mm = Menu()
 
 # editar led
-led_a_editar = None
-conector_1_editar = None
-conector_2_editar = None
+led_a_editar, conector_1_editar, conector_2_editar = None, None, None
 
 # editar switch
-switch_editar = None
-c_1_editar = None
-c_2_editar = None
-c_3_editar = None
-c_4_editar = None
-nuevo_cable = None
-cable_editar = None
+switch_editar, c_1_editar, c_2_editar, c_3_editar, c_4_editar = None, None, None, None, None
+nuevo_cable, cable_editar = None, None
 # editar switch 16
-c16_1 = 0
-c16_2 = 0
+c16_1, c16_2 = 0, 0
 # chip and datos
-editar_andX=None
-editar_andY=None
-c_x = 0
-c_y = 0
+editar_andX, editar_andY = None, None
+c_x, c_y = 0, 0
 #chip or datos
-editar_orX=None
-editar_orY=None
-c_or_x=0
-c_or_y=0
+editar_orX, editar_orY = None, None
+c_or_x, c_or_y = 0, 0
 #chip not datos
-editar_notX=None
-editar_notY=None
-c_not_x=0
-c_not_y=0
-
+editar_notX, editar_notY = None, None
+c_not_x, c_not_y = 0 , 0
 # switch 4
-c4_x = 0
-c4_y = 0
+c4_x, c4_y  = 0, 0
 nueva_resistencia = None
 #display
-dis_x=0
-dis_y=0
-
-x_proto = (screen.get_width() - 650) // 2
-y_proto = (screen.get_height() - 300) // 2
-protoboard = Protoboard(x_proto, y_proto, conectores)
+dis_x, dis_y = 0, 0
 pantalla_secundaria = True # Variable que permite intercalar entre la pantalla principal y secundaria
+
 # Crear y dibujar Pila
 x_pila = (screen.get_width() - 950) // 2
 y_pila = (screen.get_height() - 50) // 2
@@ -192,9 +188,9 @@ pila_menos.neutro = True
 conectores.append(pila_mas)
 conectores.append(pila_menos)
 pila = Pila(x_pila, y_pila)
-motor=Motor(x_pila,y_pila+50)
+motor = Motor(x_pila,y_pila+50)
 
-conector = Conector("1", 0, 0, conectores)
+conector = Conector("1", 0, 0, conectores) # Declaración clase Conector
 font = pygame.font.Font(None, 24)  # Usa la fuente predeterminada con tamaño 24
 
 while running:
@@ -203,64 +199,56 @@ while running:
         if event.type == QUIT or event.type == K_ESCAPE or event.type == pygame.QUIT:
             running = False
         mm.manejar_eventos(event)
+        
         if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
             pantalla_secundaria = not pantalla_secundaria # cambio de estado de la variable continuamente    
         if not pantalla_secundaria:
             mm.pantalla_secundaria(screen)
         else:
-            content_surface.fill("white")  # directo el color sin variables extra
-            protoboard.crear(content_surface) # crear protoboard
-            conector.dibujar(content_surface) # crear conectores de la protoboard
-            pila.dibujarPila(content_surface) # dibujo de pila
-            motor.div_boton(content_surface)
-            mm.dibujar(content_surface,screen) # dibujar menu
+            tecla = pygame.key.get_pressed()
+            movimiento_camara(tecla)
+            screen.fill("white")
+            pila.dibujarPila(screen) # dibujo de pila
+            motor.div_boton(screen)
+            mm.dibujar(screen) # dibujar menu
+            for protoboard in guardar_protoboard:
+                if len(guardar_protoboard) > 0:
+                    protoboard.crear(screen)
+                    conector.dibujar(screen)                  
             for i in guardar_led:
-                i.led_apagada(content_surface)
+                i.led_apagada(screen)
             for i in guardar_switch:
-                i.switch_proto(content_surface)
+                i.switch_proto(screen)
             for i in cables:
-                i.dibujar_cables(content_surface)
+                i.dibujar_cables(screen)
             for i in guardar_switch16:
-                i.dibujar(content_surface)
+                i.dibujar(screen)
             for i in resistencias:
-                i.dibujar_resistencia(content_surface)
+                i.dibujar_resistencia(screen)
             for i in guardar_chip:
-                i.dibujar(content_surface)
+                i.dibujar(screen)
                 i.chip_and()
                 texto = font.render("AND", True, (225,225,225))
                 texto_escalado = pygame.transform.scale(texto, (texto.get_width() * 2, texto.get_height()))
                 texto_rect = texto.get_rect(center=(i.x + i.largo // 2.5, i.y + i.ancho//1.5))
-                content_surface.blit(texto_escalado, texto_rect)
+                screen.blit(texto_escalado, texto_rect)
             for i in guardar_chipOR:
-                i.dibujar(content_surface)
+                i.dibujar(screen)
                 i.chip_or()
                 texto = font.render("OR", True, (225, 225, 225))
                 texto_escalado = pygame.transform.scale(texto, (texto.get_width() * 2, texto.get_height()))
                 texto_rect = texto.get_rect(center=(i.x + i.largo // 2.5, i.y + i.ancho // 1.5))
-                content_surface.blit(texto_escalado, texto_rect)
+                screen.blit(texto_escalado, texto_rect)
             for i in guardar_chipNOT:
-                i.dibujar(content_surface)
+                i.dibujar(screen)
                 i.chip_not()
                 texto = font.render("NOT", True, (225, 225, 225))
                 texto_escalado = pygame.transform.scale(texto, (texto.get_width() * 2, texto.get_height()))
                 texto_rect = texto.get_rect(center=(i.x + i.largo // 2.5, i.y + i.ancho // 1.5))
-                content_surface.blit(texto_escalado, texto_rect)
+                screen.blit(texto_escalado, texto_rect)
             for i in guardar_display:
-                i.dibujar(content_surface)
-            
-            keys = pygame.key.get_pressed()
-    
-            # Desplazamiento en ambas direcciones con límites
-            if keys[pygame.K_UP] and scroll_y > 0:
-                scroll_y -= scroll_speed
-            if keys[pygame.K_DOWN] and scroll_y < extension_y - screen_height:
-                scroll_y += scroll_speed
-            if keys[pygame.K_LEFT] and scroll_x > 0:
-                scroll_x -= scroll_speed
-            if keys[pygame.K_RIGHT] and scroll_x < extension_x - screen_width:
-                scroll_x += scroll_speed
-            screen.blit(content_surface, (-scroll_x, -scroll_y))
-            
+                i.dibujar(screen)
+        
         if event.type == VIDEORESIZE:
             if not fullscreen:
                 if event.w > 1000 or event.h > 650:
@@ -276,7 +264,6 @@ while running:
                 switch16.detectar_click(mouse_pos)
             mouse_pos = event.pos
             conector_cercano = punto_mas_cercano(mouse_pos, conectores)
-
             x, y = event.pos
             if mm.borrar_pulsado:  # Opciones para eliminar componentes
                 if mm.led_pulsado:
@@ -725,7 +712,6 @@ while running:
                             mm.color_switch = (162, 206, 143)
                             mm.boton_switch2_pulsado = False
                             mm.color_switch4 = (162, 206, 143)
-
             elif mm.chip_pulsado:
                 if mm.and_pulsado:
                     if not conector_cercano:
@@ -814,7 +800,6 @@ while running:
                             mm.color_ship = (162, 206, 143)
                             mm.not_pulsado = False
                             mm.color_shipNOT = (162, 206, 143)
-
             elif mm.cable_pulsado:
                 if c_1_editar is None:
                     c_1_editar = punto_mas_cercano(mouse_pos, conectores)
@@ -837,7 +822,6 @@ while running:
                         c_2_editar = None
                     else:
                         print("conector 2 no válido, es igual al conector 1")
-
             elif mm.res_pulsado:
                 if c_1_editar is None:
                     c_1_editar = punto_mas_cercano(mouse_pos, conectores)
@@ -860,7 +844,6 @@ while running:
                         c_2_editar = None
                     else:
                         print("conector 2 no válido, es igual al conector 1")
-
             elif mm.motor_pulsado:
                 if not conector_cercano:
                     pass
@@ -882,7 +865,6 @@ while running:
                         display.pin10 = pines_inferior[4]
                         guardar_display.append(display)
                         dis_x, dis_y = 0, 0  # Resetear las coordenadas
-
             elif motor.verificar_click(event.pos):
                 print("Botón presionado, el color cambió.")
                 if motor.estado_boton:
@@ -894,7 +876,12 @@ while running:
                     for c in conectores:
                         c.fase = c.padre.fase
                         c.neutro = c.padre.neutro
-
+            if mm.proto_pulsado:
+                x, y = event.pos
+                if (x <= 660 or x >= 780) and (y <= 10 or y >= 50):
+                    protoboard = Protoboard(x, y, conectores, len(guardar_protoboard),guardar_protoboard)
+                    guardar_protoboard.append(protoboard)
+                                                                        
     if not mm.editar_pulsado and not mm.res_pulsado:
         cableado.dibujar_cable_actual(screen, c_1_editar)
     elif not mm.editar_pulsado and not mm.cable_pulsado:
