@@ -18,7 +18,6 @@ class Basurero:
             conector_fin = led.conector2
             if conector_cercano == conector_inicio or conector_cercano == conector_fin:
                 self.guardar_led.remove(led)
-
     def eliminar_switch(self,conector):
         #Buscador de led en la lista de los switchs
         for switch in self.guardar_switch:
@@ -46,7 +45,6 @@ class Basurero:
                     switch.pin3.eliminar_conexion(switch.pin3, switch.pin1)
                     switch.pin2.eliminar_conexion(switch.pin2, switch.pin1)
                 self.guardar_switch.remove(switch)
-
     def eliminar_cable(self,conector_cercano):
         #Buscador de cable en la lista de los cables
         for cable in self.cables:
@@ -98,7 +96,6 @@ class Basurero:
                             a.eliminar_conexion(a, b)
                 # remover el switch de la lista despues de eliminar todas las conexiones
                 self.guardar_switch16.remove(switch)
-
     def eliminar_chip_and(self,conector):
         for chip in self.guardar_chip_and:
             if conector is not None:
@@ -142,7 +139,6 @@ class Basurero:
                        chip.pin11.eliminar_conexion(chip.pin11, chip.pin1)
                        chip.pin13.eliminar_conexion(chip.pin13, chip.pin1)
                    self.guardar_chip_not.remove(chip)
-
     def eliminar_display(self,conector):
         for display in self.guardar_display:
             #borra solo presionando conector izq arriba del display

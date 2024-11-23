@@ -13,6 +13,7 @@ class Conector:
         self.padre = self
         self.conectores=conectores
         self.ocupado=False
+        
     def dibujar(self,screen):
         #dibuja los puntos de la protoboard
         for conector in self.conectores:

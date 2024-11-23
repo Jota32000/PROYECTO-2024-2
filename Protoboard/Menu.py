@@ -48,6 +48,7 @@ class Menu:
         self.and_pulsado=False
         self.not_pulsado=False
         self.or_pulsado=False
+        
     def div_boton(self, screen, x, y, color):
         self.ancho = self.ancho_boton
         self.alto = 60

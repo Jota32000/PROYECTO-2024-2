@@ -53,7 +53,6 @@ class Switch:
                 end_x = start_x + int(pin_radius * math.cos(math.radians(angle)))
                 end_y = start_y + int(pin_radius * math.sin(math.radians(angle)))
                 pygame.draw.line(screen, (0, 0, 0), (start_x, start_y), (end_x, end_y), 2)
-
     def detectar_click(self, mouse_pos):
         # Verificar si el clic está dentro del área del switch
         if self.x <= mouse_pos[0] <= self.x + self.lado and self.y <= mouse_pos[1] <= self.y + self.lado:
@@ -71,7 +70,6 @@ class Switch:
                     self.pin1.eliminar_conexion(self.pin1, self.pin3)
                 else:
                     self.pin3.eliminar_conexion(self.pin3,self.pin1)
-
     def pines2(self,i):
         if i==0:
             return self.pin1,self.pin2

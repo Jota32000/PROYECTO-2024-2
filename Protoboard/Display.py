@@ -19,7 +19,6 @@ class Display:
         self.pin8 = None
         self.pin9 = None
         self.pin10 = None
-
     def dibujar(self, screen):
         x = self.x + 15
         y = self.y + 15

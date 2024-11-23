@@ -9,6 +9,7 @@ class Led:
         self.conector2 = conector2
         self.x = (conector1.x + conector2.x) // 2
         self.y = (conector1.y + conector2.y) // 2
+        
     def led_apagada(self,screen):
         corriente_conector1 = False
         if self.conector1.fase or self.conector1.neutro:
