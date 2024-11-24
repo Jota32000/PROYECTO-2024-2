@@ -1,7 +1,7 @@
 import pygame
 
 class Switch_16:
-    def __init__(self,conector):
+    def __init__(self,conector,switch_16):
         self.x = conector.x
         self.y = conector.y
         self.color_cuerpo = (127, 179, 213)  # Color del cuerpo del switch
@@ -32,6 +32,7 @@ class Switch_16:
         self.pin15 = None
         self.pin16 = None
         self.bandera = [1] * 8 # hace eso: [1, 1, 1, 1, 1, 1, 1, 1] sino da out of range
+        self.switch_16 = switch_16
 
     def crear_botones(self):
         for i in range(8):
@@ -102,3 +103,13 @@ class Switch_16:
         if i==7:
             return self.pin8, self.pin16
         return None,None
+    def actualizar_coordenadas(self,opc):
+        for switch in self.switch_16:
+            if opc==1:
+                switch.x-=20
+            if opc==2:
+                switch.x+=20
+            if opc==3:
+                switch.y-=20
+            if opc==4:
+                switch.y+=20

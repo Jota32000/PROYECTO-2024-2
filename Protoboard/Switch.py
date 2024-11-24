@@ -2,7 +2,7 @@ import pygame
 import math
 
 class Switch:
-    def __init__(self, conector):
+    def __init__(self, conector,switch):
         self.x = conector.x
         self.y = conector.y
         self.color_cuerpo = (165, 198, 193)
@@ -15,6 +15,7 @@ class Switch:
         self.pin3 = None
         self.pin4 = None
         self.bandera = 1
+        self.switch = switch
 
     def switch_proto(self, screen):
 
@@ -76,3 +77,14 @@ class Switch:
         if i==1:
             return self.pin3, self.pin4
         return None, None
+    
+    def actualizar_coordenadas(self,opc):
+        for switch in self.switch:
+            if opc == 1:
+                switch.x -= 20
+            elif opc == 2:
+                switch.x += 20
+            elif opc == 3:
+                switch.y -= 20
+            elif opc == 4:
+                switch.y += 20

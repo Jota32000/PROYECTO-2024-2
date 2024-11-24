@@ -1,6 +1,6 @@
 import pygame
 class Chip:
-    def __init__(self,conector):
+    def __init__(self,conector,chip,chipNOT,chipOR):
         self.x=conector.x
         self.y=conector.y
         self.ancho=27
@@ -22,6 +22,9 @@ class Chip:
         self.pin12 = None
         self.pin13 = None
         self.pin14 = None
+        self.chip = chip
+        self.chipNOT = chipNOT
+        self.chipOR = chipOR
    
     def dibujar(self, screen):
         # Patas superiores
@@ -120,4 +123,37 @@ class Chip:
             self.pin10.eliminar_conexion(self.pin10, self.pin1)
         if (self.pin1.fase==True) and (self.pin11.fase==None and self.pin12.fase==None) and (self.pin14.neutro==True) :
             self.pin13.eliminar_conexion(self.pin13, self.pin1)
+
+    def actualizar_coordenadas(self,opc):
+        for chip in self.chip:
+            if opc == 1:
+                chip.x -= 20
+            elif opc == 2:
+                chip.x += 20
+            elif opc == 3:
+                chip.y -= 20
+            elif opc == 4:
+                chip.y += 20
+
+        for chipNOT in self.chipNOT:
+            if opc == 1:
+                chipNOT.x -= 20
+            elif opc == 2:
+                chipNOT.x += 20
+            elif opc == 3:
+                chipNOT.y -= 20
+            elif opc == 4:
+                chipNOT.y += 20
+
+        for chipOR in self.chipOR:
+            if opc == 1:
+                chipOR.x -= 20
+            elif opc == 2:
+                chipOR.x += 20
+            elif opc == 3:
+                chipOR.y -= 20
+            elif opc == 4:
+                chipOR.y += 20
+
+    
 
