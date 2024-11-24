@@ -38,7 +38,6 @@ class Switch_16:
             surface = pygame.Surface((8, 25))  # Tamaño del botón
             surface.fill(self.cApagado)  # Color inicial del botón
             self.boton_surfaces.append(surface)
-        
     def dibujar(self, screen):
         # Dibujar el cuerpo del switch
         pygame.draw.line(screen, (0, 0, 0), (self.x, self.y), (self.x, self.y + self.disA), 2)
@@ -58,7 +57,6 @@ class Switch_16:
             x_pos = self.x + self.disL * i
             y_pos = self.y + 13
             screen.blit(self.boton_surfaces[i], (x_pos, y_pos+5))
-
     def detectar_click(self, pos):
         # Verificar si el clic está dentro de algún botón
         for i in range(8):
@@ -86,7 +84,6 @@ class Switch_16:
 
                 # Actualizar la superficie del botón
                 self.boton_surfaces[i].fill(self.boton_colores[i])
-
     def pines2(self,i):
         if i==0:
             return self.pin1,self.pin9

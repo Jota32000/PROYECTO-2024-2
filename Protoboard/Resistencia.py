@@ -78,13 +78,11 @@ class Resistencia:
                 pygame.draw.line(screen, "dark green", (x_medio - 3, y_medio - 5), (x_medio - 3, y_medio + 5), 3)
                 pygame.draw.line(screen, "blue", (x_medio - 10, y_medio - 10), (x_medio - 10, y_medio + 10), 3)
                 pygame.draw.line(screen, "yellow", (x_medio + 10, y_medio - 10), (x_medio + 10, y_medio + 10), 1)
-
     def validar_resistencia(self, resistencias):
         for resistencia in resistencias:
            if (resistencia.conector_inicio == self.conector_inicio and resistencia.conector_fin == self.conector_fin) or (resistencia.conector_inicio == self.conector_fin and resistencia.conector_fin == self.conector_inicio):
                return False  
         return True
-    
     def dibujar_resistencia_actual(self, screen, conector1):
         if conector1 is not None:
             current_pos = pygame.mouse.get_pos()

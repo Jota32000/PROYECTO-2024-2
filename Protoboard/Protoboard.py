@@ -37,9 +37,7 @@ class Protoboard:
 
         # Llamar al metodo para dibujar conectores
         self.dibujar_conectores(screen)
-
     def dibujar_conectores(self, screen):
-        
         # Coordenadas iniciales para conectores
         inicio_x = self.x + 35
         inicio_y = self.y + 20
@@ -187,8 +185,7 @@ class Protoboard:
                         if conector not in primer_conector_columna.conexiones:
                             primer_conector_columna.agregar_conexion(conector)
 
-            self.conectores_creados = True
-             
+            self.conectores_creados = True           
     def actualizar_coordenadas_conectores(self,opc):
         for conector in self.conectores:
             if (conector.x == 60 or conector.x == 90) and (conector.y == 285):

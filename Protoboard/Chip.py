@@ -1,5 +1,4 @@
 import pygame
-
 class Chip:
     def __init__(self,conector):
         self.x=conector.x
@@ -23,6 +22,7 @@ class Chip:
         self.pin12 = None
         self.pin13 = None
         self.pin14 = None
+   
     def dibujar(self, screen):
         # Patas superiores
         pygame.draw.line(screen, (0, 0, 0), (self.x, self.y), (self.x, self.y + self.dis), 2)  # pin 1 arriba
@@ -57,7 +57,6 @@ class Chip:
         # Dibujo del cuerpo del objeto con líneas
         for i in range(self.y + 5, self.y + self.ancho):
             pygame.draw.line(screen, self.color_cuerpo, (self.x - 5, i), (self.x + self.largo, i))
-
     def chip_not(self):
         #dar energia a los pines 3,5,7,9,11 y13
         if (self.pin1.fase==True) and (self.pin2.fase==None) and (self.pin14.neutro==True) and (self.pin3.fase==None):
@@ -85,7 +84,6 @@ class Chip:
             self.pin11.eliminar_conexion(self.pin11,self.pin1)
         if (self.pin1.fase==True) and (self.pin12.fase==True ) and (self.pin14.neutro==True) and (self.pin13.fase != None):
             self.pin13.eliminar_conexion(self.pin13,self.pin1)
-
     def chip_and(self):
         if (self.pin1.fase==True) and (self.pin2.fase==True and self.pin3.fase==True) and (self.pin14.neutro==True) and (self.pin4.fase==None):
             self.pin1.agregar_conexion(self.pin4)
@@ -104,7 +102,6 @@ class Chip:
             self.pin10.eliminar_conexion(self.pin10, self.pin1)
         if (self.pin1.fase==True) and (self.pin11.fase==None or self.pin12.fase==None) and (self.pin14.neutro==True) :
             self.pin13.eliminar_conexion(self.pin13, self.pin1)
-
     def chip_or(self):
         if (self.pin1.fase==True) and (self.pin2.fase==True or self.pin3.fase==True) and (self.pin14.neutro==True) and (self.pin4.fase==None):
             self.pin1.agregar_conexion(self.pin4)
