@@ -171,7 +171,7 @@ class Menu:
         texto = "Presione la barra espaciadora para ver instrucciones"
         font = pygame.font.Font(None, 24)
         texto_surface = font.render(texto,True,"black") # Renderizado del texto
-        texto_rect = texto_surface.get_rect(center=(self.x + 220 ,self.y + 80)) # Obtener la superficie en la pantalla del texto
+        texto_rect = texto_surface.get_rect(center=(self.x + 220 ,self.y + 580)) # Obtener la superficie en la pantalla del texto
         screen.blit(texto_surface,texto_rect) # Dibujar el texto en la pantalla en la posición deseada
 
         # Dibujar líneas verticales en las posiciones correspondientes y agregar texto
@@ -222,6 +222,14 @@ class Menu:
                 texto_renderizado9 = self.font.render("MORADO", True, (0, 0, 0))
                 texto_rect9 = texto_renderizado9.get_rect(center=(x_pos - self.ancho_boton // 2, 180))
                 screen.blit(texto_renderizado9, texto_rect9)
+                pygame.draw.line(screen, (0, 0, 0), (x_pos, 50), (x_pos, 190), 3)
+                pygame.draw.line(screen, (0, 0, 0), (x_pos-self.ancho_boton, 50), (x_pos-self.ancho_boton, 190), 3)
+                pygame.draw.line(screen, (0, 0, 0), (x_pos-self.ancho_boton, 51), (x_pos, 51), 3)
+                pygame.draw.line(screen, (0, 0, 0), (x_pos - self.ancho_boton,80), (x_pos, 80), 3)
+                pygame.draw.line(screen, (0, 0, 0), (x_pos - self.ancho_boton, 109), (x_pos, 109), 3)
+                pygame.draw.line(screen, (0, 0, 0), (x_pos - self.ancho_boton, 137), (x_pos, 137), 3)
+                pygame.draw.line(screen, (0, 0, 0), (x_pos - self.ancho_boton, 164), (x_pos, 164), 3)
+                pygame.draw.line(screen, (0, 0, 0), (x_pos - self.ancho_boton, 191), (x_pos, 191), 3)
 
             texto_renderizado = self.font.render(textos[i], True, (0, 0, 0))  # Color negro para el texto
             # Posicionar el texto en el centro de cada división
@@ -439,9 +447,9 @@ class Menu:
 
             # Coordenadas y dimensiones del área del botón led1
             boton_led1_x = self.ancho_boton
-            boton_led1_y = 35
+            boton_led1_y = 53
             boton_led1_ancho = self.ancho_boton
-            boton_led1_alto = 45
+            boton_led1_alto = 23
             if boton_led1_x <= mouse_x <= boton_led1_x + boton_led1_ancho and boton_led1_y <= mouse_y <= boton_led1_y + boton_led1_alto:
                 if self.led1_pulsado:
                     self.led1_pulsado = False
@@ -560,7 +568,7 @@ class Menu:
             boton_shp_x = 4 * self.ancho_boton
             boton_shp_y = 3
             boton_shp_ancho = self.ancho_boton
-            boton_shp_alto = 45
+            boton_shp_alto = 43
             if boton_shp_x <= mouse_x <= boton_shp_x + boton_shp_ancho and boton_shp_y <= mouse_y <= boton_shp_y + boton_shp_alto:
                 # Cambiar el color del botón SHP
                 if (self.chip_pulsado == True):
