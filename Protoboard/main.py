@@ -1,4 +1,4 @@
-# python 3.9 2024-2.3
+# pygame 2.6.0 (SDL 2.28.4, Python 3.9.13)
 # pycharm de jetbrains
 import pygame
 import math
@@ -312,6 +312,7 @@ while running:
                             mm.color_editar = (162, 206, 143)
                     else:
                         print("error al editar led")
+
                 elif mm.cable_pulsado:
                     if c_1_editar is None:
                         c_1_editar = punto_mas_cercano(mouse_pos, conectores)
