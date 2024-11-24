@@ -54,9 +54,9 @@ class Switch:
                 end_x = start_x + int(pin_radius * math.cos(math.radians(angle)))
                 end_y = start_y + int(pin_radius * math.sin(math.radians(angle)))
                 pygame.draw.line(screen, (0, 0, 0), (start_x, start_y), (end_x, end_y), 2)
-    def detectar_click(self, mouse_pos):
+    def detectar_click(self, mouse_pos,estado_boton):
         # Verificar si el clic está dentro del área del switch
-        if self.x <= mouse_pos[0] <= self.x + self.lado and self.y <= mouse_pos[1] <= self.y + self.lado:
+        if (self.x <= mouse_pos[0] <= self.x + self.lado and self.y <= mouse_pos[1] <= self.y + self.lado) and not estado_boton:
             self.estado = not self.estado  # Cambiar el estado del switch
             # Cambiar el color del círculo cuando el estado cambia
             if self.estado:

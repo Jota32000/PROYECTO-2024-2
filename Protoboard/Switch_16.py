@@ -58,12 +58,12 @@ class Switch_16:
             x_pos = self.x + self.disL * i
             y_pos = self.y + 13
             screen.blit(self.boton_surfaces[i], (x_pos, y_pos+5))
-    def detectar_click(self, pos):
+    def detectar_click(self, pos,estado_boton):
         # Verificar si el clic está dentro de algún botón
         for i in range(8):
             boton_x = self.x + self.disL * i
             boton_y = self.y + 18
-            if boton_x <= pos[0] <= boton_x + 8 and boton_y <= pos[1] <= boton_y + 25:
+            if (boton_x <= pos[0] <= boton_x + 8 and boton_y <= pos[1] <= boton_y + 25) and not estado_boton:
                 # Cambiar el color del botón al ser presionado
                 if self.boton_colores[i] == self.cApagado:
                     self.boton_colores[i] = self.cEncendido  # Cambiar a encendido

@@ -279,9 +279,9 @@ while running:
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1: # Si se pulsa el click izquierdo
             mouse_pos = pygame.mouse.get_pos()  # Obtén la posición del mouse
             for switch4 in guardar_switch:
-                switch4.detectar_click(mouse_pos)
+                switch4.detectar_click(mouse_pos,motor.estado_boton)
             for switch16 in guardar_switch16:
-                switch16.detectar_click(mouse_pos)
+                switch16.detectar_click(mouse_pos,motor.estado_boton)
             mouse_pos = event.pos
             conector_cercano = punto_mas_cercano(mouse_pos, conectores)
             x, y = event.pos
@@ -887,14 +887,15 @@ while running:
                         display.pin10 = pines_inferior[4]
                         guardar_display.append(display)
                         dis_x, dis_y = 0, 0  # Resetear las coordenadas
-            elif motor.verificar_click(event.pos):
-                print("Botón presionado, el color cambió.")
+            elif (motor.verificar_click(event.pos)) or motor.estado_boton:
+                #motor apagado
                 if motor.estado_boton:
                     for c in conectores:
                         if not c.nombre.startswith("pila"):
                             c.fase = None
                             c.neutro = None
                 else:
+                    #motor encendido
                     for c in conectores:
                         c.fase = c.padre.fase
                         c.neutro = c.padre.neutro
