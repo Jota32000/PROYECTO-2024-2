@@ -1,5 +1,5 @@
-# python 3.9 2024-2.3
-#pycharm de jetbrains
+# pygame 2.6.0 (SDL 2.28.4, Python 3.9.13)
+# pycharm de jetbrains
 import pygame
 import math
 from pygame.locals import *
@@ -41,7 +41,6 @@ def buscar_led(x, y):
         if led.x - rango_click <= x <= led.x + rango_click and led.y - rango_click <= y <= led.y + rango_click:
             mi_led = led
     return mi_led
-
 def buscar_switch(conector):
     rango_clik = 20
     mi_switch = None
@@ -52,37 +51,31 @@ def buscar_switch(conector):
             mi_switch = switch
             break
     return mi_switch
-
 def buscar_cable(conector1, conector2):
     for cable in cables:
         if (cable.conector_inicio == conector1 and cable.conector_fin == conector2) or (
                 cable.conector_inicio == conector2 and cable.conector_fin == conector1):
             return cable
     return None
-
 def buscar_resistencia(conector1, conector2):
     for resistencia in resistencias:
         if (resistencia.conector_inicio == conector1 and resistencia.conector_fin == conector2) or (
                 resistencia.conector_inicio == conector2 and resistencia.conector_fin == conector1):
             return resistencia
     return None
-
 def switch_presionado(switch, mouse_pos):
     lado = 40  # Tamaño del switch (cuadrado)
     x, y = mouse_pos
     if switch.x <= x <= switch.x + lado and switch.y <= y <= switch.y + lado:
         return True
     return False
-
 def buscar_conector_por_nombre(nombre, lista_conectores):
     for conector in lista_conectores:
         if conector.nombre == nombre:
             return conector
     return None
-
 def distancia(punto1, punto2):
     return math.sqrt((punto1[0] - punto2[0]) ** 2 + (punto1[1] - punto2[1]) ** 2)
-
 def punto_mas_cercano(pos_mouse, lista_conectores):
     punto_cercano = None
     distancia_minima = 10000
@@ -93,7 +86,6 @@ def punto_mas_cercano(pos_mouse, lista_conectores):
             distancia_minima = dist
             punto_cercano = conector
     return punto_cercano
-
 def buscar_pin(x, y, cantidad, lado_x, lado_y):
     pines = []
     i = 0
@@ -104,77 +96,113 @@ def buscar_pin(x, y, cantidad, lado_x, lado_y):
         pines.append(pin)
         i += 1
     return pines
+def movimiento_camara(tecla):
+    if tecla[pygame.K_LEFT]:  # Mover cámara hacia la izquierda
+        if len(guardar_protoboard) > 0:
+            opc=1
+            protoboard.actualizar_coordenadas_conectores(opc)
+            protoboard.actualizar_coordenadas_protoboard(opc)
+            if len(guardar_display) > 0:
+                display.actualizar_coordenadas(opc)
+            if len(guardar_switch) > 0:
+                switch4.actualizar_coordenadas(opc)
+            if len(guardar_switch16) > 0:
+                switch16.actualizar_coordenadas(opc)
+            if len(guardar_chip) > 0 or len(guardar_chipOR) > 0 or len(guardar_chipNOT) > 0:
+                chip.actualizar_coordenadas(opc)
 
+    if tecla[pygame.K_RIGHT]:  # Mover cámara hacia la derecha
+        if len(guardar_protoboard) > 0:
+            opc=2
+            protoboard.actualizar_coordenadas_conectores(opc)
+            protoboard.actualizar_coordenadas_protoboard(opc)
+            if len(guardar_display) > 0:
+                display.actualizar_coordenadas(opc)
+            if len(guardar_switch) > 0:
+                switch4.actualizar_coordenadas(opc)
+            if len(guardar_switch16) > 0:
+                switch16.actualizar_coordenadas(opc)
+            if len(guardar_chip) > 0 or len(guardar_chipOR) > 0 or len(guardar_chipNOT) > 0:
+                chip.actualizar_coordenadas(opc)    
+                
+    if tecla[pygame.K_UP]:  # Mover cámara hacia arriba
+        if len(guardar_protoboard) > 0:  
+            opc=3
+            protoboard.actualizar_coordenadas_conectores(opc)
+            protoboard.actualizar_coordenadas_protoboard(opc)
+            if len(guardar_display) > 0:
+                display.actualizar_coordenadas(opc)
+            if len(guardar_switch) > 0:
+                switch4.actualizar_coordenadas(opc)
+            if len(guardar_switch16) > 0:
+                switch16.actualizar_coordenadas(opc)
+            if len(guardar_chip) > 0 or len(guardar_chipOR) > 0 or len(guardar_chipNOT) > 0:
+                chip.actualizar_coordenadas(opc)
+            
+    if tecla[pygame.K_DOWN]:  # Mover cámara hacia abajo
+        if len(guardar_protoboard) > 0:  
+            opc=4
+            protoboard.actualizar_coordenadas_conectores(opc)
+            protoboard.actualizar_coordenadas_protoboard(opc)
+            if len(guardar_display) > 0:
+                display.actualizar_coordenadas(opc)
+            if len(guardar_switch) > 0:
+                switch4.actualizar_coordenadas(opc)
+            if len(guardar_switch16) > 0:
+                switch16.actualizar_coordenadas(opc)
+            if len(guardar_chip) > 0 or len(guardar_chipOR) > 0 or len(guardar_chipNOT) > 0:
+                chip.actualizar_coordenadas(opc)
+    
 # Main
 pygame.init()
-# Obtener el tamaño de la pantalla
-screen_info = pygame.display.Info()
+screen_info = pygame.display.Info() # Obtener el tamaño de la pantalla
 screen_width = screen_info.current_w
 screen_height = screen_info.current_h
-
-# Crear la ventana con el tamaño ajustado
-screen = pygame.display.set_mode((1000, 650), pygame.RESIZABLE)
-
-extension_x, extension_y = 3000, 1950  # Tamaño de la región de contenido
-content_surface = pygame.Surface((extension_x, extension_y))
-content_surface.fill("WHITE")
-scroll_x, scroll_y = 0, 0
-scroll_speed = 100 # Velocidad de desplazamiento
-
+screen = pygame.display.set_mode((1000, 650), pygame.RESIZABLE) # Crear la ventana con el tamaño ajustado
 pygame.display.set_caption("Protoboard")
 mainClock = pygame.time.Clock()
-# Crear el cableado
-cableado = Cableado(conectores, cables)
-# Crear la resistencia
-resistencia = Resistencia(conectores, resistencias)
-# Crear el basurero
-basurero = Basurero(guardar_led, guardar_switch, conectores, cables, resistencias, guardar_switch16,guardar_chip,guardar_chipOR,guardar_chipNOT,guardar_display)
+
+# Variables de creación
+cableado = Cableado(conectores, cables) # Crear el cableado
+resistencia = Resistencia(conectores, resistencias) # Crear la resistencia
+basurero = Basurero(guardar_led, guardar_switch, conectores, cables, resistencias, guardar_switch16,guardar_chip,guardar_chipOR,guardar_chipNOT,guardar_display) # Crear el basurero
 fullscreen = False
 running = True
 x1, x2, x3, x4 = 0, 0, 0, 0
 y1, y2, y3, y4 = 0, 0, 0, 0
-
 ultimo_conector = None
 mm = Menu()
 
-# editar led
-led_a_editar, conector_1_editar, conector_2_editar = None, None, None
-
-# editar switch
-switch_editar, c_1_editar, c_2_editar, c_3_editar, c_4_editar = None, None, None, None, None
-nuevo_cable, cable_editar = None, None
-# editar switch 16
-c16_1, c16_2 = 0, 0
-# chip and datos
-editar_andX, editar_andY = None, None
+# Variables para editar
+led_a_editar, conector_1_editar, conector_2_editar = None, None, None # editar led
+switch_editar, c_1_editar, c_2_editar, c_3_editar, c_4_editar = None, None, None, None, None # editar switch
+nuevo_cable, cable_editar = None, None # editar cable
+c16_1, c16_2 = 0, 0 # editar switch 16
+editar_andX, editar_andY = None, None # chip and datos
 c_x, c_y = 0, 0
-#chip or datos
-editar_orX, editar_orY = None, None
+editar_orX, editar_orY = None, None #chip or datos
 c_or_x, c_or_y = 0, 0
-#chip not datos
-editar_notX, editar_notY = None, None
+editar_notX, editar_notY = None, None #chip not datos
 c_not_x, c_not_y = 0 , 0
-# switch 4
-c4_x, c4_y  = 0, 0
+c4_x, c4_y  = 0, 0 # switch 4
 nueva_resistencia = None
-#display
-dis_x, dis_y = 0, 0
+dis_x, dis_y = 0, 0 #display
 pantalla_secundaria = True # Variable que permite intercalar entre la pantalla principal y secundaria
 
 # Crear y dibujar Pila
-x_pila = (screen.get_width() - 950) // 2
-y_pila = (screen.get_height() - 50) // 2
+x_pila = (screen.get_width() - 950) // 2 
+y_pila = (screen.get_height() - 50) // 2 
 
 # Crear conectores Pila + -
 pila_mas = Conector("pila+", x_pila + 65, y_pila - 15, conectores)
 pila_menos = Conector("pila-", x_pila + 35, y_pila - 15, conectores)
-pila_mas.fase = True
-pila_menos.neutro = True
+pila_mas.fase, pila_menos.neutro = True, True
 conectores.append(pila_mas)
 conectores.append(pila_menos)
-pila = Pila(x_pila, y_pila)
-motor=Motor(x_pila,y_pila+50)
 
+# Crear pila, motor, conectores y font para el texto en pantalla principal
+pila = Pila(x_pila, y_pila)
+motor = Motor(x_pila,y_pila+50)
 conector = Conector("1", 0, 0, conectores) # Declaración clase Conector
 font = pygame.font.Font(None, 24)  # Usa la fuente predeterminada con tamaño 24
 
@@ -184,75 +212,76 @@ while running:
         if event.type == QUIT or event.type == K_ESCAPE or event.type == pygame.QUIT:
             running = False
         mm.manejar_eventos(event)
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+        
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE: # Si se presiona el espacio
             pantalla_secundaria = not pantalla_secundaria # cambio de estado de la variable continuamente    
         if not pantalla_secundaria:
-            mm.pantalla_secundaria(screen)
+            mm.pantalla_secundaria(screen) # Se visualiza la pantalla secundaria
         else:
-            conector.dibujar(content_surface) # crear conectores de la protoboard
-            pila.dibujarPila(content_surface) # dibujo de pila
-            motor.div_boton(content_surface)
-            mm.dibujar(content_surface,screen) # dibujar menu
-            
+            tecla = pygame.key.get_pressed() # Obtención de tecla presionada
+            movimiento_camara(tecla)
+            screen.fill("white")
+            pila.dibujarPila(screen) # dibujo de pila
+            motor.div_boton(screen) # dibujo de motor
+            mm.dibujar(screen) # dibujar menu
+            for protoboard in guardar_protoboard:
+                if len(guardar_protoboard) > 0: # Variable necesaria para que exista protoboards y no se caiga el programa
+                    protoboard.crear(screen) # dibujo de protoboard
+                    conector.dibujar(screen) # dibujo de conectores para cada protoboard
             for i in guardar_led:
-                i.led_apagada(content_surface)
+                i.led_apagada(screen) # dibujo de led
             for i in guardar_switch:
-                i.switch_proto(content_surface)
+                if len(guardar_switch) > 0:
+                    i.switch_proto(screen) # dibujo de switch simple
             for i in cables:
-                i.dibujar_cables(content_surface)
+                i.dibujar_cables(screen) # dibujo de cables
             for i in guardar_switch16:
-                i.dibujar(content_surface)
+                if len(guardar_switch16) > 0:
+                    i.dibujar(screen) # dibujo de switch de 16 patas
             for i in resistencias:
-                i.dibujar_resistencia(content_surface)
+                if len(resistencias) > 0:
+                    i.dibujar_resistencia(screen) # dibujo de cables para cada resistencia
             for i in guardar_chip:
-                i.dibujar(content_surface)
-                i.chip_and()
-                texto = font.render("AND", True, (225,225,225))
-                texto_escalado = pygame.transform.scale(texto, (texto.get_width() * 2, texto.get_height()))
-                texto_rect = texto.get_rect(center=(i.x + i.largo // 2.5, i.y + i.ancho//1.5))
-                content_surface.blit(texto_escalado, texto_rect)
+                if len(guardar_chip) > 0:
+                    i.dibujar(screen) # dibujo de chip correspondiente a su tipo
+                    i.chip_and()
+                    texto = font.render("AND", True, (225,225,225))
+                    texto_escalado = pygame.transform.scale(texto, (texto.get_width() * 2, texto.get_height()))
+                    texto_rect = texto.get_rect(center=(i.x + i.largo // 2.5, i.y + i.ancho//1.5))
+                    screen.blit(texto_escalado, texto_rect)
             for i in guardar_chipOR:
-                i.dibujar(content_surface)
-                i.chip_or()
-                texto = font.render("OR", True, (225, 225, 225))
-                texto_escalado = pygame.transform.scale(texto, (texto.get_width() * 2, texto.get_height()))
-                texto_rect = texto.get_rect(center=(i.x + i.largo // 2.5, i.y + i.ancho // 1.5))
-                content_surface.blit(texto_escalado, texto_rect)
+                if len(guardar_chipOR) > 0:
+                    i.dibujar(screen) # dibujo de chip or
+                    i.chip_or()
+                    texto = font.render("OR", True, (225, 225, 225))
+                    texto_escalado = pygame.transform.scale(texto, (texto.get_width() * 2, texto.get_height()))
+                    texto_rect = texto.get_rect(center=(i.x + i.largo // 2.5, i.y + i.ancho // 1.5))
+                    screen.blit(texto_escalado, texto_rect)
             for i in guardar_chipNOT:
-                i.dibujar(content_surface)
-                i.chip_not()
-                texto = font.render("NOT", True, (225, 225, 225))
-                texto_escalado = pygame.transform.scale(texto, (texto.get_width() * 2, texto.get_height()))
-                texto_rect = texto.get_rect(center=(i.x + i.largo // 2.5, i.y + i.ancho // 1.5))
-                content_surface.blit(texto_escalado, texto_rect)
+                if len(guardar_chipNOT) > 0:
+                    i.dibujar(screen) # dibujo de chip not
+                    i.chip_not()
+                    texto = font.render("NOT", True, (225, 225, 225))
+                    texto_escalado = pygame.transform.scale(texto, (texto.get_width() * 2, texto.get_height()))
+                    texto_rect = texto.get_rect(center=(i.x + i.largo // 2.5, i.y + i.ancho // 1.5))
+                    screen.blit(texto_escalado, texto_rect)
             for i in guardar_display:
-                i.dibujar(content_surface)
-            
-            keys = pygame.key.get_pressed()
-            # Desplazamiento en ambas direcciones con límites
-            if keys[pygame.K_UP] and scroll_y > 0:
-                scroll_y -= scroll_speed
-            if keys[pygame.K_DOWN] and scroll_y < extension_y - screen_height:
-                scroll_y += scroll_speed
-            if keys[pygame.K_LEFT] and scroll_x > 0:
-                scroll_x -= scroll_speed
-            if keys[pygame.K_RIGHT] and scroll_x < extension_x - screen_width:
-                scroll_x += scroll_speed
-            screen.blit(content_surface, (-scroll_x, -scroll_y))
-            
+                if len(guardar_display) > 0:
+                    i.dibujar(screen) # dibujo de display
+                    
         if event.type == VIDEORESIZE:
             if not fullscreen:
                 if event.w > 1000 or event.h > 650:
                     screen = pygame.display.set_mode((event.w, event.h), pygame.RESIZABLE)
                 else:
-                    screen = pygame.display.set_mode((1000, 650), pygame.RESIZABLE)
+                    screen = pygame.display.set_mode((1000, 650), pygame.RESIZABLE) # Limitado a dichas dimensiones para correcta visualización de programa
 
-        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1: # Si se pulsa el click izquierdo
             mouse_pos = pygame.mouse.get_pos()  # Obtén la posición del mouse
             for switch4 in guardar_switch:
-                switch4.detectar_click(mouse_pos)
+                switch4.detectar_click(mouse_pos,motor.estado_boton)
             for switch16 in guardar_switch16:
-                switch16.detectar_click(mouse_pos)
+                switch16.detectar_click(mouse_pos,motor.estado_boton)
             mouse_pos = event.pos
             conector_cercano = punto_mas_cercano(mouse_pos, conectores)
             x, y = event.pos
@@ -276,6 +305,7 @@ while running:
                     basurero.eliminar_chip_not(conector_cercano)
                 elif mm.motor_pulsado:
                     basurero.eliminar_display(conector_cercano)
+
                 conectores[0].padre = conectores[0]
                 conectores[0].fase = True
                 conectores[1].padre = conectores[1]
@@ -303,6 +333,7 @@ while running:
                             mm.color_editar = (162, 206, 143)
                     else:
                         print("error al editar led")
+
                 elif mm.cable_pulsado:
                     if c_1_editar is None:
                         c_1_editar = punto_mas_cercano(mouse_pos, conectores)
@@ -381,7 +412,7 @@ while running:
                             c4_x = conector_2_aux.x
                             c4_y = conector_2_aux.y
                             if c4_x != 0 and c4_y != 0:
-                                switch4 = Switch(conector_2_aux)
+                                switch4 = Switch(conector_2_aux, guardar_switch)
                                 pines_superior = buscar_pin(c4_x, c4_y, 2, 60, 0)
                                 switch4.pin2 = pines_superior[1]
                                 pines_inferior = buscar_pin(c4_x, c4_y + 60, 2, 60, 0)
@@ -409,7 +440,7 @@ while running:
                             c16_1 = conector_2_aux.x
                             c16_2 = conector_2_aux.y
                             if c16_1 != 0 and c16_2 != 0:
-                                switch16 = Switch_16(conector_2_aux)
+                                switch16 = Switch_16(conector_2_aux, guardar_switch16)
                                 pines_superior = buscar_pin(c16_1, c16_2, 8, 30, 0)
                                 switch16.pin2 = pines_superior[1]
                                 switch16.pin3 = pines_superior[2]
@@ -447,7 +478,7 @@ while running:
                             c_x = aux_andY.x
                             c_y = aux_andY.y
                             if c_y != 0 and c_y != 0:
-                                chip = Chip(aux_andY)
+                                chip = Chip(aux_andY,guardar_chip,guardar_chipNOT,guardar_chipOR)
                                 pines_superior = buscar_pin(c_x, c_y, 7, 30, 0)
                                 chip.pin2 = pines_superior[1]
                                 chip.pin3 = pines_superior[2]
@@ -482,7 +513,7 @@ while running:
                             c_or_x = aux_or.x
                             c_or_y = aux_or.y
                             if c_or_x != 0 and c_or_y != 0:
-                                chip = Chip(aux_or)
+                                chip = Chip(aux_or,guardar_chip,guardar_chipNOT,guardar_chipOR)
                                 pines_superior = buscar_pin(c_or_x, c_or_y, 7, 30, 0)
                                 chip.pin2 = pines_superior[1]
                                 chip.pin3 = pines_superior[2]
@@ -517,7 +548,7 @@ while running:
                             c_not_x = aux_not.x
                             c_not_y = aux_not.y
                             if c_not_x != 0 and c_not_y != 0:
-                                chip = Chip(aux_not)
+                                chip = Chip(aux_not,guardar_chip,guardar_chipNOT,guardar_chipOR)
                                 pines_superior = buscar_pin(c_not_x, c_not_y, 7, 30, 0)
                                 chip.pin2 = pines_superior[1]
                                 chip.pin3 = pines_superior[2]
@@ -553,7 +584,7 @@ while running:
                             dis_x = aux_not.x
                             dis_y = aux_not.y
                             if dis_x != 0 and dis_y != 0:
-                                display = Display(conector_cercano)
+                                display = Display(conector_cercano,guardar_display)
                                 pines_superior = buscar_pin(dis_x, dis_y, 5, 30, 0)
                                 display.pin2 = pines_superior[1]
                                 display.pin3 = pines_superior[2]
@@ -608,7 +639,7 @@ while running:
                         conector_2_aux = punto_mas_cercano(mouse_pos, conectores)
                         if conector_2_aux is not None and conector_2_aux != conector_1_editar:
                             conector_2_editar = conector_2_aux
-                            led_a = Led((236, 243, 91),(243, 255, 0 ), conector_1_editar, conector_2_editar)
+                            led_a = Led((153, 162, 14),(243, 255, 0 ), conector_1_editar, conector_2_editar)
                             guardar_led.append(led_a)
                             conector_1_editar = None
                             conector_2_editar = None
@@ -623,7 +654,7 @@ while running:
                         conector_2_aux = punto_mas_cercano(mouse_pos, conectores)
                         if conector_2_aux is not None and conector_2_aux != conector_1_editar:
                             conector_2_editar = conector_2_aux
-                            led_a = Led((42, 49, 126 ),(0, 19, 255  ), conector_1_editar, conector_2_editar)
+                            led_a = Led((25, 29, 110),(0, 19, 255  ), conector_1_editar, conector_2_editar)
                             guardar_led.append(led_a)
                             conector_1_editar = None
                             conector_2_editar = None
@@ -638,7 +669,7 @@ while running:
                         conector_2_aux = punto_mas_cercano(mouse_pos, conectores)
                         if conector_2_aux is not None and conector_2_aux != conector_1_editar:
                             conector_2_editar = conector_2_aux
-                            led_a = Led((134, 62, 156),(197, 0, 255), conector_1_editar, conector_2_editar)
+                            led_a = Led((86, 26, 103),(197, 0, 255), conector_1_editar, conector_2_editar)
                             guardar_led.append(led_a)
                             conector_1_editar = None
                             conector_2_editar = None
@@ -654,7 +685,7 @@ while running:
                         c16_1 = conector_cercano.x
                         c16_2 = conector_cercano.y
                         if c16_1 != 0 and c16_2 != 0:
-                            switch16 = Switch_16(conector_cercano)
+                            switch16 = Switch_16(conector_cercano,guardar_switch16)
                             pines_superior = buscar_pin(c16_1, c16_2, 8, 30, 0)
                             switch16.pin2 = pines_superior[1]
                             switch16.pin3 = pines_superior[2]
@@ -685,7 +716,7 @@ while running:
                         c4_x = conector_cercano.x
                         c4_y = conector_cercano.y
                         if c4_x != 0 and c4_y != 0:
-                            switch4 = Switch(conector_cercano)
+                            switch4 = Switch(conector_cercano,guardar_switch)
                             pines_superior = buscar_pin(c4_x, c4_y, 2, 60, 0)
                             switch4.pin2 = pines_superior[1]
                             pines_inferior = buscar_pin(c4_x, c4_y+60, 2, 60, 0)
@@ -711,7 +742,7 @@ while running:
                         c_x = conector_cercano.x
                         c_y = conector_cercano.y
                         if c_x != 0 and c_y != 0:
-                            chip = Chip(conector_cercano)
+                            chip = Chip(conector_cercano,guardar_chip,guardar_chipNOT,guardar_chipOR)
                             pines_superior = buscar_pin(c_x, c_y, 7, 30, 0)
                             chip.pin2 = pines_superior[1]
                             chip.pin3 = pines_superior[2]
@@ -740,7 +771,7 @@ while running:
                         c_or_x = conector_cercano.x
                         c_or_y = conector_cercano.y
                         if c_or_x != 0 and c_or_y != 0:
-                            chip = Chip(conector_cercano)
+                            chip = Chip(conector_cercano,guardar_chip,guardar_chipNOT,guardar_chipOR)
                             pines_superior = buscar_pin(c_or_x, c_or_y, 7, 30, 0)
                             chip.pin2 = pines_superior[1]
                             chip.pin3 = pines_superior[2]
@@ -769,7 +800,7 @@ while running:
                         c_not_x = conector_cercano.x
                         c_not_y = conector_cercano.y
                         if c_not_x != 0 and c_not_y != 0:
-                            chip = Chip(conector_cercano)
+                            chip = Chip(conector_cercano,guardar_chip,guardar_chipNOT,guardar_chipOR)
                             pines_superior = buscar_pin(c_not_x, c_not_y, 7, 30, 0)
                             chip.pin2 = pines_superior[1]
                             chip.pin3 = pines_superior[2]
@@ -842,7 +873,7 @@ while running:
                     dis_x = conector_cercano.x
                     dis_y = conector_cercano.y
                     if dis_x != 0 and dis_y != 0:
-                        display = Display(conector_cercano)
+                        display = Display(conector_cercano,guardar_display)
                         pines_superior = buscar_pin(dis_x, dis_y, 5, 30, 0)
                         display.pin2 = pines_superior[1]
                         display.pin3 = pines_superior[2]
@@ -856,27 +887,24 @@ while running:
                         display.pin10 = pines_inferior[4]
                         guardar_display.append(display)
                         dis_x, dis_y = 0, 0  # Resetear las coordenadas
-            elif motor.verificar_click(event.pos):
-                print("Botón presionado, el color cambió.")
+            elif (motor.verificar_click(event.pos)) or motor.estado_boton:
+                #motor apagado
                 if motor.estado_boton:
                     for c in conectores:
                         if not c.nombre.startswith("pila"):
                             c.fase = None
                             c.neutro = None
                 else:
+                    #motor encendido
                     for c in conectores:
                         c.fase = c.padre.fase
                         c.neutro = c.padre.neutro
-            if mm.proto_pulsado:
+            elif mm.proto_pulsado and not mm.borrar_pulsado:
                 x, y = event.pos
                 if (x <= 660 or x >= 780) and (y <= 10 or y >= 50):
-                    content_surface.fill("white")
-                    protoboard = Protoboard(x,y, conectores,len(guardar_protoboard))
+                    protoboard = Protoboard(x, y, conectores, len(guardar_protoboard),guardar_protoboard) # creación de protoboard
                     guardar_protoboard.append(protoboard)
-                
-                    for protoboard in guardar_protoboard: # Ciclo para visualizar cada protoboard
-                        protoboard.crear(content_surface)
-                                                                   
+                                                                        
     if not mm.editar_pulsado and not mm.res_pulsado:
         cableado.dibujar_cable_actual(screen, c_1_editar)
     elif not mm.editar_pulsado and not mm.cable_pulsado:

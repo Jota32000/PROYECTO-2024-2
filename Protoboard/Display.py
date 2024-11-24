@@ -2,7 +2,7 @@ import pygame
 import math
 
 class Display:
-    def __init__(self, conector):
+    def __init__(self, conector,display):
         self.x = conector.x
         self.y = conector.y
         self.ancho = 150
@@ -19,7 +19,7 @@ class Display:
         self.pin8 = None
         self.pin9 = None
         self.pin10 = None
-
+        self.display = display
     def dibujar(self, screen):
         x = self.x + 15
         y = self.y + 15
@@ -59,3 +59,14 @@ class Display:
             end_x = x_cir + int(radio_circulo * math.cos(math.radians(angle)))
             end_y = y_cir + int(radio_circulo * math.sin(math.radians(angle)))
             pygame.draw.line(screen, color_p, (x_cir, y_cir), (end_x, end_y), 2)
+
+    def actualizar_coordenadas(self,opc):
+        for display in self.display:
+            if opc == 1:
+                display.x -= 20
+            elif opc == 2:
+                display.x += 20
+            elif opc == 3:
+                display.y -= 20
+            elif opc == 4:
+                display.y += 20

@@ -32,7 +32,6 @@ class Motor:
         pygame.draw.line(screen, (0, 0, 0), (self.x + self.largo - 10, self.y + 10), (self.x + self.largo - 10, self.y + self.ancho - 10), 3)
         pygame.draw.line(screen, (0, 0, 0), (self.x + self.largo - 10, self.y + self.ancho - 10), (self.x + 10, self.y + self.ancho - 10), 3)
         pygame.draw.line(screen, (0, 0, 0), (self.x + 10, self.y + 10), (self.x + 10, self.y + self.ancho - 10), 3)
-
     def verificar_click(self, pos):
         # Verificar si se hizo clic dentro del área verde (botón)
         if self.boton_x <= pos[0] <= self.boton_x + self.boton_largo and self.boton_y <= pos[1] <= self.boton_y + self.boton_ancho:

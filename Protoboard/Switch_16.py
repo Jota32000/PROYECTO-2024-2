@@ -1,7 +1,7 @@
 import pygame
 
 class Switch_16:
-    def __init__(self,conector):
+    def __init__(self,conector,switch_16):
         self.x = conector.x
         self.y = conector.y
         self.color_cuerpo = (127, 179, 213)  # Color del cuerpo del switch
@@ -32,13 +32,13 @@ class Switch_16:
         self.pin15 = None
         self.pin16 = None
         self.bandera = [1] * 8 # hace eso: [1, 1, 1, 1, 1, 1, 1, 1] sino da out of range
+        self.switch_16 = switch_16
 
     def crear_botones(self):
         for i in range(8):
             surface = pygame.Surface((8, 25))  # Tamaño del botón
             surface.fill(self.cApagado)  # Color inicial del botón
             self.boton_surfaces.append(surface)
-        
     def dibujar(self, screen):
         # Dibujar el cuerpo del switch
         pygame.draw.line(screen, (0, 0, 0), (self.x, self.y), (self.x, self.y + self.disA), 2)
@@ -58,13 +58,12 @@ class Switch_16:
             x_pos = self.x + self.disL * i
             y_pos = self.y + 13
             screen.blit(self.boton_surfaces[i], (x_pos, y_pos+5))
-
-    def detectar_click(self, pos):
+    def detectar_click(self, pos,estado_boton):
         # Verificar si el clic está dentro de algún botón
         for i in range(8):
             boton_x = self.x + self.disL * i
             boton_y = self.y + 18
-            if boton_x <= pos[0] <= boton_x + 8 and boton_y <= pos[1] <= boton_y + 25:
+            if (boton_x <= pos[0] <= boton_x + 8 and boton_y <= pos[1] <= boton_y + 25) and not estado_boton:
                 # Cambiar el color del botón al ser presionado
                 if self.boton_colores[i] == self.cApagado:
                     self.boton_colores[i] = self.cEncendido  # Cambiar a encendido
@@ -86,7 +85,6 @@ class Switch_16:
 
                 # Actualizar la superficie del botón
                 self.boton_surfaces[i].fill(self.boton_colores[i])
-
     def pines2(self,i):
         if i==0:
             return self.pin1,self.pin9
@@ -105,3 +103,13 @@ class Switch_16:
         if i==7:
             return self.pin8, self.pin16
         return None,None
+    def actualizar_coordenadas(self,opc):
+        for switch in self.switch_16:
+            if opc==1:
+                switch.x-=20
+            if opc==2:
+                switch.x+=20
+            if opc==3:
+                switch.y-=20
+            if opc==4:
+                switch.y+=20

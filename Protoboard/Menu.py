@@ -48,7 +48,7 @@ class Menu:
         self.and_pulsado=False
         self.not_pulsado=False
         self.or_pulsado=False
-
+        
     def div_boton(self, screen, x, y, color):
         self.ancho = self.ancho_boton
         self.alto = 60
@@ -61,9 +61,8 @@ class Menu:
         for i in range(y, y + self.alto):  # Recorre de arriba hacia abajo (en el eje y)
             pygame.draw.line(screen, color, (x, i),
                              (x + self.ancho, i))  # Dibuja una línea horizontal desde el borde izquierdo al derecho
-
-    def dibujar(self, screen,screen2):
-        ancho_pantalla, alto_pantalla = screen2.get_size()
+    def dibujar(self, screen):
+        ancho_pantalla, alto_pantalla = screen.get_size()
 
         # Calcular el ancho de la primera división
         numero_divisiones = 9
@@ -155,30 +154,25 @@ class Menu:
             screen.blit(boton_led3_surface, (x_inic + (self.ancho_boton), 76))
             screen.blit(boton_led4_surface, (x_inic + (self.ancho_boton), 104))
             screen.blit(boton_led5_surface, (x_inic + (self.ancho_boton), 132))
-        #else:pygame.draw.line(screen, "white", (x_inic + (self.ancho_boton) , 100), (x_inic + (self.ancho_boton) + 200, 100), 97)
         screen.blit(boton_switch_surface, (x_inic + (self.ancho_boton * 2), 10))
         if(self.switch_pulsado):
             screen.blit(boton_switch2_surface, (x_inic + (self.ancho_boton * 2), 20))
             screen.blit(boton_switch16_surface, (x_inic + (self.ancho_boton * 2), 60))
-        else:
-            pygame.draw.line(screen, "white", (x_inic + (self.ancho_boton * 2) , 100), (x_inic + (self.ancho_boton * 2) + 200, 100), 97) # Linea en blanco para cubrir los tipos de switchs cuando no se requieran
         screen.blit(boton_resistencia_surface, (x_inic + (self.ancho_boton * 3), 10))
         screen.blit(boton_ship_surface, (x_inic + (self.ancho_boton * 4), 10))
         if (self.chip_pulsado):
             screen.blit(boton_and_surface,(x_inic + (self.ancho_boton * 4), 20))
             screen.blit(boton_or_surface, (x_inic + (self.ancho_boton * 4), 58))
             screen.blit(boton_not_surface, (x_inic + (self.ancho_boton * 4), 95))
-        else:
-            pygame.draw.line(screen, "white", (x_inic + (self.ancho_boton * 4), 110), (x_inic + (self.ancho_boton * 4) + 200, 110), 118) # Linea en blanco para cubrir los tipos de chips cuando no se requieran
         screen.blit(boton_motor_surface, (x_inic + (self.ancho_boton * 5), 10))
         screen.blit(boton_proto_surface, (x_inic + (self.ancho_boton * 6), 10))
         screen.blit(boton_edicion_surface, (x_inic + (self.ancho_boton * 7), 10))
         screen.blit(boton_basurero_surface, (x_inic + (self.ancho_boton * 8), 10))
 
-        texto = "Presiona la barra espaciadora para ver instrucciones"
+        texto = "Presione la barra espaciadora para ver instrucciones"
         font = pygame.font.Font(None, 24)
         texto_surface = font.render(texto,True,"black") # Renderizado del texto
-        texto_rect = texto_surface.get_rect(center=(self.x + 220 ,self.y + 100)) # Obtener la superficie en la pantalla del texto 
+        texto_rect = texto_surface.get_rect(center=(self.x + 220 ,self.y + 580)) # Obtener la superficie en la pantalla del texto
         screen.blit(texto_surface,texto_rect) # Dibujar el texto en la pantalla en la posición deseada
 
         # Dibujar líneas verticales en las posiciones correspondientes y agregar texto
@@ -229,62 +223,114 @@ class Menu:
                 texto_renderizado9 = self.font.render("MORADO", True, (0, 0, 0))
                 texto_rect9 = texto_renderizado9.get_rect(center=(x_pos - self.ancho_boton // 2, 180))
                 screen.blit(texto_renderizado9, texto_rect9)
+                pygame.draw.line(screen, (0, 0, 0), (x_pos, 50), (x_pos, 190), 3)
+                pygame.draw.line(screen, (0, 0, 0), (x_pos-self.ancho_boton, 50), (x_pos-self.ancho_boton, 190), 3)
+                pygame.draw.line(screen, (0, 0, 0), (x_pos-self.ancho_boton, 51), (x_pos, 51), 3)
+                pygame.draw.line(screen, (0, 0, 0), (x_pos - self.ancho_boton,80), (x_pos, 80), 3)
+                pygame.draw.line(screen, (0, 0, 0), (x_pos - self.ancho_boton, 109), (x_pos, 109), 3)
+                pygame.draw.line(screen, (0, 0, 0), (x_pos - self.ancho_boton, 137), (x_pos, 137), 3)
+                pygame.draw.line(screen, (0, 0, 0), (x_pos - self.ancho_boton, 164), (x_pos, 164), 3)
+                pygame.draw.line(screen, (0, 0, 0), (x_pos - self.ancho_boton, 191), (x_pos, 191), 3)
 
             texto_renderizado = self.font.render(textos[i], True, (0, 0, 0))  # Color negro para el texto
             # Posicionar el texto en el centro de cada división
             texto_rect = texto_renderizado.get_rect(center=(x_pos - self.ancho_boton // 2, self.y - 20))
             screen.blit(texto_renderizado, texto_rect)
-    
     def pantalla_secundaria(self,screen):
         screen.fill("white")
         texto_edicion = "Opción de edición"
         font = pygame.font.Font(None, 20)
-        
         texto_edicion_surface = font.render(texto_edicion,True,"black") # Renderizado del texto
-        texto_edicion_rect = texto_edicion_surface.get_rect(center=(200,310)) # Obtener la superficie en la pantalla del texto 
+        texto_edicion_rect = texto_edicion_surface.get_rect(center=(200,310)) # Obtener la superficie en la pantalla del texto
         screen.blit(texto_edicion_surface,texto_edicion_rect) # Dibujar el texto en la pantalla en la posición deseada
-        opcion_edicion = "Primero elige la opcion de edición y luego el componente a editar"
+        opcion_edicion = "Primero elige la opción de edición y luego el componente a editar"
         opcion_edicion_surface = font.render(opcion_edicion,True,"black") # Renderizado del texto
-        opcion_edicion_rect = opcion_edicion_surface.get_rect(center=(240,330)) # Obtener la superficie en la pantalla del texto
+        opcion_edicion_rect = opcion_edicion_surface.get_rect(center=(250,330)) # Obtener la superficie en la pantalla del texto
         screen.blit(opcion_edicion_surface,opcion_edicion_rect) # Dibujar el texto en la pantalla en la posición deseada
-        opcion_cables_resistencia = "Para los cables o resistencias, primero selecciona ambos puntos"
+        opcion_cables_resistencia = "- Para los cables o resistencias, primero selecciona ambos puntos"
         opcion_cables_resistencia_surface = font.render(opcion_cables_resistencia,True,"black") # Renderizado del texto
-        opcion_cables_resistencia_rect = opcion_cables_resistencia_surface.get_rect(center=(240,350)) # Obtener la superficie en la pantalla del texto
+        opcion_cables_resistencia_rect = opcion_cables_resistencia_surface.get_rect(center=(270,350)) # Obtener la superficie en la pantalla del texto
         screen.blit(opcion_cables_resistencia_surface,opcion_cables_resistencia_rect) # Dibujar el texto en la pantalla en la posición deseada
         opcion_cables_resistencia_2 = "y luego escoge 2 nuevos puntos en la protoboard."
         opcion_cables_resistencia_surface_2 = font.render(opcion_cables_resistencia_2,True,"black") # Renderizado del texto
-        opcion_cables_resistencia_rect_2 = opcion_cables_resistencia_surface_2.get_rect(center=(210,370)) # Obtener la superficie en la pantalla del texto
+        opcion_cables_resistencia_rect_2 = opcion_cables_resistencia_surface_2.get_rect(center=(220,370)) # Obtener la superficie en la pantalla del texto
         screen.blit(opcion_cables_resistencia_surface_2,opcion_cables_resistencia_rect_2) # Dibujar el texto en la pantalla en la posición deseada
-        opcion_led = "Para el led, primero selecciona su parte central"
+        opcion_led = "- Para el led, primero selecciona su parte central"
         opcion_led_surface = font.render(opcion_led,True,"black") # Renderizado del texto
-        opcion_led_rect = opcion_led_surface.get_rect(center=(205,390)) # Obtener la superficie en la pantalla del texto
+        opcion_led_rect = opcion_led_surface.get_rect(center=(213,390))#<- HALF Obtener la superficie en la pantalla del texto
         screen.blit(opcion_led_surface,opcion_led_rect) # Dibujar el texto en la pantalla en la posición deseada
         opcion_led_2 = "y luego escoge 2 nuevos puntos en la protoboard."
         opcion_led_surface_2 = font.render(opcion_led_2,True,"black") # Renderizado del texto
-        opcion_led_rect_2 = opcion_led_surface_2.get_rect(center=(210,410)) # Obtener la superficie en la pantalla del texto
+        opcion_led_rect_2 = opcion_led_surface_2.get_rect(center=(220,410)) # Obtener la superficie en la pantalla del texto
         screen.blit(opcion_led_surface_2,opcion_led_rect_2) # Dibujar el texto en la pantalla en la posición deseada
-        opciones_restantes = "Para el resto, escoge su esquina superior derecha"
+        opciones_restantes = "- Para el resto, escoge su esquina superior derecha"
         resto = "y luego escoge un punto en la protoboard."
         resto_surface = font.render(resto,True,"black") # Renderizado del texto
         resto_surface_2 = font.render(opciones_restantes,True,"black") # Renderizado del texto
-        resto_rect = resto_surface.get_rect(center=(185,450)) # Obtener la superficie en la pantalla del texto
-        opciones_rect = resto_surface_2.get_rect(center=(210,430)) 
+        resto_rect = resto_surface.get_rect(center=(195,450)) # Obtener la superficie en la pantalla del texto
+        opciones_rect = resto_surface_2.get_rect(center=(220,430))
         screen.blit(resto_surface,resto_rect) # Dibujar el texto en la pantalla en la posición deseada
         screen.blit(resto_surface_2,opciones_rect) # Dibujar el texto en la pantalla en la posición deseada
 
         texto_borrado = "Opción de borrado"
         font = pygame.font.Font(None, 20)
         texto_borrado_surface = font.render(texto_borrado,True,"black") # Renderizado del texto
-        texto_borrado_rect = texto_borrado_surface.get_rect(center=(800,310)) # Obtener la superficie en la pantalla del texto 
+        texto_borrado_rect = texto_borrado_surface.get_rect(center=(753,230)) # Obtener la superficie en la pantalla del texto
         screen.blit(texto_borrado_surface,texto_borrado_rect) # Dibujar el texto en la pantalla en la posición deseada
-        opcion_borrado = "Primero elige la opcion de borrado y luego el componente a eliminar"
+        opcion_borrado = "Primero elige la opción de borrado y luego el componente a eliminar"
         opcion_borrado_2 = "Luego elige su origen o la esquina superior izquierda para eliminarlo"
         opcion_borrado_surface = font.render(opcion_borrado,True,"black") # Renderizado del texto
-        opcion_borrado_rect = opcion_borrado_surface.get_rect(center=(820,330)) # Obtener la superficie en la pantalla del texto 
+        opcion_borrado_rect = opcion_borrado_surface.get_rect(center=(850,250)) # Obtener la superficie en la pantalla del texto
         screen.blit(opcion_borrado_surface,opcion_borrado_rect) # Dibujar el texto en la pantalla en la posición deseada
         opcion_borrado_surface_2 = font.render(opcion_borrado_2,True,"black") # Renderizado del texto
-        opcion_borrado_rect_2 = opcion_borrado_surface_2.get_rect(center=(825,350)) # Obtener la superficie en la pantalla del texto
+        opcion_borrado_rect_2 = opcion_borrado_surface_2.get_rect(center=(855,270)) # Obtener la superficie en la pantalla del texto
         screen.blit(opcion_borrado_surface_2,opcion_borrado_rect_2) # Dibujar el texto en la pantalla en la posición deseada
+
+        # titulo funcion de deslizamiento
+        texto_deslizamiento_pantalla = "Deslizamiento de Pantalla"
+        font = pygame.font.Font(None, 20)
+
+        # texto principal
+        texto_deslizamiento_surface = font.render(texto_deslizamiento_pantalla, True, "black")
+        texto_deslizamiento_rect = texto_deslizamiento_surface.get_rect(center=(780, 310))
+        screen.blit(texto_deslizamiento_surface, texto_deslizamiento_rect)
+
+        # instrucciones para el deslizamiento de pantalla
+        instruccion_deslizamiento_1 = "Use las teclas de dirección en su teclado"
+        instruccion_deslizamiento_2 = "(Arriba | Abajo | Izquierda | Derecha)"
+
+        # render y pos primera instruccion
+        instruccion_deslizamiento_1_surface = font.render(instruccion_deslizamiento_1, True, "black")
+        instruccion_deslizamiento_1_rect = instruccion_deslizamiento_1_surface.get_rect(center=(765, 330))
+        screen.blit(instruccion_deslizamiento_1_surface, instruccion_deslizamiento_1_rect)
+
+        # render y pos segunda instruccion
+        instruccion_deslizamiento_2_surface = font.render(instruccion_deslizamiento_2, True, "black")
+        instruccion_deslizamiento_2_rect = instruccion_deslizamiento_2_surface.get_rect(center=(750, 350))
+        screen.blit(instruccion_deslizamiento_2_surface, instruccion_deslizamiento_2_rect)
+
+        # titulo opcion protoboard
+        texto_opcion_protoboard = "Opción de Protoboard"
+        font = pygame.font.Font(None, 20)
+
+        # texto principal
+        texto_opcion_protoboard_surface = font.render(texto_opcion_protoboard, True, "black")
+        texto_opcion_protoboard_rect = texto_opcion_protoboard_surface.get_rect(center=(765, 390))
+        screen.blit(texto_opcion_protoboard_surface, texto_opcion_protoboard_rect)
+
+        # instrucciones uso de la Protoboard
+        instruccion_protoboard_1 = "Primero elige la opción de Protoboard en el Menú de opciones"
+        instruccion_protoboard_2 = "Luego selecciona un punto en la pantalla para colocarla"
+
+        # render y pos de la primera instruccion
+        instruccion_protoboard_1_surface = font.render(instruccion_protoboard_1, True, "black")
+        instruccion_protoboard_1_rect = instruccion_protoboard_1_surface.get_rect(center=(835, 410))
+        screen.blit(instruccion_protoboard_1_surface, instruccion_protoboard_1_rect)
+
+        # render y pos de la segunda instruccion
+        instruccion_protoboard_2_surface = font.render(instruccion_protoboard_2, True, "black")
+        instruccion_protoboard_2_rect = instruccion_protoboard_2_surface.get_rect(center=(815, 430))
+        screen.blit(instruccion_protoboard_2_surface, instruccion_protoboard_2_rect)
 
         texto_cables = "Opción de cables"
         font = pygame.font.Font(None, 20)
@@ -293,17 +339,17 @@ class Menu:
         screen.blit(texto_cables_surface,texto_cables_rect) # Dibujar el texto en la pantalla en la posición deseada
         opcion_cables = "Elige dos puntos para colocar un cable"
         opcion_cables_surface = font.render(opcion_cables,True,"black") # Renderizado del texto
-        texto_opcion_cables = texto_cables_surface.get_rect(center=(140,70))
+        texto_opcion_cables = texto_cables_surface.get_rect(center=(100,70))
         screen.blit(opcion_cables_surface, texto_opcion_cables) # Dibujar el texto en la pantalla en la posición deseada
 
         texto_led = "Opción de led"
         font = pygame.font.Font(None, 20)
         texto_led_surface = font.render(texto_led,True,"black") # Renderizado del texto
-        texto_led_rect = texto_led_surface.get_rect(center=(800,50)) # Obtener la superficie en la pantalla del texto
+        texto_led_rect = texto_led_surface.get_rect(center=(735,50)) # Obtener la superficie en la pantalla del texto
         screen.blit(texto_led_surface,texto_led_rect) # Dibujar el texto en la pantalla en la posición deseada
         opcion_led = "Elige dos puntos en la protoboard para colocar un led"
         opcion_led_surface = font.render(opcion_led,True,"black") # Renderizado del texto
-        texto_opcion_led = texto_led_surface.get_rect(center=(700,70))
+        texto_opcion_led = texto_led_surface.get_rect(center=(673,70))
         screen.blit(opcion_led_surface, texto_opcion_led) # Dibujar el texto en la pantalla en la posición deseada
 
         texto_switch = "Opción de switch"
@@ -311,9 +357,9 @@ class Menu:
         texto_switch_surface = font.render(texto_switch,True,"black") # Renderizado del texto
         texto_switch_rect = texto_switch_surface.get_rect(center=(200,110)) # Obtener la superficie en la pantalla del texto
         screen.blit(texto_switch_surface,texto_switch_rect) # Dibujar el texto en la pantalla en la posición deseada
-        variantes_switch = "Primero elige el tipo de switch a colocar" 
+        variantes_switch = "Primero elige el tipo de switch a colocar"
         variantes_switch_surface = font.render(variantes_switch,True,"black") # Renderizado del texto
-        variantes_switch_rect = variantes_switch_surface.get_rect(center=(220,130))
+        variantes_switch_rect = variantes_switch_surface.get_rect(center=(173,130))
         screen.blit(variantes_switch_surface, variantes_switch_rect) # Dibujar el texto en la pantalla en la posición deseada
         opcion_switch = "Luego elige un punto en la protoboard para colocar un switch"
         opcion_switch_surface = font.render(opcion_switch,True,"black") # Renderizado del texto
@@ -321,13 +367,13 @@ class Menu:
         screen.blit(opcion_switch_surface, texto_opcion_switch) # Dibujar el texto en la pantalla en la posición deseada
         opcion_switch_2 = "(Teniendo como referencia la parte superior izquierda como punto inicial)"
         opcion_switch_surface_2 = font.render(opcion_switch_2,True,"black") # Renderizado del texto
-        opcion_switch_rect_2 = opcion_switch_surface_2.get_rect(center=(240,170))
+        opcion_switch_rect_2 = opcion_switch_surface_2.get_rect(center=(280,170))
         screen.blit(opcion_switch_surface_2, opcion_switch_rect_2) # Dibujar el texto en la pantalla en la posición deseada
 
         texto_resistencia = "Opción de resistencia"
         font = pygame.font.Font(None, 20)
         texto_resistencia_surface = font.render(texto_resistencia,True,"black") # Renderizado del texto
-        texto_resistencia_rect = texto_resistencia_surface.get_rect(center=(800,110)) # Obtener la superficie en la pantalla del texto
+        texto_resistencia_rect = texto_resistencia_surface.get_rect(center=(760,110)) # Obtener la superficie en la pantalla del texto
         screen.blit(texto_resistencia_surface,texto_resistencia_rect) # Dibujar el texto en la pantalla en la posición deseada
         opcion_resistencia = "Elige dos puntos en la protoboard para colocar una resistencia"
         opcion_resistencia_surface = font.render(opcion_resistencia,True,"black") # Renderizado del texto
@@ -337,11 +383,11 @@ class Menu:
         texto_chip = "Opción de chip"
         font = pygame.font.Font(None, 20)
         texto_chip_surface = font.render(texto_chip,True,"black") # Renderizado del texto
-        texto_chip_rect = texto_chip_surface.get_rect(center=(200,210)) # Obtener la superficie en la pantalla del texto
+        texto_chip_rect = texto_chip_surface.get_rect(center=(190,210)) # Obtener la superficie en la pantalla del texto
         screen.blit(texto_chip_surface, texto_chip_rect) # Dibujar el texto en la pantalla en la posición deseada
         variantes_chip = "Primero elige el tipo de chip a colocar"
         variantes_chip_surface = font.render(variantes_chip,True,"black") # Renderizado del texto
-        variantes_chip_rect = variantes_chip_surface.get_rect(center=(210,230))
+        variantes_chip_rect = variantes_chip_surface.get_rect(center=(163,230))
         screen.blit(variantes_chip_surface, variantes_chip_rect) # Dibujar el texto en la pantalla en la posición deseada
         opcion_chip = "Luego elige un punto en la protoboard para colocar un chip"
         opcion_chip_surface = font.render(opcion_chip,True,"black") # Renderizado del texto
@@ -349,25 +395,24 @@ class Menu:
         screen.blit(opcion_chip_surface, texto_opcion_chip) # Dibujar el texto en la pantalla en la posición deseada
         opcion_chip_2 = "(Teniendo como referencia la parte superior izquierda como punto inicial)"
         opcion_chip_surface_2 = font.render(opcion_chip_2,True,"black") # Renderizado del texto
-        opcion_chip_rect_2 = opcion_chip_surface_2.get_rect(center=(240,270))
+        opcion_chip_rect_2 = opcion_chip_surface_2.get_rect(center=(277,270))
         screen.blit(opcion_chip_surface_2, opcion_chip_rect_2) # Dibujar el texto en la pantalla en la posición deseada
 
         texto_display = "Opción de display"
         font = pygame.font.Font(None, 20)
         texto_display_surface = font.render(texto_display,True,"black") # Renderizado del texto
-        texto_display_rect = texto_display_surface.get_rect(center=(800,210)) # Obtener la superficie en la pantalla del texto
+        texto_display_rect = texto_display_surface.get_rect(center=(750,170)) # Obtener la superficie en la pantalla del texto
         screen.blit(texto_display_surface, texto_display_rect) # Dibujar el texto en la pantalla en la posición deseada   
-        opcion_display = "Elige un punto en la protoboard para colocar un display"   
+        opcion_display = "Elige un punto en la protoboard para colocar un display"
         opcion_display_surface = font.render(opcion_display,True,"black") # Renderizado del texto
-        texto_opcion_display = texto_display_surface.get_rect(center=(700,230))
+        texto_opcion_display = texto_display_surface.get_rect(center=(690,190))
         screen.blit(opcion_display_surface, texto_opcion_display) # Dibujar el texto en la pantalla en la posición deseada
 
-        barra_espaciadora = "Presiona la barra espaciadora para volver a la pantalla inicial"
+        barra_espaciadora = "Presione la barra espaciadora para volver a la pantalla inicial"
         font = pygame.font.Font(None, 24)
         barra_espaciadora_surface = font.render(barra_espaciadora,True,"black") # Renderizado del texto
         barra_espaciadora_rect = barra_espaciadora_surface.get_rect(center=(500,500))
         screen.blit(barra_espaciadora_surface, barra_espaciadora_rect) # Dibujar el texto en la pantalla en la posición deseada
-
     def manejar_eventos(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
             pos = pygame.mouse.get_pos()
@@ -403,9 +448,9 @@ class Menu:
 
             # Coordenadas y dimensiones del área del botón led1
             boton_led1_x = self.ancho_boton
-            boton_led1_y = 35
+            boton_led1_y = 53
             boton_led1_ancho = self.ancho_boton
-            boton_led1_alto = 45
+            boton_led1_alto = 23
             if boton_led1_x <= mouse_x <= boton_led1_x + boton_led1_ancho and boton_led1_y <= mouse_y <= boton_led1_y + boton_led1_alto:
                 if self.led1_pulsado:
                     self.led1_pulsado = False
@@ -524,7 +569,7 @@ class Menu:
             boton_shp_x = 4 * self.ancho_boton
             boton_shp_y = 3
             boton_shp_ancho = self.ancho_boton
-            boton_shp_alto = 45
+            boton_shp_alto = 43
             if boton_shp_x <= mouse_x <= boton_shp_x + boton_shp_ancho and boton_shp_y <= mouse_y <= boton_shp_y + boton_shp_alto:
                 # Cambiar el color del botón SHP
                 if (self.chip_pulsado == True):
